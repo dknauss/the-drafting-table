@@ -83,8 +83,7 @@ body .wp-site-blocks::after {
  * below the H2 annotation label but decisively above body text.
  */
 body.single .wp-block-post-title {
-	text-align: center;
-	font-weight: 600;
+	font-weight: 600; /* centering handled via block textAlign in template */
 }
 
 .wp-site-blocks h2 {
@@ -250,6 +249,7 @@ body.single .wp-block-post-title {
  * a section break tick on a blueprint drawing. No decorative weight.
  * Dots: WordPress core renders ··· via ::before content; suppress border-top.
  * Wide: full content width for major chapter / topic breaks.
+ * X-large top/bottom margin (spacing|60) gives the break visual breathing room.
  */
 .wp-block-separator {
 	border: none;
@@ -257,6 +257,8 @@ body.single .wp-block-post-title {
 	width: 48px;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: var(--wp--preset--spacing--60);
+	margin-bottom: var(--wp--preset--spacing--60);
 	opacity: 1;
 }
 
@@ -673,6 +675,29 @@ body.single .wp-block-post-title {
  * the accident of line-breaking at a particular viewport width.
  */
 .post-incipit {
+	font-family: var(--wp--preset--font-family--josefin);
+	font-size: 0.8em;
+	font-weight: 600;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--ink-light);
+}
+
+/* === Editor: Incipit First-Line Approximation ===
+ *
+ * style.css is loaded as an editor style via add_editor_style() in
+ * inc/styles.php. WordPress transforms every selector by prepending
+ * .editor-styles-wrapper, so the rule below becomes:
+ *   .editor-styles-wrapper .is-root-container > .wp-block:first-child
+ *     .wp-block-paragraph::first-line
+ *
+ * This gives a visual preview of the incipit treatment while editing.
+ * Note: ::first-line stops at the rendered line break (viewport-dependent),
+ * whereas the PHP span on the frontend stops at the first punctuation mark.
+ * The editor approximation is intentionally looser — it conveys the style
+ * without needing to replicate the exact span boundary.
+ */
+.is-root-container > .wp-block:first-child .wp-block-paragraph::first-line {
 	font-family: var(--wp--preset--font-family--josefin);
 	font-size: 0.8em;
 	font-weight: 600;
