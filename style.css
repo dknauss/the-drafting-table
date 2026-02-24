@@ -605,11 +605,25 @@ body .wp-site-blocks::after {
 	margin-bottom: 0.375rem;
 }
 
+/* === Post Content: Opening Paragraph ===
+ *
+ * The first paragraph is set slightly larger than body text (1.125rem vs
+ * 1.0625rem) to give the piece a gentle lead-in weight, similar to a
+ * newspaper drop-in or a printed article's opening graf.
+ *
+ * No !important — any font-size set directly on the block in the editor
+ * (saved as an inline style) will override this CSS default.
+ */
+.wp-block-post-content > p:first-of-type {
+	font-size: 1.125rem;
+	line-height: 1.6;
+}
+
 /* === Post Content: First-Line Incipit ===
  *
  * The first line of the opening paragraph is set in Josefin Sans —
- * spaced uppercase, slightly reduced from body size — giving the post
- * a classical manuscript / broadsheet incipit without a drop cap.
+ * spaced uppercase, scaled relative to the paragraph font-size — giving
+ * the post a classical manuscript / broadsheet incipit without a drop cap.
  *
  * p:first-of-type targets the first <p> in the content, so a leading
  * heading (e.g. a subtitle block) does not block the treatment.
