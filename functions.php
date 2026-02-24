@@ -310,6 +310,42 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 add_filter( 'render_block', 'the_drafting_table_featured_image_caption', 10, 3 );
 
 /**
+ * Inject an incipit span into the opening clause of the first post paragraph.
+ *
+ * Wraps text before (and including) the first sentence-level punctuation mark
+ * in <span class="post-incipit"> so the opening phrase can be styled in
+ * Josefin Sans uppercase via CSS — replicating the classical broadsheet /
+ * manuscript incipit treatment without relying on ::first-line (which is
+ * bounded by rendered line width, not syntax).
+ *
+ * The regex matches:
+ *   Group 1 — opening <p> tag with any attributes
+ *   Group 2 — text content before the first punctuation (no HTML tags)
+ *   Group 3 — the punctuation character itself (, . ; : ! ?)
+ *
+ * preg_replace() limit of 1 affects only the first <p> in the content.
+ * is_singular('post') guard prevents the filter from running on archives.
+ *
+ * @param string $content Post content HTML.
+ * @return string Modified content HTML.
+ */
+function the_drafting_table_post_incipit( $content ) {
+	if ( ! is_singular( 'post' ) ) {
+		return $content;
+	}
+
+	$content = preg_replace(
+		'/(<p(?:\s[^>]*)?>)([^<,\.;:!?]*)([,\.;:!?])/u',
+		'$1<span class="post-incipit">$2$3</span>',
+		$content,
+		1
+	);
+
+	return $content;
+}
+add_filter( 'the_content', 'the_drafting_table_post_incipit', 20 );
+
+/**
  * Output a noindex meta tag on paginated archive pages (page 2, 3, …).
  *
  * Paged archives contain no content that doesn't already appear on page 1

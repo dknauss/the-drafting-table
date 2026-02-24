@@ -330,10 +330,10 @@ if ( ! function_exists( 'the_drafting_table_get_sample_posts_data' ) ) {
 	 * @return array
 	 */
 	function the_drafting_table_get_sample_posts_data() {
-		$p_open  = '<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"courier-prime","style":{"typography":{"fontSize":"0.9375rem","lineHeight":"1.75"}}} -->' . "\n" . '<p class="has-ink-light-color has-text-color has-courier-prime-font-family" style="font-size:0.9375rem;line-height:1.75">';
+		$p_open  = '<!-- wp:paragraph -->' . "\n" . '<p>';
 		$p_close = '</p>' . "\n" . '<!-- /wp:paragraph -->';
 
-		$h2_open  = '<!-- wp:heading {"level":2,"fontFamily":"bodoni","style":{"typography":{"letterSpacing":"0.02em"},"spacing":{"margin":{"top":"var:preset|spacing|40","bottom":"1rem"}}}} -->' . "\n" . '<h2 class="wp-block-heading has-bodoni-font-family" style="margin-top:var(--wp--preset--spacing--40);margin-bottom:1rem;letter-spacing:0.02em">';
+		$h2_open  = '<!-- wp:heading {"level":2} -->' . "\n" . '<h2 class="wp-block-heading">';
 		$h2_close = '</h2>' . "\n" . '<!-- /wp:heading -->';
 
 		$q_open  = '<!-- wp:quote {"style":{"spacing":{"padding":{"left":"2rem"}}}} -->' . "\n" . '<blockquote class="wp-block-quote" style="padding-left:2rem"><!-- wp:paragraph -->' . "\n" . '<p>';

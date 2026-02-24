@@ -68,12 +68,17 @@ body .wp-site-blocks::after {
 	pointer-events: none;
 }
 
-/* === H2 Heading: Josefin Sans Annotation Label ===
- * theme.json elements.h2 outputs as :root :where(h2) — near-zero specificity.
- * It cannot override the general elements.heading Bodoni rule. This explicit
- * selector ensures h2 always renders as the small Josefin annotation label
- * wherever headings appear within the site block wrapper.
+/* === H1 and H2 Single-Post Overrides ===
+ * H1 post titles are centred on single post pages (body.single).
+ * H2 override: theme.json elements.h2 outputs as :root :where(h2) —
+ * near-zero specificity — and cannot override the elements.heading Bodoni
+ * rule. The explicit descendant selector wins over .has-bodoni-font-family
+ * (specificity 0-1-0) and ensures h2 renders as the Josefin annotation label.
  */
+body.single .wp-block-post-title {
+	text-align: center;
+}
+
 .wp-site-blocks h2 {
 	font-family: var(--wp--preset--font-family--josefin);
 	font-weight: 600;
@@ -619,22 +624,36 @@ body .wp-site-blocks::after {
 	line-height: 1.6;
 }
 
-/* === Post Content: First-Line Incipit ===
+/* === Post Content: Incipit Span ===
  *
- * The first line of the opening paragraph is set in Josefin Sans —
- * spaced uppercase, scaled relative to the paragraph font-size — giving
- * the post a classical manuscript / broadsheet incipit without a drop cap.
+ * A PHP render filter (functions.php → the_drafting_table_post_incipit)
+ * wraps the opening text of the first post paragraph — up to and including
+ * the first punctuation mark — in <span class="post-incipit">. This gives
+ * a classical manuscript / broadsheet incipit treatment without a drop cap.
  *
- * p:first-of-type targets the first <p> in the content, so a leading
- * heading (e.g. a subtitle block) does not block the treatment.
+ * The span approach is used instead of ::first-line so the styled region
+ * is determined by sentence structure (first clause or phrase) rather than
+ * the accident of line-breaking at a particular viewport width.
  */
-.wp-block-post-content > p:first-of-type::first-line {
+.post-incipit {
 	font-family: var(--wp--preset--font-family--josefin);
 	font-size: 0.8em;
 	font-weight: 600;
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
 	color: var(--wp--preset--color--ink-light);
+}
+
+/* === Post Content: Paragraph Following H2 ===
+ *
+ * Reduce top margin on a paragraph that immediately follows an H2 heading
+ * to "Tiny" (0.5rem). The H2 is already compact at 0.8125rem; the default
+ * block gap between heading and the next paragraph is too generous and
+ * creates a visual disconnect.
+ */
+.wp-block-post-content .wp-block-heading + .wp-block-paragraph,
+.wp-block-post-content .wp-block-heading + p {
+	margin-top: var(--wp--preset--spacing--10); /* Tiny = 0.5rem */
 }
 
 /* === Comments: Caveat Handwriting Register ===
