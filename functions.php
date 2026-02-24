@@ -309,4 +309,18 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 }
 add_filter( 'render_block', 'the_drafting_table_featured_image_caption', 10, 3 );
 
-
+/**
+ * Output a noindex meta tag on paginated archive pages (page 2, 3, …).
+ *
+ * Paged archives contain no content that doesn't already appear on page 1
+ * of the archive, so noindexing them prevents duplicate-page dilution while
+ * still allowing the crawler to follow links and discover posts.
+ *
+ * Priority 1 places the tag early in <head>, before SEO plugin output.
+ */
+function the_drafting_table_noindex_paged() {
+	if ( is_paged() ) {
+		echo '<meta name="robots" content="noindex, follow">' . "\n";
+	}
+}
+add_action( 'wp_head', 'the_drafting_table_noindex_paged', 1 );
