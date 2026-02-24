@@ -284,9 +284,10 @@
             "h2": {
                 "typography": {
                     "fontFamily": "'Josefin Sans', 'Helvetica Neue', sans-serif",
-                    "fontWeight": "300",
-                    "fontSize": "1.5rem",
-                    "letterSpacing": "0.1em"
+                    "fontWeight": "600",
+                    "fontSize": "0.8125rem",
+                    "letterSpacing": "0.35em",
+                    "textTransform": "uppercase"
                 }
             },
             "h3": {
