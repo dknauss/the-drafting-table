@@ -68,6 +68,21 @@ body .wp-site-blocks::after {
 	pointer-events: none;
 }
 
+/* === H2 Heading: Josefin Sans Annotation Label ===
+ * theme.json elements.h2 outputs as :root :where(h2) — near-zero specificity.
+ * It cannot override the general elements.heading Bodoni rule. This explicit
+ * selector ensures h2 always renders as the small Josefin annotation label
+ * wherever headings appear within the site block wrapper.
+ */
+.wp-site-blocks h2 {
+	font-family: var(--wp--preset--font-family--josefin);
+	font-weight: 600;
+	font-size: 0.8125rem;
+	letter-spacing: 0.35em;
+	text-transform: uppercase;
+	line-height: 1.5;
+}
+
 /* === Blueprint Border Frames === */
 .blueprint-frame {
 	position: relative;
@@ -89,6 +104,23 @@ body .wp-site-blocks::after {
 	border: 1px solid var(--wp--custom--border-frame);
 	pointer-events: none;
 	z-index: 1;
+}
+
+/*
+ * Option A: Caption sits outside/below the blueprint border frame.
+ * When the featured image figure contains a <figcaption>, the auto height
+ * causes ::before / ::after to wrap the full figure including the caption.
+ * Override bottom + height so the frames stop just below the 600px image.
+ * (12px outer frame offset × 2 = 24px; 6px inner frame offset × 2 = 12px)
+ */
+.blueprint-frame:has(figcaption)::before {
+	bottom: auto;
+	height: calc(600px + 24px);
+}
+
+.blueprint-frame:has(figcaption)::after {
+	bottom: auto;
+	height: calc(600px + 12px);
 }
 
 /* === Image Vellum Overlay === */
@@ -639,6 +671,26 @@ body .wp-site-blocks::after {
 /* Hide "Last Updated" when modified date matches publish date */
 .meta-updated:has(.wp-block-post-date:empty) {
 	display: none;
+}
+
+/* === Post Meta Row Layout ===
+ * .meta-row is the inner flex group inside the post meta section.
+ * align-items:flex-start keeps each column's label anchored to the top
+ * regardless of content length in adjacent columns.
+ * flex-wrap:wrap overrides the block-level flexWrap:nowrap so columns
+ * gracefully reflow on narrow viewports.
+ * .meta-pair gives each column equal flex growth with a minimum width
+ * so author names and dates generally fit on a single line.
+ */
+.meta-row {
+	align-items: flex-start;
+	flex-wrap: wrap;
+	gap: 1.5rem;
+}
+
+.meta-pair {
+	flex: 1;
+	min-width: 7rem;
 }
 
 /* General cleanup
