@@ -741,6 +741,12 @@ body.single .wp-block-post-title {
 .wp-block-post-content > p:first-of-type {
 	font-size: 1.125rem;
 	line-height: 1.6;
+	/* Extra top margin creates clear breathing room between the featured
+	 * image / caption above and the opening paragraph. The featured image
+	 * group already contributes var(--wp--preset--spacing--40) below it;
+	 * this adds a further Extra Large (4rem) for a total visual gap of ~6.5rem,
+	 * which feels deliberate rather than accidental. */
+	margin-top: var(--wp--preset--spacing--50);
 	/* Hanging outdent: align the first line's left edge with the featured
 	 * image (860px container) rather than the narrower content column (720px).
 	 * The offset = (860 - 720) / 2 = 70px. At wide viewports (both containers
