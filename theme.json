@@ -213,6 +213,9 @@
                 "vw",
                 "%"
             ],
+            "spacingScale": {
+                "steps": 0
+            },
             "spacingSizes": [
                 {
                     "slug": "10",

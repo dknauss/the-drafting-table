@@ -407,15 +407,6 @@ body.single .wp-block-post-title {
 	border-color: var(--wp--custom--terra-tint);
 }
 
-/* Modified date "(upd. M j)" inside loop cards.
- * The block uses textColor:"ink-ghost" (#d5cfc6) which has only ~1.4:1
- * contrast against the parchment card background (#f5f0e8) — effectively
- * invisible. Bump to ink-faint (#706a64, ~4.4:1) to make it readable as
- * secondary metadata. Specificity 0-2-0 beats has-ink-ghost-color (0-1-0). */
-.journal-card .wp-block-post-date__modified-date {
-	color: var(--wp--preset--color--ink-faint);
-}
-
 /* === Principle Number Circle === */
 .principle-number {
 	width: 48px;
