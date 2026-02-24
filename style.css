@@ -69,14 +69,22 @@ body .wp-site-blocks::after {
 }
 
 /* === H1 and H2 Single-Post Overrides ===
- * H1 post titles are centred on single post pages (body.single).
+ * H1 post titles: centred, semi-bold (600) for better on-screen legibility.
+ * Bodoni's thin strokes at regular weight (400) can be lost on low-DPI
+ * screens; 600 adds enough mass to the strokes without disrupting the
+ * elegant thick-thin contrast.
+ *
  * H2 override: theme.json elements.h2 outputs as :root :where(h2) —
  * near-zero specificity — and cannot override the elements.heading Bodoni
  * rule. The explicit descendant selector wins over .has-bodoni-font-family
  * (specificity 0-1-0) and ensures h2 renders as the Josefin annotation label.
+ *
+ * H3 subheadings: bold (700) Bodoni for clear in-content section hierarchy —
+ * below the H2 annotation label but decisively above body text.
  */
 body.single .wp-block-post-title {
 	text-align: center;
+	font-weight: 600;
 }
 
 .wp-site-blocks h2 {
@@ -86,6 +94,10 @@ body.single .wp-block-post-title {
 	letter-spacing: 0.35em;
 	text-transform: uppercase;
 	line-height: 1.5;
+}
+
+.wp-site-blocks h3 {
+	font-weight: 700;
 }
 
 /* === Blueprint Border Frames === */
@@ -231,6 +243,31 @@ body.single .wp-block-post-title {
 .hero-emphasis i {
 	font-style: italic;
 	color: var(--wp--preset--color--terra);
+}
+
+/* === Separator Block ===
+ * Default: short centered rule (48px) — a quiet annotation divider, like
+ * a section break tick on a blueprint drawing. No decorative weight.
+ * Dots: WordPress core renders ··· via ::before content; suppress border-top.
+ * Wide: full content width for major chapter / topic breaks.
+ */
+.wp-block-separator {
+	border: none;
+	border-top: 1px solid var(--wp--preset--color--ink-ghost);
+	width: 48px;
+	margin-left: auto;
+	margin-right: auto;
+	opacity: 1;
+}
+
+.wp-block-separator.is-style-dots {
+	border-top: none; /* content rendered via ::before, not a border */
+	width: auto;
+}
+
+.wp-block-separator.is-style-wide {
+	width: 100%;
+	max-width: 100%;
 }
 
 /* === Drafting Divider Line === */
@@ -642,18 +679,6 @@ body.single .wp-block-post-title {
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
 	color: var(--wp--preset--color--ink-light);
-}
-
-/* === Post Content: Paragraph Following H2 ===
- *
- * Reduce top margin on a paragraph that immediately follows an H2 heading
- * to "Tiny" (0.5rem). The H2 is already compact at 0.8125rem; the default
- * block gap between heading and the next paragraph is too generous and
- * creates a visual disconnect.
- */
-.wp-block-post-content .wp-block-heading + .wp-block-paragraph,
-.wp-block-post-content .wp-block-heading + p {
-	margin-top: var(--wp--preset--spacing--10); /* Tiny = 0.5rem */
 }
 
 /* === Comments: Caveat Handwriting Register ===
