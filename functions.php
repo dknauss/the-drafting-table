@@ -307,24 +307,4 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 }
 add_filter( 'render_block', 'the_drafting_table_featured_image_caption', 10, 3 );
 
-if ( ! function_exists( 'the_drafting_table_enqueue_editor_assets' ) ) {
-	/**
-	 * Enqueues editor-only JavaScript assets.
-	 *
-	 * Loads the featured-image caption preview script so caption text from
-	 * the Media Library is visible in the block editor canvas alongside the
-	 * featured image block, giving authors visual confirmation without
-	 * requiring a front-end preview.
-	 */
-	function the_drafting_table_enqueue_editor_assets() {
-		wp_enqueue_script(
-			'the-drafting-table-editor',
-			get_stylesheet_directory_uri() . '/assets/js/editor.js',
-			array( 'wp-hooks', 'wp-compose', 'wp-data', 'wp-element' ),
-			wp_get_theme()->get( 'Version' ),
-			true
-		);
-	}
-}
-add_action( 'enqueue_block_editor_assets', 'the_drafting_table_enqueue_editor_assets' );
 
