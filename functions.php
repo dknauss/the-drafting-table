@@ -201,4 +201,90 @@ if ( ! function_exists( 'the_drafting_table_structured_data' ) ) {
 }
 add_action( 'wp_head', 'the_drafting_table_structured_data', 2 );
 
+if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
+	/**
+	 * Injects the attachment caption as a semantic <figcaption> inside the
+	 * featured image <figure> on single posts.
+	 *
+	 * Proper <figure>/<figcaption> nesting satisfies HTML5 semantics, search
+	 * engines, and screen readers (the caption is automatically associated with
+	 * the image by the browser). A str_replace on the closing tag is used
+	 * instead of a regex so there is nothing fragile to maintain over time.
+	 *
+	 * The function bails early if a native caption is already present so that
+	 * adding showCaption support to core/post-featured-image in a future
+	 * WordPress release will not produce duplicate captions.
+	 *
+	 * Caption text is set per-image in Media > Library > [image] > Caption.
+	 * The block editor preview of this caption is provided by the JS HOC in
+	 * assets/js/editor.js, loaded via the_drafting_table_enqueue_editor_assets().
+	 *
+	 * @param string $block_content Rendered block HTML.
+	 * @param array  $block         Block name and attributes.
+	 * @return string Modified block HTML with <figcaption> injected.
+	 */
+	function the_drafting_table_featured_image_caption( $block_content, $block ) {
+		if ( 'core/post-featured-image' !== $block['blockName'] ) {
+			return $block_content;
+		}
+
+		if ( ! is_singular( 'post' ) ) {
+			return $block_content;
+		}
+
+		// Bail if WordPress has already rendered a native caption (forward-compat).
+		if ( false !== strpos( $block_content, 'wp-element-caption' ) ) {
+			return $block_content;
+		}
+
+		$post_id  = get_the_ID();
+		$thumb_id = $post_id ? get_post_thumbnail_id( $post_id ) : 0;
+
+		if ( ! $thumb_id ) {
+			return $block_content;
+		}
+
+		$caption = wp_get_attachment_caption( $thumb_id );
+
+		if ( ! $caption || ! trim( wp_strip_all_tags( $caption ) ) ) {
+			return $block_content;
+		}
+
+		/*
+		 * Insert the figcaption immediately before the closing </figure> tag.
+		 * The block outputs exactly one <figure>, so str_replace is safe here.
+		 * wp_kses_post() allows links and inline formatting that attribution
+		 * captions commonly contain.
+		 */
+		return str_replace(
+			'</figure>',
+			'<figcaption class="wp-element-caption">'
+				. wp_kses_post( $caption )
+				. '</figcaption></figure>',
+			$block_content
+		);
+	}
+}
+add_filter( 'render_block', 'the_drafting_table_featured_image_caption', 10, 2 );
+
+if ( ! function_exists( 'the_drafting_table_enqueue_editor_assets' ) ) {
+	/**
+	 * Enqueues editor-only JavaScript assets.
+	 *
+	 * Loads the featured-image caption preview script so caption text from
+	 * the Media Library is visible in the block editor canvas alongside the
+	 * featured image block, giving authors visual confirmation without
+	 * requiring a front-end preview.
+	 */
+	function the_drafting_table_enqueue_editor_assets() {
+		wp_enqueue_script(
+			'the-drafting-table-editor',
+			get_stylesheet_directory_uri() . '/assets/js/editor.js',
+			array( 'wp-hooks', 'wp-compose', 'wp-data', 'wp-element' ),
+			wp_get_theme()->get( 'Version' ),
+			true
+		);
+	}
+}
+add_action( 'enqueue_block_editor_assets', 'the_drafting_table_enqueue_editor_assets' );
 

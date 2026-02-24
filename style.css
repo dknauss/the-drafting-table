@@ -491,15 +491,23 @@ body .wp-site-blocks::after {
 
 /* === Featured Image Caption === */
 /*
- * Styles the native <figcaption> rendered by core/post-featured-image when
- * showCaption is enabled in the block template. position: relative + z-index: 3
- * lifts the caption above the vellum ::after vignette overlay (z-index: 2) so
- * text is fully readable. The figure's existing margin-bottom provides spacing
- * below the image unit — no extra margin needed on the figcaption itself.
+ * Styles the <figcaption class="wp-element-caption"> injected inside the
+ * featured image <figure> by the render_block PHP filter in functions.php.
+ * The same rules apply in the block editor: style.css is loaded as an editor
+ * style, and the JS HOC in assets/js/editor.js appends a figcaption with the
+ * same class within the block's wrapper div.
  *
- * "Fig. N —" prefixes are authored in the Media Library caption field so the
- * label text is editable and translation-ready.
- * Caption body: Courier Prime, ink-faint — consistent with body annotation text.
+ * position: relative + z-index: 3 lifts the caption above the .vellum-overlay
+ * ::after vignette (z-index: 2) so text is fully legible. The figure's own
+ * margin-bottom already handles spacing below the image unit; no additional
+ * margin on the figcaption is needed.
+ *
+ * "Fig. N —" prefixes and attribution text are entered in the Media Library
+ * caption field, keeping the label editable, numberable, and translation-ready.
+ * wp_kses_post() (PHP) and caption.rendered (JS REST response) both preserve
+ * links and inline formatting for proper attribution markup.
+ *
+ * Caption: Courier Prime, ink-faint — consistent with annotation text.
  */
 .wp-block-post-featured-image figcaption {
 	position: relative;
