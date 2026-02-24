@@ -1,3 +1,5 @@
 .claude/
 .distignore
+.gitignore
+demo-content/
 node_modules/
