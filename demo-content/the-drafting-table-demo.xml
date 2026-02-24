@@ -17,13 +17,13 @@
  7. WordPress will then import each of the posts, pages, comments, categories, etc.
     contained in this file into your site.
 -->
-<!-- generator="WordPress/6.9.1" created="2026-02-24 09:11" -->
+<!-- generator="WordPress/6.9.1" created="2026-02-24 16:58" -->
 <rss version="2.0" xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wp="http://wordpress.org/export/1.2/">
   <channel>
 <title>The Drafting Table</title>
 <link>http://localhost:8881</link>
 <description>Calm, Clear, and Hand-Crafted Architectural Design</description>
-<pubDate>Tue, 24 Feb 2026 09:11:39 +0000</pubDate>
+<pubDate>Tue, 24 Feb 2026 16:58:35 +0000</pubDate>
 <language>en-US</language>
 <wp:wxr_version>1.2</wp:wxr_version>
 <wp:base_site_url>http://localhost:8881</wp:base_site_url>
@@ -153,7 +153,7 @@
   <category domain="category" nicename="material-studies"><![CDATA[Material Studies]]></category>
   <wp:postmeta>
     <wp:meta_key>_thumbnail_id</wp:meta_key>
-    <wp:meta_value><![CDATA[1994]]></wp:meta_value>
+    <wp:meta_value><![CDATA[2216]]></wp:meta_value>
   </wp:postmeta>
 </item>
 <item>
@@ -203,7 +203,7 @@
   <category domain="category" nicename="theory"><![CDATA[Theory]]></category>
   <wp:postmeta>
     <wp:meta_key>_thumbnail_id</wp:meta_key>
-    <wp:meta_value><![CDATA[2002]]></wp:meta_value>
+    <wp:meta_value><![CDATA[2214]]></wp:meta_value>
   </wp:postmeta>
 </item>
 <item>
@@ -384,7 +384,7 @@
   <category domain="category" nicename="site-visits"><![CDATA[Site Visits]]></category>
   <wp:postmeta>
     <wp:meta_key>_thumbnail_id</wp:meta_key>
-    <wp:meta_value><![CDATA[1996]]></wp:meta_value>
+    <wp:meta_value><![CDATA[2215]]></wp:meta_value>
   </wp:postmeta>
 </item>
 <item>
@@ -428,81 +428,7 @@
   <category domain="category" nicename="theory"><![CDATA[Theory]]></category>
   <wp:postmeta>
     <wp:meta_key>_thumbnail_id</wp:meta_key>
-    <wp:meta_value><![CDATA[123]]></wp:meta_value>
-  </wp:postmeta>
-</item>
-<item>
-  <title><![CDATA[Frank Lloyd Wright's Guggenheim Museum Dome]]></title>
-  <link>http://localhost:8881/2025/05/18/glass-transparency-dissolution-walls/14530603058_ec32868fa9_o/</link>
-  <pubDate>Mon, 23 Feb 2026 01:42:20 +0000</pubDate>
-  <dc:creator>admin</dc:creator>
-  <guid isPermaLink="false">http://localhost:8881/wp-content/uploads/2025/05/14530603058_ec32868fa9_o.jpg</guid>
-  <description/>
-  <content:encoded><![CDATA[Frank Lloyd Wright's Guggenheim Museum Dome]]></content:encoded>
-  <excerpt:encoded><![CDATA[“<a href="https://www.flickr.com/photos/59949757@N06/14530603058" title="Frank Lloyd Wright's Guggenheim Museum Dome">Frank Lloyd Wright's Guggenheim Museum Dome</a>” by <a href="https://www.flickr.com/photos/59949757@N06/">Michael  Tapp</a>, <a href="https://creativecommons.org/licenses/by-nc/2.0/deed.en" rel="license noopener noreferrer">CC BY-NC 2.0</a>]]></excerpt:encoded>
-  <wp:post_id>123</wp:post_id>
-  <wp:post_date>2026-02-23 01:42:20</wp:post_date>
-  <wp:post_date_gmt>2026-02-23 01:42:20</wp:post_date_gmt>
-  <wp:post_modified>2026-02-23 01:42:56</wp:post_modified>
-  <wp:post_modified_gmt>2026-02-23 01:42:56</wp:post_modified_gmt>
-  <wp:comment_status>open</wp:comment_status>
-  <wp:ping_status>closed</wp:ping_status>
-  <wp:post_name>14530603058_ec32868fa9_o</wp:post_name>
-  <wp:status>inherit</wp:status>
-  <wp:post_parent>17</wp:post_parent>
-  <wp:menu_order>0</wp:menu_order>
-  <wp:post_type>attachment</wp:post_type>
-  <wp:post_password/>
-  <wp:is_sticky>0</wp:is_sticky>
-  <wp:attachment_url>http://localhost:8881/wp-content/uploads/2025/05/14530603058_ec32868fa9_o-scaled.jpg</wp:attachment_url>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attached_file</wp:meta_key>
-    <wp:meta_value><![CDATA[2025/05/14530603058_ec32868fa9_o-scaled.jpg]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_metadata</wp:meta_key>
-    <wp:meta_value><![CDATA[a:7:{s:5:"width";i:2560;s:6:"height";i:1707;s:4:"file";s:43:"2025/05/14530603058_ec32868fa9_o-scaled.jpg";s:8:"filesize";i:481901;s:5:"sizes";a:6:{s:6:"medium";a:5:{s:4:"file";s:36:"14530603058_ec32868fa9_o-300x200.jpg";s:5:"width";i:300;s:6:"height";i:200;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:20518;}s:5:"large";a:5:{s:4:"file";s:37:"14530603058_ec32868fa9_o-1024x683.jpg";s:5:"width";i:1024;s:6:"height";i:683;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:130174;}s:9:"thumbnail";a:5:{s:4:"file";s:36:"14530603058_ec32868fa9_o-150x150.jpg";s:5:"width";i:150;s:6:"height";i:150;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:9812;}s:12:"medium_large";a:5:{s:4:"file";s:36:"14530603058_ec32868fa9_o-768x512.jpg";s:5:"width";i:768;s:6:"height";i:512;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:86544;}s:9:"1536x1536";a:5:{s:4:"file";s:38:"14530603058_ec32868fa9_o-1536x1024.jpg";s:5:"width";i:1536;s:6:"height";i:1024;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:228630;}s:9:"2048x2048";a:5:{s:4:"file";s:38:"14530603058_ec32868fa9_o-2048x1365.jpg";s:5:"width";i:2048;s:6:"height";i:1365;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:345341;}}s:10:"image_meta";a:12:{s:8:"aperture";s:3:"3.2";s:6:"credit";s:0:"";s:6:"camera";s:13:"Canon EOS 60D";s:7:"caption";s:0:"";s:17:"created_timestamp";s:10:"1400336796";s:9:"copyright";s:0:"";s:12:"focal_length";s:2:"24";s:3:"iso";s:3:"160";s:13:"shutter_speed";s:4:"0.02";s:5:"title";s:0:"";s:11:"orientation";s:1:"1";s:8:"keywords";a:0:{}}s:14:"original_image";s:28:"14530603058_ec32868fa9_o.jpg";}]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_image_alt</wp:meta_key>
-    <wp:meta_value><![CDATA[Frank Lloyd Wright's Guggenheim Museum Dome]]></wp:meta_value>
-  </wp:postmeta>
-</item>
-<item>
-  <title><![CDATA[Pseudo-ashlar]]></title>
-  <link>http://localhost:8881/2025/04/30/limestone-walls-memory-of-the-sea/dsc_1721/</link>
-  <pubDate>Mon, 23 Feb 2026 01:51:51 +0000</pubDate>
-  <dc:creator>admin</dc:creator>
-  <guid isPermaLink="false">http://localhost:8881/wp-content/uploads/2025/04/27382401373_5d20acee9f_o.jpg</guid>
-  <description/>
-  <content:encoded><![CDATA[The steps of the Aphrodite temple, rebuilt in the Roman period, reveal an improvisational system of anathyrosis, where a very narrow chisel was used to trim quickly the inner joint faces of the step blocks, and neatly dress the exterior where the blocks meet their (now-missing) neighbors. This pseudo-ashlar system is backed by small fieldstones embedded in mortar as an infilling that would have been concealed by the lost stylobate course above. Acropolis, Amathus.]]></content:encoded>
-  <excerpt:encoded><![CDATA[“<a href="https://www.flickr.com/photos/orientalizing/27382401373" title="Tooling">Tooling</a>” by <a href="https://www.flickr.com/photos/orientalizing/">orientalizing</a>, <a href="https://creativecommons.org/licenses/by-nc-nd/2.0/deed.en" rel="license noopener noreferrer">CC BY-NC-ND 2.0</a>]]></excerpt:encoded>
-  <wp:post_id>125</wp:post_id>
-  <wp:post_date>2026-02-23 01:51:51</wp:post_date>
-  <wp:post_date_gmt>2026-02-23 01:51:51</wp:post_date_gmt>
-  <wp:post_modified>2026-02-23 01:52:47</wp:post_modified>
-  <wp:post_modified_gmt>2026-02-23 01:52:47</wp:post_modified_gmt>
-  <wp:comment_status>open</wp:comment_status>
-  <wp:ping_status>closed</wp:ping_status>
-  <wp:post_name>dsc_1721</wp:post_name>
-  <wp:status>inherit</wp:status>
-  <wp:post_parent>16</wp:post_parent>
-  <wp:menu_order>0</wp:menu_order>
-  <wp:post_type>attachment</wp:post_type>
-  <wp:post_password/>
-  <wp:is_sticky>0</wp:is_sticky>
-  <wp:attachment_url>http://localhost:8881/wp-content/uploads/2025/04/27382401373_5d20acee9f_o-scaled.jpg</wp:attachment_url>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attached_file</wp:meta_key>
-    <wp:meta_value><![CDATA[2025/04/27382401373_5d20acee9f_o-scaled.jpg]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_metadata</wp:meta_key>
-    <wp:meta_value><![CDATA[a:7:{s:5:"width";i:2560;s:6:"height";i:1708;s:4:"file";s:43:"2025/04/27382401373_5d20acee9f_o-scaled.jpg";s:8:"filesize";i:1152844;s:5:"sizes";a:6:{s:6:"medium";a:5:{s:4:"file";s:36:"27382401373_5d20acee9f_o-300x200.jpg";s:5:"width";i:300;s:6:"height";i:200;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:21043;}s:5:"large";a:5:{s:4:"file";s:37:"27382401373_5d20acee9f_o-1024x683.jpg";s:5:"width";i:1024;s:6:"height";i:683;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:214713;}s:9:"thumbnail";a:5:{s:4:"file";s:36:"27382401373_5d20acee9f_o-150x150.jpg";s:5:"width";i:150;s:6:"height";i:150;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:8200;}s:12:"medium_large";a:5:{s:4:"file";s:36:"27382401373_5d20acee9f_o-768x512.jpg";s:5:"width";i:768;s:6:"height";i:512;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:123365;}s:9:"1536x1536";a:5:{s:4:"file";s:38:"27382401373_5d20acee9f_o-1536x1025.jpg";s:5:"width";i:1536;s:6:"height";i:1025;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:462025;}s:9:"2048x2048";a:5:{s:4:"file";s:38:"27382401373_5d20acee9f_o-2048x1367.jpg";s:5:"width";i:2048;s:6:"height";i:1367;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:780084;}}s:10:"image_meta";a:12:{s:8:"aperture";s:3:"7.1";s:6:"credit";s:17:"Philip Sapirstein";s:6:"camera";s:11:"NIKON D800E";s:7:"caption";s:0:"";s:17:"created_timestamp";s:10:"1450446089";s:9:"copyright";s:18:"Creative Commons 3";s:12:"focal_length";s:2:"25";s:3:"iso";s:3:"100";s:13:"shutter_speed";s:9:"0.0015625";s:5:"title";s:8:"DSC_1721";s:11:"orientation";s:1:"1";s:8:"keywords";a:12:{i:0;s:8:"Amathous";i:1;s:7:"Amathus";i:2;s:20:"Aphrodiate Sanctuary";i:3;s:19:"Archaeological Site";i:4;s:7:"Archaia";i:5;s:12:"Architecture";i:6;s:6:"Cyprus";i:7;s:5:"Roman";i:8;s:9:"Sanctuary";i:9;s:14:"Southern coast";i:10;s:15:"Temple of Venus";i:11;s:15:"Upper Sanctuary";}}s:14:"original_image";s:28:"27382401373_5d20acee9f_o.jpg";}]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_image_alt</wp:meta_key>
-    <wp:meta_value><![CDATA[Ashlar]]></wp:meta_value>
+    <wp:meta_value><![CDATA[2217]]></wp:meta_value>
   </wp:postmeta>
 </item>
 <item>
@@ -543,80 +469,6 @@
   </wp:postmeta>
 </item>
 <item>
-  <title><![CDATA[Millard Block]]></title>
-  <link>http://localhost:8881/2025/01/15/character-of-board-formed-concrete/33902031_9078d735d2_o/</link>
-  <pubDate>Mon, 23 Feb 2026 05:54:10 +0000</pubDate>
-  <dc:creator>admin</dc:creator>
-  <guid isPermaLink="false">http://localhost:8881/wp-content/uploads/2025/01/33902031_9078d735d2_o.jpg</guid>
-  <description/>
-  <content:encoded><![CDATA[Millard Block]]></content:encoded>
-  <excerpt:encoded><![CDATA[“<a href="https://www.flickr.com/photos/usonian/33902031" title="Millard Block">Millard Block</a>” by <a href="https://www.flickr.com/photos/usonian/">Andy Chase</a>, <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/deed.en" rel="license noopener noreferrer">CC BY-NC-SA 2.0</a>]]></excerpt:encoded>
-  <wp:post_id>1994</wp:post_id>
-  <wp:post_date>2026-02-23 05:54:10</wp:post_date>
-  <wp:post_date_gmt>2026-02-23 05:54:10</wp:post_date_gmt>
-  <wp:post_modified>2026-02-23 05:54:52</wp:post_modified>
-  <wp:post_modified_gmt>2026-02-23 05:54:52</wp:post_modified_gmt>
-  <wp:comment_status>open</wp:comment_status>
-  <wp:ping_status>closed</wp:ping_status>
-  <wp:post_name>33902031_9078d735d2_o</wp:post_name>
-  <wp:status>inherit</wp:status>
-  <wp:post_parent>10</wp:post_parent>
-  <wp:menu_order>0</wp:menu_order>
-  <wp:post_type>attachment</wp:post_type>
-  <wp:post_password/>
-  <wp:is_sticky>0</wp:is_sticky>
-  <wp:attachment_url>http://localhost:8881/wp-content/uploads/2025/01/33902031_9078d735d2_o.jpg</wp:attachment_url>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attached_file</wp:meta_key>
-    <wp:meta_value><![CDATA[2025/01/33902031_9078d735d2_o.jpg]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_metadata</wp:meta_key>
-    <wp:meta_value><![CDATA[a:6:{s:5:"width";i:933;s:6:"height";i:933;s:4:"file";s:33:"2025/01/33902031_9078d735d2_o.jpg";s:8:"filesize";i:361738;s:5:"sizes";a:3:{s:6:"medium";a:5:{s:4:"file";s:33:"33902031_9078d735d2_o-300x300.jpg";s:5:"width";i:300;s:6:"height";i:300;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:36013;}s:9:"thumbnail";a:5:{s:4:"file";s:33:"33902031_9078d735d2_o-150x150.jpg";s:5:"width";i:150;s:6:"height";i:150;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:8903;}s:12:"medium_large";a:5:{s:4:"file";s:33:"33902031_9078d735d2_o-768x768.jpg";s:5:"width";i:768;s:6:"height";i:768;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:189175;}}s:10:"image_meta";a:12:{s:8:"aperture";s:1:"0";s:6:"credit";s:0:"";s:6:"camera";s:0:"";s:7:"caption";s:0:"";s:17:"created_timestamp";s:1:"0";s:9:"copyright";s:0:"";s:12:"focal_length";s:1:"0";s:3:"iso";s:1:"0";s:13:"shutter_speed";s:1:"0";s:5:"title";s:0:"";s:11:"orientation";s:1:"1";s:8:"keywords";a:0:{}}}]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_image_alt</wp:meta_key>
-    <wp:meta_value><![CDATA[Millard Block]]></wp:meta_value>
-  </wp:postmeta>
-</item>
-<item>
-  <title><![CDATA[PA - Mill Run: Fallingwater - Dressing Room]]></title>
-  <link>http://localhost:8881/2025/04/30/limestone-walls-memory-of-the-sea/6043872752_2873000c12_o/</link>
-  <pubDate>Mon, 23 Feb 2026 05:55:46 +0000</pubDate>
-  <dc:creator>admin</dc:creator>
-  <guid isPermaLink="false">http://localhost:8881/wp-content/uploads/2025/04/6043872752_2873000c12_o.jpg</guid>
-  <description/>
-  <content:encoded><![CDATA[PA - Mill Run: Fallingwater - Dressing Room]]></content:encoded>
-  <excerpt:encoded><![CDATA[“<a href="https://www.flickr.com/photos/wallyg/6043872752" title="PA - Mill Run: Fallingwater - Dressing Room">PA - Mill Run: Fallingwater - Dressing Room</a>” by <a href="https://www.flickr.com/photos/wallyg/">Wally Gobetz</a>, <a href="https://creativecommons.org/licenses/by-nc-nd/2.0/deed.en" rel="license noopener noreferrer">CC BY-NC-ND 2.0</a>]]></excerpt:encoded>
-  <wp:post_id>1996</wp:post_id>
-  <wp:post_date>2026-02-23 05:55:46</wp:post_date>
-  <wp:post_date_gmt>2026-02-23 05:55:46</wp:post_date_gmt>
-  <wp:post_modified>2026-02-23 05:56:39</wp:post_modified>
-  <wp:post_modified_gmt>2026-02-23 05:56:39</wp:post_modified_gmt>
-  <wp:comment_status>open</wp:comment_status>
-  <wp:ping_status>closed</wp:ping_status>
-  <wp:post_name>6043872752_2873000c12_o</wp:post_name>
-  <wp:status>inherit</wp:status>
-  <wp:post_parent>16</wp:post_parent>
-  <wp:menu_order>0</wp:menu_order>
-  <wp:post_type>attachment</wp:post_type>
-  <wp:post_password/>
-  <wp:is_sticky>0</wp:is_sticky>
-  <wp:attachment_url>http://localhost:8881/wp-content/uploads/2025/04/6043872752_2873000c12_o-scaled.jpg</wp:attachment_url>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attached_file</wp:meta_key>
-    <wp:meta_value><![CDATA[2025/04/6043872752_2873000c12_o-scaled.jpg]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_metadata</wp:meta_key>
-    <wp:meta_value><![CDATA[a:7:{s:5:"width";i:1709;s:6:"height";i:2560;s:4:"file";s:42:"2025/04/6043872752_2873000c12_o-scaled.jpg";s:8:"filesize";i:738133;s:5:"sizes";a:6:{s:6:"medium";a:5:{s:4:"file";s:35:"6043872752_2873000c12_o-200x300.jpg";s:5:"width";i:200;s:6:"height";i:300;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:20916;}s:5:"large";a:5:{s:4:"file";s:36:"6043872752_2873000c12_o-683x1024.jpg";s:5:"width";i:683;s:6:"height";i:1024;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:167855;}s:9:"thumbnail";a:5:{s:4:"file";s:35:"6043872752_2873000c12_o-150x150.jpg";s:5:"width";i:150;s:6:"height";i:150;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:9123;}s:12:"medium_large";a:5:{s:4:"file";s:36:"6043872752_2873000c12_o-768x1151.jpg";s:5:"width";i:768;s:6:"height";i:1151;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:202668;}s:9:"1536x1536";a:5:{s:4:"file";s:37:"6043872752_2873000c12_o-1025x1536.jpg";s:5:"width";i:1025;s:6:"height";i:1536;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:325703;}s:9:"2048x2048";a:5:{s:4:"file";s:37:"6043872752_2873000c12_o-1367x2048.jpg";s:5:"width";i:1367;s:6:"height";i:2048;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:516215;}}s:10:"image_meta";a:12:{s:8:"aperture";s:3:"2.5";s:6:"credit";s:0:"";s:6:"camera";s:19:"Canon PowerShot S95";s:7:"caption";s:0:"";s:17:"created_timestamp";s:10:"1310376397";s:9:"copyright";s:0:"";s:12:"focal_length";s:1:"6";s:3:"iso";s:3:"100";s:13:"shutter_speed";s:17:"0.016666666666667";s:5:"title";s:0:"";s:11:"orientation";s:1:"0";s:8:"keywords";a:0:{}}s:14:"original_image";s:27:"6043872752_2873000c12_o.jpg";}]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_image_alt</wp:meta_key>
-    <wp:meta_value><![CDATA[PA - Mill Run: Fallingwater - Dressing Room]]></wp:meta_value>
-  </wp:postmeta>
-</item>
-<item>
   <title><![CDATA[Hand drawn hand drawing]]></title>
   <link>http://localhost:8881/2025/03/28/drawing-by-hand-digital-age/3967682030_6e9b2edecc_o/</link>
   <pubDate>Mon, 23 Feb 2026 05:58:47 +0000</pubDate>
@@ -651,43 +503,6 @@
   <wp:postmeta>
     <wp:meta_key>_wp_attachment_image_alt</wp:meta_key>
     <wp:meta_value><![CDATA[Hand drawn hand drawing]]></wp:meta_value>
-  </wp:postmeta>
-</item>
-<item>
-  <title><![CDATA[Cantilever]]></title>
-  <link>http://localhost:8881/2025/02/22/cantilever-as-architectural-gesture/6054741476_3a5e98c3e3_o/</link>
-  <pubDate>Mon, 23 Feb 2026 06:23:31 +0000</pubDate>
-  <dc:creator>admin</dc:creator>
-  <guid isPermaLink="false">http://localhost:8881/wp-content/uploads/2025/02/6054741476_3a5e98c3e3_o.jpg</guid>
-  <description/>
-  <content:encoded><![CDATA[The cantilevered terraces are key to the organization and experience of Fallingwater, uniting the indoor and outdoor space.]]></content:encoded>
-  <excerpt:encoded><![CDATA[“<a href="https://www.flickr.com/photos/wallyg/6054741476" title="PA - Mill Run: Fallingwater">PA - Mill Run: Fallingwater</a>” by <a href="https://www.flickr.com/photos/wallyg/">Wally Gobetz</a>, <a href="https://creativecommons.org/licenses/by-nc-nd/2.0/deed.en" rel="license noopener noreferrer">CC BY-NC-ND 2.0</a>]]></excerpt:encoded>
-  <wp:post_id>2002</wp:post_id>
-  <wp:post_date>2026-02-23 06:23:31</wp:post_date>
-  <wp:post_date_gmt>2026-02-23 06:23:31</wp:post_date_gmt>
-  <wp:post_modified>2026-02-23 06:24:22</wp:post_modified>
-  <wp:post_modified_gmt>2026-02-23 06:24:22</wp:post_modified_gmt>
-  <wp:comment_status>open</wp:comment_status>
-  <wp:ping_status>closed</wp:ping_status>
-  <wp:post_name>6054741476_3a5e98c3e3_o</wp:post_name>
-  <wp:status>inherit</wp:status>
-  <wp:post_parent>12</wp:post_parent>
-  <wp:menu_order>0</wp:menu_order>
-  <wp:post_type>attachment</wp:post_type>
-  <wp:post_password/>
-  <wp:is_sticky>0</wp:is_sticky>
-  <wp:attachment_url>http://localhost:8881/wp-content/uploads/2025/02/6054741476_3a5e98c3e3_o-scaled.jpg</wp:attachment_url>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attached_file</wp:meta_key>
-    <wp:meta_value><![CDATA[2025/02/6054741476_3a5e98c3e3_o-scaled.jpg]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_metadata</wp:meta_key>
-    <wp:meta_value><![CDATA[a:7:{s:5:"width";i:2560;s:6:"height";i:1709;s:4:"file";s:42:"2025/02/6054741476_3a5e98c3e3_o-scaled.jpg";s:8:"filesize";i:760182;s:5:"sizes";a:6:{s:6:"medium";a:5:{s:4:"file";s:35:"6054741476_3a5e98c3e3_o-300x200.jpg";s:5:"width";i:300;s:6:"height";i:200;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:19486;}s:5:"large";a:5:{s:4:"file";s:36:"6054741476_3a5e98c3e3_o-1024x684.jpg";s:5:"width";i:1024;s:6:"height";i:684;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:167968;}s:9:"thumbnail";a:5:{s:4:"file";s:35:"6054741476_3a5e98c3e3_o-150x150.jpg";s:5:"width";i:150;s:6:"height";i:150;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:7768;}s:12:"medium_large";a:5:{s:4:"file";s:35:"6054741476_3a5e98c3e3_o-768x513.jpg";s:5:"width";i:768;s:6:"height";i:513;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:101590;}s:9:"1536x1536";a:5:{s:4:"file";s:37:"6054741476_3a5e98c3e3_o-1536x1025.jpg";s:5:"width";i:1536;s:6:"height";i:1025;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:333807;}s:9:"2048x2048";a:5:{s:4:"file";s:37:"6054741476_3a5e98c3e3_o-2048x1367.jpg";s:5:"width";i:2048;s:6:"height";i:1367;s:9:"mime-type";s:10:"image/jpeg";s:8:"filesize";i:532768;}}s:10:"image_meta";a:12:{s:8:"aperture";s:1:"4";s:6:"credit";s:0:"";s:6:"camera";s:19:"Canon PowerShot S95";s:7:"caption";s:0:"";s:17:"created_timestamp";s:10:"1310376602";s:9:"copyright";s:0:"";s:12:"focal_length";s:1:"6";s:3:"iso";s:3:"160";s:13:"shutter_speed";s:17:"0.016666666666667";s:5:"title";s:0:"";s:11:"orientation";s:1:"0";s:8:"keywords";a:0:{}}s:14:"original_image";s:27:"6054741476_3a5e98c3e3_o.jpg";}]]></wp:meta_value>
-  </wp:postmeta>
-  <wp:postmeta>
-    <wp:meta_key>_wp_attachment_image_alt</wp:meta_key>
-    <wp:meta_value><![CDATA[PA - Mill Run: Fallingwater]]></wp:meta_value>
   </wp:postmeta>
 </item>
 <item>
