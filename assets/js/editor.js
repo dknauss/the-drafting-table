@@ -74,16 +74,20 @@
 					caption
 						? el(
 							'figcaption',
-							{
-								className: 'wp-element-caption',
-								/*
-								 * caption.rendered is WordPress-sanitized HTML
-								 * from the REST API — safe to inject directly.
-								 * dangerouslySetInnerHTML is the React idiom for
-								 * rendering server-trusted HTML strings.
-								 */
-								dangerouslySetInnerHTML: { __html: caption },
-							}
+							{ className: 'wp-element-caption' },
+							/*
+							 * "Fig. 1" label: real DOM element matching the PHP
+							 * filter output so the editor preview is identical
+							 * to the front end. Featured image is always Fig. 1.
+							 */
+							el( 'span', { className: 'featured-image-fig-label' }, 'Fig. 1' ),
+							/*
+							 * caption.rendered is WordPress-sanitized HTML from
+							 * the REST API. A wrapper span is needed because
+							 * React does not allow mixing children with
+							 * dangerouslySetInnerHTML on the same element.
+							 */
+							el( 'span', { dangerouslySetInnerHTML: { __html: caption } } )
 						  )
 						: null
 				);

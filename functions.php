@@ -278,6 +278,18 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 		}
 
 		/*
+		 * Build a "Fig. 1" label span. The featured image is always the first
+		 * figure on the single-post page, so the number is always 1.
+		 * Using a real DOM element (not a CSS ::before) keeps the label
+		 * readable by screen readers and translatable via the WP i18n API.
+		 */
+		$fig_label = sprintf(
+			'<span class="featured-image-fig-label">%s</span>',
+			/* translators: Figure number label prepended to the featured image caption. %d is the figure number. */
+			esc_html( sprintf( __( 'Fig. %d', 'the-drafting-table' ), 1 ) )
+		);
+
+		/*
 		 * Insert the figcaption immediately before the closing </figure> tag.
 		 * The block outputs exactly one <figure>, so str_replace is safe here.
 		 * wp_kses_post() allows links and inline formatting that attribution
@@ -286,6 +298,7 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 		return str_replace(
 			'</figure>',
 			'<figcaption class="wp-element-caption">'
+				. $fig_label
 				. wp_kses_post( $caption )
 				. '</figcaption></figure>',
 			$block_content

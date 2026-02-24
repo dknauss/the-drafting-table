@@ -513,12 +513,16 @@ body .wp-site-blocks::after {
  * margin-bottom already handles spacing below the image unit; no additional
  * margin on the figcaption is needed.
  *
- * "Fig. N —" prefixes and attribution text are entered in the Media Library
- * caption field, keeping the label editable, numberable, and translation-ready.
- * wp_kses_post() (PHP) and caption.rendered (JS REST response) both preserve
- * links and inline formatting for proper attribution markup.
+ * Structure (PHP and JS produce the same markup):
+ *   <figcaption class="wp-element-caption">
+ *     <span class="featured-image-fig-label">Fig. 1</span>
+ *     Attribution text with optional <a> links…
+ *   </figcaption>
  *
- * Caption: Courier Prime, ink-faint — consistent with annotation text.
+ * The label is a real DOM <span> — readable by screen readers, translatable
+ * via __() in functions.php, not CSS-only content. The featured image is
+ * always Fig. 1 on a single-post page.
+ * Caption body: Courier Prime, ink-faint — consistent with annotation text.
  */
 .wp-block-post-featured-image figcaption {
 	position: relative;
@@ -544,6 +548,18 @@ body .wp-site-blocks::after {
 .wp-block-post-featured-image figcaption a:hover {
 	color: var(--wp--preset--color--ink-light);
 	text-decoration-color: var(--wp--preset--color--ink-light);
+}
+
+.featured-image-fig-label {
+	display: block;
+	font-family: var(--wp--preset--font-family--josefin);
+	font-size: 0.5rem;
+	font-weight: 600;
+	letter-spacing: 0.35em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--terra);
+	opacity: 0.8;
+	margin-bottom: 0.375rem;
 }
 
 /* === Query Pagination Styling === */
