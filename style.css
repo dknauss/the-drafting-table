@@ -249,7 +249,8 @@ body.single .wp-block-post-title {
  * a section break tick on a blueprint drawing. No decorative weight.
  * Dots: WordPress core renders ··· via ::before content; suppress border-top.
  * Wide: full content width for major chapter / topic breaks.
- * X-large top/bottom margin (spacing|60) gives the break visual breathing room.
+ * Extra Large top/bottom margin (spacing|50 = 4rem) gives the break
+ * visual breathing room without over-separating compact sections.
  */
 .wp-block-separator {
 	border: none;
@@ -257,8 +258,8 @@ body.single .wp-block-post-title {
 	width: 48px;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: var(--wp--preset--spacing--60);
-	margin-bottom: var(--wp--preset--spacing--60);
+	margin-top: var(--wp--preset--spacing--50);
+	margin-bottom: var(--wp--preset--spacing--50);
 	opacity: 1;
 }
 
@@ -270,6 +271,85 @@ body.single .wp-block-post-title {
 .wp-block-separator.is-style-wide {
 	width: 100%;
 	max-width: 100%;
+}
+
+/* === Post Content: Blockquote ===
+ *
+ * The wp:quote block renders as <blockquote class="wp-block-quote">.
+ * A restrained left accent rule in ink-light marks the attributed register
+ * without competing with the body text. Courier Prime italic keeps the quote
+ * in the body font family — a subtle shift of voice, not a display treatment.
+ * Cite switches to Josefin Sans to match the annotation system used elsewhere.
+ * Extra Large vertical margins (spacing|50) match the separator breathing room.
+ */
+.wp-block-quote {
+	border-left: 2px solid var(--wp--preset--color--ink-light);
+	padding-inline-start: 2rem;
+	margin-top: var(--wp--preset--spacing--50);
+	margin-bottom: var(--wp--preset--spacing--50);
+}
+
+.wp-block-quote p {
+	font-style: italic;
+}
+
+.wp-block-quote cite {
+	display: block;
+	margin-top: 0.625rem;
+	font-family: var(--wp--preset--font-family--josefin);
+	font-size: 0.5625rem;
+	font-style: normal;
+	font-weight: 300;
+	letter-spacing: 0.4em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--ink-faint);
+}
+
+/* === Post Content: Pullquote ===
+ *
+ * The wp:pullquote block renders as <figure class="wp-block-pullquote">
+ * containing a <blockquote> with <p> and optional <cite>. Pullquotes are
+ * prominent mid-article display quotes: visually separated by thin horizontal
+ * rules, centered, and set in Bodoni italic — a deliberate shift into the
+ * display register, distinct from the body text and the inline blockquote.
+ * The <cite> uses the same Josefin annotation system as the blockquote.
+ */
+.wp-block-pullquote {
+	border-top: 1px solid var(--wp--preset--color--ink-ghost);
+	border-bottom: 1px solid var(--wp--preset--color--ink-ghost);
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+	margin-top: var(--wp--preset--spacing--50);
+	margin-bottom: var(--wp--preset--spacing--50);
+	text-align: center;
+}
+
+.wp-block-pullquote blockquote {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+.wp-block-pullquote p {
+	font-family: var(--wp--preset--font-family--bodoni);
+	font-style: italic;
+	font-size: 1.5rem;
+	font-weight: 400;
+	line-height: 1.35;
+	letter-spacing: 0.01em;
+	color: var(--wp--preset--color--ink);
+}
+
+.wp-block-pullquote cite {
+	display: block;
+	margin-top: 0.875rem;
+	font-family: var(--wp--preset--font-family--josefin);
+	font-size: 0.5625rem;
+	font-style: normal;
+	font-weight: 300;
+	letter-spacing: 0.4em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--ink-faint);
 }
 
 /* === Drafting Divider Line === */
@@ -661,6 +741,14 @@ body.single .wp-block-post-title {
 .wp-block-post-content > p:first-of-type {
 	font-size: 1.125rem;
 	line-height: 1.6;
+	/* Hanging outdent: align the first line's left edge with the featured
+	 * image (860px container) rather than the narrower content column (720px).
+	 * The offset = (860 - 720) / 2 = 70px. At wide viewports (both containers
+	 * at max-width) this is a fixed 70px. In the 784–924px range it transitions
+	 * smoothly via 50vw calc; below 784px both containers share the same 2rem
+	 * left edge so the indent is 0. text-indent avoids conflict with WordPress's
+	 * margin:auto !important on constrained layout children. */
+	text-indent: calc(-1 * clamp(0px, calc(50vw - 2rem - 360px), 70px));
 }
 
 /* === Post Content: Incipit Span ===
@@ -688,16 +776,20 @@ body.single .wp-block-post-title {
  * style.css is loaded as an editor style via add_editor_style() in
  * inc/styles.php. WordPress transforms every selector by prepending
  * .editor-styles-wrapper, so the rule below becomes:
- *   .editor-styles-wrapper .is-root-container > .wp-block:first-child
- *     .wp-block-paragraph::first-line
+ *   .editor-styles-wrapper .is-root-container > .wp-block-paragraph:first-child::first-line
  *
- * This gives a visual preview of the incipit treatment while editing.
- * Note: ::first-line stops at the rendered line break (viewport-dependent),
- * whereas the PHP span on the frontend stops at the first punctuation mark.
- * The editor approximation is intentionally looser — it conveys the style
- * without needing to replicate the exact span boundary.
+ * In Gutenberg the paragraph block renders as the <p> element itself carrying
+ * both .wp-block and .wp-block-paragraph — there is no inner wrapper div.
+ * Using a descendant combinator (".wp-block:first-child .wp-block-paragraph")
+ * would fail because both classes are on the same element. The corrected
+ * selector targets .wp-block-paragraph:first-child directly.
+ *
+ * Note: ::first-line stops at the rendered line break (viewport-dependent);
+ * the frontend PHP span stops at the first punctuation mark. The editor
+ * approximation is intentionally looser — it conveys the style without
+ * needing to replicate the exact span boundary.
  */
-.is-root-container > .wp-block:first-child .wp-block-paragraph::first-line {
+.is-root-container > .wp-block-paragraph:first-child::first-line {
 	font-family: var(--wp--preset--font-family--josefin);
 	font-size: 0.8em;
 	font-weight: 600;
