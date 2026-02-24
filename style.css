@@ -97,6 +97,17 @@ body .wp-site-blocks::after {
 	overflow: hidden;
 }
 
+/*
+ * When the block contains a <figcaption>, the fixed height on the <figure>
+ * (set via the block's height attribute) would clip the caption with
+ * overflow:hidden. Switch to overflow:visible so the figcaption is not
+ * clipped. The vignette ::after uses inset:0 so it never extends outside
+ * the figure regardless of overflow setting.
+ */
+.vellum-overlay:has(figcaption) {
+	overflow: visible;
+}
+
 .vellum-overlay::after {
 	content: "";
 	position: absolute;
