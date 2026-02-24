@@ -211,24 +211,52 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 	 * the image by the browser). A str_replace on the closing tag is used
 	 * instead of a regex so there is nothing fragile to maintain over time.
 	 *
+	 * FSE context notes:
+	 * - In FSE template rendering $GLOBALS['post'] holds the wp_template object,
+	 *   not the article, so get_the_ID() reliably returns the wrong value.
+	 *   The third render_block filter arg ($wp_block, added in WP 5.9) exposes
+	 *   the block's rendering context, which carries the correct postId.
+	 * - is_singular() is replaced by a queryId context check: when queryId is
+	 *   set the block is inside an archive query loop and should be skipped.
+	 *
 	 * The function bails early if a native caption is already present so that
-	 * adding showCaption support to core/post-featured-image in a future
-	 * WordPress release will not produce duplicate captions.
+	 * future WordPress showCaption support on core/post-featured-image will not
+	 * produce duplicate captions.
 	 *
 	 * Caption text is set per-image in Media > Library > [image] > Caption.
 	 * The block editor preview of this caption is provided by the JS HOC in
 	 * assets/js/editor.js, loaded via the_drafting_table_enqueue_editor_assets().
 	 *
-	 * @param string $block_content Rendered block HTML.
-	 * @param array  $block         Block name and attributes.
+	 * @param string        $block_content Rendered block HTML.
+	 * @param array         $block         Parsed block data (name, attrs, etc.).
+	 * @param WP_Block|null $wp_block      Block instance with rendering context (WP 5.9+).
 	 * @return string Modified block HTML with <figcaption> injected.
 	 */
-	function the_drafting_table_featured_image_caption( $block_content, $block ) {
+	function the_drafting_table_featured_image_caption( $block_content, $block, $wp_block = null ) {
 		if ( 'core/post-featured-image' !== $block['blockName'] ) {
 			return $block_content;
 		}
 
-		if ( ! is_singular( 'post' ) ) {
+		// Skip blocks inside archive query loops (queryId is set in that context).
+		if ( $wp_block instanceof WP_Block && ! empty( $wp_block->context['queryId'] ) ) {
+			return $block_content;
+		}
+
+		// Prefer the block's postId context over the global post (FSE-safe).
+		$post_id = ( $wp_block instanceof WP_Block && ! empty( $wp_block->context['postId'] ) )
+			? (int) $wp_block->context['postId']
+			: (int) get_the_ID();
+
+		if ( ! $post_id ) {
+			return $block_content;
+		}
+
+		// Only inject on standard posts, not pages or custom post types.
+		$post_type = ( $wp_block instanceof WP_Block && ! empty( $wp_block->context['postType'] ) )
+			? $wp_block->context['postType']
+			: get_post_type( $post_id );
+
+		if ( 'post' !== $post_type ) {
 			return $block_content;
 		}
 
@@ -237,8 +265,7 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 			return $block_content;
 		}
 
-		$post_id  = get_the_ID();
-		$thumb_id = $post_id ? get_post_thumbnail_id( $post_id ) : 0;
+		$thumb_id = get_post_thumbnail_id( $post_id );
 
 		if ( ! $thumb_id ) {
 			return $block_content;
@@ -265,7 +292,7 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 		);
 	}
 }
-add_filter( 'render_block', 'the_drafting_table_featured_image_caption', 10, 2 );
+add_filter( 'render_block', 'the_drafting_table_featured_image_caption', 10, 3 );
 
 if ( ! function_exists( 'the_drafting_table_enqueue_editor_assets' ) ) {
 	/**
