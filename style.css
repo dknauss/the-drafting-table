@@ -99,13 +99,24 @@ body .wp-site-blocks::after {
 
 /*
  * When the block contains a <figcaption>, the fixed height on the <figure>
- * (set via the block's height attribute) would clip the caption with
- * overflow:hidden. Switch to overflow:visible so the figcaption is not
- * clipped. The vignette ::after uses inset:0 so it never extends outside
- * the figure regardless of overflow setting.
+ * (set via the block's height attribute) would clip the caption and its
+ * layout height would cause the following content block to overlap the
+ * visually-overflowing caption. Fix: override height to auto so the figure
+ * expands to contain the caption in normal flow; pin the img itself to
+ * 600px with object-fit:cover to maintain the intended image height.
+ * The vignette ::after (inset:0) then covers the full auto height; since
+ * figcaption has z-index:3 it renders above the vignette (z-index:2).
  */
 .vellum-overlay:has(figcaption) {
 	overflow: visible;
+	height: auto !important;
+}
+
+.vellum-overlay:has(figcaption) img {
+	display: block;
+	width: 100%;
+	height: 600px;
+	object-fit: cover;
 }
 
 .vellum-overlay::after {
