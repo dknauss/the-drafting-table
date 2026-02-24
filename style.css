@@ -491,39 +491,30 @@ body .wp-site-blocks::after {
 
 /* === Featured Image Caption === */
 /*
- * Appears as a sibling <p> after the <figure.wp-block-post-featured-image>.
- * The figure's bottom margin is collapsed to 0.75rem by the render_block
- * filter, and this element carries the full spacing below the image unit.
+ * Styles the native <figcaption> rendered by core/post-featured-image when
+ * showCaption is enabled in the block template. position: relative + z-index: 3
+ * lifts the caption above the vellum ::after vignette overlay (z-index: 2) so
+ * text is fully readable. The figure's existing margin-bottom provides spacing
+ * below the image unit — no extra margin needed on the figcaption itself.
  *
- * "fig." label: Josefin Sans, terra cotta, tracked uppercase — mirrors the
- * sheet-annotation language used throughout the theme.
- * Caption body: Courier Prime, ink-faint — same as body annotation text.
+ * "Fig. N —" prefixes are authored in the Media Library caption field so the
+ * label text is editable and translation-ready.
+ * Caption body: Courier Prime, ink-faint — consistent with body annotation text.
  */
-.featured-image-caption {
+.wp-block-post-featured-image figcaption {
+	position: relative;
+	z-index: 3;
 	margin-top: 0;
-	margin-bottom: var(--wp--preset--spacing--40);
 	padding-top: 0.625rem;
 	border-top: 1px solid var(--wp--preset--color--ink-ghost);
 	font-family: var(--wp--preset--font-family--courier-prime);
 	font-size: 0.6875rem;
 	line-height: 1.6;
 	color: var(--wp--preset--color--ink-faint);
+	text-align: left;
 }
 
-.featured-image-caption::before {
-	content: "fig.";
-	display: block;
-	font-family: var(--wp--preset--font-family--josefin);
-	font-size: 0.5rem;
-	font-weight: 600;
-	letter-spacing: 0.35em;
-	text-transform: uppercase;
-	color: var(--wp--preset--color--terra);
-	opacity: 0.8;
-	margin-bottom: 0.375rem;
-}
-
-.featured-image-caption a {
+.wp-block-post-featured-image figcaption a {
 	color: inherit;
 	text-decoration: underline;
 	text-decoration-color: var(--wp--preset--color--ink-ghost);
@@ -531,7 +522,7 @@ body .wp-site-blocks::after {
 	transition: color 0.3s ease, text-decoration-color 0.3s ease;
 }
 
-.featured-image-caption a:hover {
+.wp-block-post-featured-image figcaption a:hover {
 	color: var(--wp--preset--color--ink-light);
 	text-decoration-color: var(--wp--preset--color--ink-light);
 }

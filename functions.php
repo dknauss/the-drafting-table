@@ -201,45 +201,4 @@ if ( ! function_exists( 'the_drafting_table_structured_data' ) ) {
 }
 add_action( 'wp_head', 'the_drafting_table_structured_data', 2 );
 
-if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
-	/**
-	 * Appends a styled figure caption below the featured image on single posts.
-	 *
-	 * Fires only when the featured image attachment has a caption set. Reduces
-	 * the block's bottom margin so the caption paragraph carries the spacing,
-	 * keeping the visual gap consistent whether a caption exists or not.
-	 *
-	 * @param string $block_content Rendered block HTML.
-	 * @param array  $block         Block name and attributes.
-	 * @return string Modified block HTML with caption appended.
-	 */
-	function the_drafting_table_featured_image_caption( $block_content, $block ) {
-		if ( 'core/post-featured-image' !== $block['blockName'] ) {
-			return $block_content;
-		}
-		if ( ! is_singular( 'post' ) ) {
-			return $block_content;
-		}
-		$post_id  = get_the_ID();
-		$thumb_id = $post_id ? get_post_thumbnail_id( $post_id ) : 0;
-		if ( ! $thumb_id ) {
-			return $block_content;
-		}
-		$caption = wp_get_attachment_caption( $thumb_id );
-		if ( ! $caption || ! trim( wp_strip_all_tags( $caption ) ) ) {
-			return $block_content;
-		}
-		// Hand the bottom spacing from the figure to the caption paragraph.
-		$block_content = preg_replace(
-			'/margin-bottom\s*:\s*var\(--wp--preset--spacing--40\)/',
-			'margin-bottom:0.75rem',
-			$block_content
-		);
-		return $block_content . "\n" . sprintf(
-			'<p class="featured-image-caption">%s</p>',
-			wp_kses_post( $caption )
-		);
-	}
-}
-add_filter( 'render_block', 'the_drafting_table_featured_image_caption', 10, 2 );
 
