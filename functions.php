@@ -237,8 +237,10 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 			return $block_content;
 		}
 
-		// Skip blocks inside archive query loops (queryId is set in that context).
-		if ( $wp_block instanceof WP_Block && ! empty( $wp_block->context['queryId'] ) ) {
+		// Only inject on single post pages. is_singular() checks the main
+		// WP_Query and is reliable in FSE; it returns false on archive,
+		// index, and search pages so loop cards are never affected.
+		if ( ! is_singular( 'post' ) ) {
 			return $block_content;
 		}
 
