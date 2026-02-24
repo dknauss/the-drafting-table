@@ -152,6 +152,23 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "fontFamily": "'Caveat', cursive",
+                    "slug": "caveat",
+                    "name": "Caveat",
+                    "fontFace": [
+                        {
+                            "fontFamily": "Caveat",
+                            "fontWeight": "400 700",
+                            "fontStyle": "normal",
+                            "fontDisplay": "swap",
+                            "src": [
+                                "file:./fonts/caveat-v23-latin-ext.woff2",
+                                "file:./fonts/caveat-v23-latin.woff2"
+                            ]
+                        }
+                    ]
                 }
             ],
             "fontSizes": [
@@ -243,7 +260,7 @@
         },
         "typography": {
             "fontFamily": "'Courier Prime', 'Courier New', monospace",
-            "fontSize": "1rem",
+            "fontSize": "1.0625rem",
             "lineHeight": "1.65"
         },
         "css": "body {-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;}",

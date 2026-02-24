@@ -553,7 +553,7 @@ body .wp-site-blocks::after {
 .featured-image-fig-label {
 	display: block;
 	font-family: var(--wp--preset--font-family--josefin);
-	font-size: 0.5rem;
+	font-size: 0.5625rem;
 	font-weight: 600;
 	letter-spacing: 0.35em;
 	text-transform: uppercase;
@@ -578,6 +578,26 @@ body .wp-site-blocks::after {
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
 	color: var(--wp--preset--color--ink-light);
+}
+
+/* === Comments: Caveat Handwriting Register ===
+ *
+ * The comments section shifts register from the precise drafting-table
+ * aesthetic to something more personal — like pencilled notes passed
+ * between collaborators. Caveat (handwriting) is used for:
+ *   1. The section heading ("N Comments") — set via the block attribute
+ *      fontFamily:"caveat" in single.html.
+ *   2. Comment author names — also via block attribute.
+ *   3. "Leave a Reply" — rendered by core as .comment-reply-title inside
+ *      .wp-block-post-comments-form; overridden here in CSS.
+ */
+.comment-reply-title {
+	font-family: var(--wp--preset--font-family--caveat);
+	font-size: 1.875rem;
+	font-weight: 400;
+	letter-spacing: 0;
+	line-height: 1.2;
+	color: var(--wp--preset--color--ink);
 }
 
 /* === Query Pagination Styling === */
