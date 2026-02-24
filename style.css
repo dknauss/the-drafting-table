@@ -1,0 +1,626 @@
+/*
+Theme Name: The Drafting Table
+Theme URI: https://wordpress.org/themes/the-drafting-table/
+Author: Dan Knauss
+Author URI: https://dan.knauss.ca
+Description: A Frank Lloyd Wright-era architect's notebook theme featuring aged parchment backgrounds, dot-grid overlays, blueprint-style borders, and refined architectural typography. Designed with the quiet reverence of a drafting table.
+Version: 0.3.1
+Requires at least: 6.4
+Tested up to: 6.9
+Requires PHP: 7.4
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: the-drafting-table
+Tags: block-patterns, blog, custom-colors, custom-logo, custom-menu, editor-style, featured-images, full-site-editing, one-column, portfolio, threaded-comments, translation-ready, wide-blocks
+*/
+
+/* === Site Logo === */
+/*
+ * Filter is driven by --wp--custom--logo-filter, defined in theme.json
+ * (default: none) and overridden per style variation. Charcoal Blueprint sets
+ * it to invert(1) so the dark-background logo reads as light.
+ * Using a custom property instead of styles.css in the variation JSON prevents
+ * WordPress from accumulating the rule in the DB-saved global styles record
+ * every time the variation is previewed in the Site Editor.
+ */
+.wp-block-site-logo img {
+	filter: var(--wp--custom--logo-filter, none);
+}
+
+/* === Drafting Paper Background Overlays === */
+/*
+ * WordPress global styles applies background-color only to body (not to
+ * .wp-site-blocks), so the transparent declaration below is purely defensive —
+ * it guards against future WordPress changes that might paint the wrapper
+ * and cover the fixed pseudo-element overlays at z-index:-1.
+ *
+ * Root cause of a previous bug: style variations that use styles.css in their
+ * JSON have that CSS appended to the DB-saved wp_global_styles post every time
+ * the variation is previewed. Always prefer settings.custom + var() over
+ * styles.css in variation files to keep the DB record clean.
+ */
+body .wp-site-blocks {
+	position: relative;
+	background-color: transparent;
+}
+
+body .wp-site-blocks::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: -1; /* Below all in-flow content; above the body background */
+	background-image:
+		radial-gradient(circle, var(--wp--custom--dot-grid, rgba(140, 130, 115, 0.22)) 0.8px, transparent 0.8px);
+	background-size: 24px 24px;
+	background-position: 12px 12px;
+	pointer-events: none;
+}
+
+body .wp-site-blocks::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: -1; /* Below all in-flow content; above the body background */
+	background-image:
+		linear-gradient(to right, var(--wp--custom--grid-line, rgba(160, 150, 135, 0.15)) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--wp--custom--grid-line, rgba(160, 150, 135, 0.15)) 1px, transparent 1px);
+	background-size: 120px 120px;
+	pointer-events: none;
+}
+
+/* === Blueprint Border Frames === */
+.blueprint-frame {
+	position: relative;
+}
+
+.blueprint-frame::before {
+	content: "";
+	position: absolute;
+	inset: -12px;
+	border: 1px solid var(--wp--custom--border-frame);
+	pointer-events: none;
+	z-index: 1;
+}
+
+.blueprint-frame::after {
+	content: "";
+	position: absolute;
+	inset: -6px;
+	border: 1px solid var(--wp--custom--border-frame);
+	pointer-events: none;
+	z-index: 1;
+}
+
+/* === Image Vellum Overlay === */
+.vellum-overlay {
+	position: relative;
+	overflow: hidden;
+}
+
+.vellum-overlay::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(ellipse at center, transparent 50%, var(--wp--custom--vellum-edge) 100%);
+	pointer-events: none;
+	z-index: 2;
+}
+
+.vellum-overlay img {
+	filter: sepia(0.35) saturate(0.7) contrast(0.9) brightness(1.02);
+	opacity: 0.88;
+}
+
+/* === Terra Cotta Decorative Rule === */
+.terra-rule::before {
+	content: "";
+	display: block;
+	width: 48px;
+	height: 2px;
+	background: var(--wp--preset--color--terra);
+	margin: 0 auto 1.5rem;
+	opacity: 0.6;
+}
+
+/* === Corner Registration Marks === */
+.corner-marks {
+	position: relative;
+}
+
+.corner-marks::before,
+.corner-marks::after {
+	content: "";
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	pointer-events: none;
+	z-index: 50;
+}
+
+.corner-marks::before {
+	top: 0;
+	left: 0;
+	border-top: 1px solid var(--wp--preset--color--ink-ghost);
+	border-left: 1px solid var(--wp--preset--color--ink-ghost);
+}
+
+.corner-marks::after {
+	top: 0;
+	right: 0;
+	border-top: 1px solid var(--wp--preset--color--ink-ghost);
+	border-right: 1px solid var(--wp--preset--color--ink-ghost);
+}
+
+/* === Annotation Label Styling === */
+.annotation-label {
+	font-family: "Josefin Sans", sans-serif;
+	font-weight: 600;
+	font-size: 0.5625rem;
+	letter-spacing: 0.35em;
+	text-transform: uppercase;
+}
+
+/* === Sheet Number Styling === */
+.sheet-number {
+	font-family: "Courier Prime", monospace;
+	font-size: 0.6875rem;
+	letter-spacing: 0.1em;
+}
+
+/* === Hero Title Emphasis === */
+.hero-emphasis em,
+.hero-emphasis i {
+	font-style: italic;
+	color: var(--wp--preset--color--terra);
+}
+
+/* === Drafting Divider Line === */
+.drafting-divider {
+	border: none;
+	border-top: 1px solid var(--wp--preset--color--ink-ghost);
+	position: relative;
+}
+
+.drafting-divider::after {
+	content: "";
+	position: absolute;
+	top: 3px;
+	left: 0;
+	right: 0;
+	border-top: 1px solid var(--wp--preset--color--ink-ghost);
+}
+
+/* === Section Annotation Row === */
+.annotation-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 2rem;
+	flex-wrap: wrap;
+}
+
+/* === Vertical Divider for Annotations === */
+.vertical-divider {
+	width: 1px !important;
+	min-height: 32px;
+	flex-shrink: 0;
+}
+
+/* === Journal Entry Card === */
+.journal-card {
+	position: relative;
+	transition: transform 0.3s ease;
+}
+
+.journal-card:hover {
+	transform: translateY(-2px);
+}
+
+.journal-card::before {
+	content: "";
+	position: absolute;
+	inset: -4px;
+	border: 1px solid var(--wp--custom--border-frame);
+	pointer-events: none;
+	transition: border-color 0.3s ease;
+}
+
+.journal-card:hover::before {
+	border-color: var(--wp--custom--terra-tint);
+}
+
+/* === Principle Number Circle === */
+.principle-number {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+/* === Equal Cards Layout === */
+.equal-cards > .wp-block-column {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 0;
+}
+
+.equal-cards > .wp-block-column > .wp-block-group {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+.equal-cards .cta-bottom {
+	margin-top: auto;
+	justify-content: center;
+}
+
+/* === Header Double Border === */
+.header-double-border {
+	position: relative;
+}
+
+.header-double-border::after {
+	content: "";
+	position: absolute;
+	bottom: -4px;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background: var(--wp--preset--color--ink-ghost);
+}
+
+/* === Side Text Decorations === */
+@media (min-width: 1200px) {
+
+	.side-text-left,
+	.side-text-right {
+		position: fixed;
+		z-index: 50;
+		font-family: "Josefin Sans", sans-serif;
+		font-weight: 300;
+		font-size: 0.5625rem;
+		letter-spacing: 0.4em;
+		text-transform: uppercase;
+		color: var(--wp--preset--color--ink-ghost);
+		writing-mode: vertical-lr;
+		pointer-events: none;
+	}
+
+	.side-text-left {
+		left: 28px;
+		top: 50%;
+		transform: translateY(-50%) rotate(180deg);
+	}
+
+	.side-text-right {
+		right: 28px;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+}
+
+@media (max-width: 1199px) {
+
+	.side-text-left,
+	.side-text-right {
+		display: none;
+	}
+}
+
+/* === Sticky Header === */
+/*
+ * The block editor wraps every template part in a .wp-block-template-part
+ * element. For position:sticky, the containing block is the *parent's content
+ * box* (same rule as static elements), NOT the nearest positioned ancestor.
+ * That means the inner .sticky-header block's containing block is this outer
+ * wrapper — which is only as tall as the header itself → zero sticky range.
+ *
+ * Fix: apply sticky to the *outer* .wp-block-template-part wrapper, which is
+ * a direct child of .wp-site-blocks (full-page height) so the sticky range
+ * spans the entire scroll distance.
+ */
+.wp-site-blocks > header.wp-block-template-part {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+/* === Admin Toolbar Offset ===
+ * WordPress adds .admin-bar to <body> when the toolbar is visible.
+ * Shift the sticky top so the header sits below the toolbar, not behind it.
+ * Heights match WordPress core: 32px fixed (>782px), 46px absolute (≤782px),
+ * hidden entirely (≤600px).
+ */
+.admin-bar .wp-site-blocks > header.wp-block-template-part {
+	top: 32px;
+}
+
+@media screen and (max-width: 782px) {
+	.admin-bar .wp-site-blocks > header.wp-block-template-part {
+		top: 46px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.admin-bar .wp-site-blocks > header.wp-block-template-part {
+		top: 0;
+	}
+}
+
+/* Keep position:sticky on the inner block so the block-editor position
+   setting is semantically honoured and the element still stacks correctly. */
+.sticky-header {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+/* === Footer Title Block Styling === */
+.title-block-border {
+	border: 1px solid var(--wp--custom--border-frame);
+	position: relative;
+}
+
+.title-block-border::before {
+	content: "";
+	position: absolute;
+	inset: 3px;
+	border: 1px solid var(--wp--custom--border-frame);
+	pointer-events: none;
+}
+
+/* === Entry animations === */
+@keyframes fadeInUp {
+
+	from {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fade-in-up {
+	animation: fadeInUp 0.8s ease forwards;
+}
+
+.fade-in-up-delay-1 {
+	animation: fadeInUp 0.8s ease 0.15s forwards;
+	opacity: 0;
+}
+
+.fade-in-up-delay-2 {
+	animation: fadeInUp 0.8s ease 0.3s forwards;
+	opacity: 0;
+}
+
+.fade-in-up-delay-3 {
+	animation: fadeInUp 0.8s ease 0.45s forwards;
+	opacity: 0;
+}
+
+/* === Archive Grid Card Styling === */
+.wp-block-post-template.is-layout-grid {
+	gap: 2rem;
+}
+
+.wp-block-post-template.is-layout-grid .journal-card {
+	height: 100%;
+}
+
+/* === Search Form Styling === */
+.wp-block-search .wp-block-search__inside-wrapper {
+	border-color: var(--wp--preset--color--ink-ghost);
+}
+
+.wp-block-search .wp-block-search__button {
+	font-family: "Josefin Sans", sans-serif;
+	font-weight: 300;
+	font-size: 0.6875rem;
+	letter-spacing: 0.3em;
+	text-transform: uppercase;
+	background: var(--wp--preset--color--ink);
+	color: var(--wp--preset--color--parchment);
+	border: 1px solid var(--wp--preset--color--ink);
+	transition: all 0.3s ease;
+}
+
+.wp-block-search .wp-block-search__button:hover {
+	background: var(--wp--preset--color--terra);
+	color: var(--wp--preset--color--parchment);
+	border-color: var(--wp--preset--color--terra);
+}
+
+.wp-block-search .wp-block-search__input {
+	font-family: "Courier Prime", monospace;
+	background: transparent;
+	color: var(--wp--preset--color--ink);
+	border-color: var(--wp--preset--color--ink-ghost);
+}
+
+.wp-block-search .wp-block-search__input::placeholder {
+	color: var(--wp--preset--color--ink-faint);
+}
+
+/* === Post Navigation Links === */
+.wp-block-post-navigation-link a {
+	font-family: "Courier Prime", monospace;
+	color: var(--wp--preset--color--terra);
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.wp-block-post-navigation-link a:hover {
+	color: var(--wp--preset--color--ink-light);
+}
+
+/* === Taxonomy Term Links === */
+.wp-block-post-terms a {
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.wp-block-post-terms a:hover {
+	color: var(--wp--preset--color--terra);
+}
+
+.taxonomy-category .wp-block-post-terms a,
+.wp-block-post-terms.has-terra-color a {
+	color: var(--wp--preset--color--terra);
+}
+
+.wp-block-post-terms.has-terra-color a:hover {
+	color: var(--wp--preset--color--ink-light);
+}
+
+.wp-block-post-terms.has-ink-faint-color a {
+	color: var(--wp--preset--color--ink-faint);
+}
+
+.wp-block-post-terms.has-ink-faint-color a:hover {
+	color: var(--wp--preset--color--terra);
+}
+
+
+/* === Query Pagination Styling === */
+.wp-block-query-pagination {
+	gap: 1rem;
+}
+
+.wp-block-query-pagination a,
+.wp-block-query-pagination .current {
+	font-family: "Courier Prime", monospace;
+}
+
+.wp-block-query-pagination .current {
+	color: var(--wp--preset--color--terra);
+}
+
+/* === Pattern-specific: Services top border accent === */
+.service-accent-top {
+	border-top: 2px solid var(--wp--preset--color--terra);
+}
+
+/* === Meta pair: hide label when dynamic block is empty === */
+.meta-pair:has(.wp-block-post-terms:empty),
+.meta-pair:has(.wp-block-post-author-name:empty) {
+	display: none;
+}
+
+/* Hide "Last Updated" when modified date matches publish date */
+.meta-updated:has(.wp-block-post-date:empty) {
+	display: none;
+}
+
+/* General cleanup
+ * Note: position:relative + z-index:1 is NOT used here. The fixed background
+ * overlays (::before / ::after) use z-index:-1 so in-flow content naturally
+ * paints above them. Applying position:relative to template-part wrappers
+ * would make them containing blocks and break position:sticky inside them.
+ */
+
+.wp-site-blocks > footer {
+	margin-block-start: 0;
+}
+
+/* === Link styling === */
+a {
+	transition: color 0.3s ease;
+}
+
+/* === Focus styles for WCAG 2.1 AA === */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible,
+.wp-block-button__link:focus-visible,
+.wp-block-navigation-link__content:focus-visible,
+.wp-block-search__button:focus-visible {
+	outline: 2px solid var(--wp--preset--color--terra);
+	outline-offset: 2px;
+}
+
+/* Ensure focus outline is visible on dark backgrounds */
+.has-parchment-dark-background-color a:focus-visible,
+.has-parchment-dark-background-color button:focus-visible {
+	outline-color: var(--wp--preset--color--terra);
+}
+
+/* === Skip link for accessibility === */
+.skip-link {
+	position: absolute;
+	top: -100px;
+	left: 0;
+	z-index: 999;
+	padding: 0.75rem 1.5rem;
+	background: var(--wp--preset--color--ink);
+	color: var(--wp--preset--color--parchment);
+	font-family: "Josefin Sans", sans-serif;
+	font-size: 0.875rem;
+	letter-spacing: 0.1em;
+	text-decoration: none;
+	border-bottom-right-radius: 4px;
+}
+
+.skip-link:focus {
+	top: 0;
+	outline: 2px solid var(--wp--preset--color--terra);
+	outline-offset: 2px;
+}
+
+/* === Reduced motion preference === */
+@media (prefers-reduced-motion: reduce) {
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+
+	.fade-in-up,
+	.fade-in-up-delay-1,
+	.fade-in-up-delay-2,
+	.fade-in-up-delay-3 {
+		opacity: 1;
+		animation: none;
+	}
+
+	.journal-card {
+		transition: none;
+	}
+}
+
+/* === Print styles === */
+@media print {
+
+	body .wp-site-blocks::before,
+	body .wp-site-blocks::after,
+	.side-text-left,
+	.side-text-right,
+	.sticky-header {
+		display: none;
+	}
+
+	.blueprint-frame::before,
+	.blueprint-frame::after {
+		display: none;
+	}
+
+	a[href]::after {
+		content: " (" attr(href) ")";
+		font-size: 0.75rem;
+		color: var(--wp--preset--color--ink-light);
+	}
+}

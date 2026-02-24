@@ -1,0 +1,130 @@
+{
+    "$schema": "https://schemas.wp.org/wp/6.6/theme.json",
+    "version": 3,
+    "title": "Drafting Blue",
+    "settings": {
+        "color": {
+            "palette": [
+                {
+                    "slug": "parchment",
+                    "color": "#eef2f6",
+                    "name": "Parchment"
+                },
+                {
+                    "slug": "parchment-dark",
+                    "color": "#dfe6ed",
+                    "name": "Parchment Dark"
+                },
+                {
+                    "slug": "ink",
+                    "color": "#1a2a3a",
+                    "name": "Ink"
+                },
+                {
+                    "slug": "ink-light",
+                    "color": "#4a6178",
+                    "name": "Ink Light"
+                },
+                {
+                    "slug": "ink-faint",
+                    "color": "#4e6980",
+                    "name": "Ink Faint"
+                },
+                {
+                    "slug": "ink-ghost",
+                    "color": "#c4d0dc",
+                    "name": "Ink Ghost"
+                },
+                {
+                    "slug": "terra",
+                    "color": "#2d5f8a",
+                    "name": "Terra Cotta"
+                },
+                {
+                    "slug": "terra-muted",
+                    "color": "#5a8ab5",
+                    "name": "Terra Muted"
+                },
+                {
+                    "slug": "charcoal",
+                    "color": "#1a2a3a",
+                    "name": "Charcoal"
+                },
+                {
+                    "slug": "white",
+                    "color": "#f8fafc",
+                    "name": "White"
+                }
+            ]
+        },
+        "custom": {
+            "borderLight": "rgba(196, 208, 220, 0.5)",
+            "borderFrame": "rgba(74, 97, 120, 0.15)",
+            "dotGrid": "rgba(100, 130, 160, 0.22)",
+            "gridLine": "rgba(120, 150, 180, 0.15)",
+            "vellumEdge": "rgba(238, 242, 246, 0.6)",
+            "terraTint": "rgba(45, 95, 138, 0.25)"
+        }
+    },
+    "styles": {
+        "color": {
+            "background": "var(--wp--preset--color--parchment)",
+            "text": "var(--wp--preset--color--ink)"
+        },
+        "elements": {
+            "heading": {
+                "color": {
+                    "text": "var(--wp--preset--color--ink)"
+                }
+            },
+            "link": {
+                "color": {
+                    "text": "var(--wp--preset--color--terra)"
+                },
+                ":hover": {
+                    "color": {
+                        "text": "var(--wp--preset--color--ink-light)"
+                    }
+                }
+            },
+            "button": {
+                "color": {
+                    "background": "transparent",
+                    "text": "var(--wp--preset--color--ink)"
+                },
+                "border": {
+                    "color": "var(--wp--preset--color--ink-ghost)"
+                },
+                ":hover": {
+                    "color": {
+                        "background": "var(--wp--preset--color--ink)",
+                        "text": "var(--wp--preset--color--parchment)"
+                    },
+                    "border": {
+                        "color": "var(--wp--preset--color--ink)"
+                    }
+                }
+            }
+        },
+        "blocks": {
+            "core/separator": {
+                "color": {
+                    "text": "var(--wp--preset--color--ink-ghost)"
+                },
+                "border": {
+                    "color": "var(--wp--preset--color--ink-ghost)"
+                }
+            },
+            "core/quote": {
+                "color": {
+                    "text": "var(--wp--preset--color--ink-light)"
+                },
+                "border": {
+                    "left": {
+                        "color": "var(--wp--preset--color--terra)"
+                    }
+                }
+            }
+        }
+    }
+}
