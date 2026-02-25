@@ -1,5 +1,9 @@
-.claude/
+# Files excluded from the production distribution zip
 .distignore
+.git
 .gitignore
+.planning/
 demo-content/
+run_themecheck.php
+*.log
 node_modules/

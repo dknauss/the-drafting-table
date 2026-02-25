@@ -246,6 +246,16 @@
                     "slug": "60",
                     "size": "6rem",
                     "name": "Huge"
+                },
+                {
+                    "slug": "70",
+                    "size": "9rem",
+                    "name": "Colossal"
+                },
+                {
+                    "slug": "80",
+                    "size": "12rem",
+                    "name": "Jumbo"
                 }
             ]
         },

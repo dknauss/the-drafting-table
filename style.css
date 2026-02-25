@@ -1,10 +1,10 @@
 /*
 Theme Name: The Drafting Table
-Theme URI: https://wordpress.org/themes/the-drafting-table/
+Theme URI: https://github.com/dpknauss/the-drafting-table
 Author: Dan Knauss
 Author URI: https://dan.knauss.ca
 Description: A Frank Lloyd Wright-era architect's notebook theme featuring aged parchment backgrounds, dot-grid overlays, blueprint-style borders, and refined architectural typography. Designed with the quiet reverence of a drafting table.
-Version: 0.3.1
+Version: 0.4.0
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -100,11 +100,14 @@ body.single .wp-block-post-title {
 }
 
 /* === Blueprint Border Frames === */
-.blueprint-frame {
+/* .is-style-blueprint-frame mirrors .blueprint-frame for register_block_style() */
+.blueprint-frame,
+.is-style-blueprint-frame {
 	position: relative;
 }
 
-.blueprint-frame::before {
+.blueprint-frame::before,
+.is-style-blueprint-frame::before {
 	content: "";
 	position: absolute;
 	inset: -12px;
@@ -113,7 +116,8 @@ body.single .wp-block-post-title {
 	z-index: 1;
 }
 
-.blueprint-frame::after {
+.blueprint-frame::after,
+.is-style-blueprint-frame::after {
 	content: "";
 	position: absolute;
 	inset: -6px;
@@ -129,18 +133,22 @@ body.single .wp-block-post-title {
  * Override bottom + height so the frames stop just below the 600px image.
  * (12px outer frame offset × 2 = 24px; 6px inner frame offset × 2 = 12px)
  */
-.blueprint-frame:has(figcaption)::before {
+.blueprint-frame:has(figcaption)::before,
+.is-style-blueprint-frame:has(figcaption)::before {
 	bottom: auto;
 	height: calc(600px + 24px);
 }
 
-.blueprint-frame:has(figcaption)::after {
+.blueprint-frame:has(figcaption)::after,
+.is-style-blueprint-frame:has(figcaption)::after {
 	bottom: auto;
 	height: calc(600px + 12px);
 }
 
 /* === Image Vellum Overlay === */
-.vellum-overlay {
+/* .is-style-vellum-overlay mirrors .vellum-overlay for register_block_style() */
+.vellum-overlay,
+.is-style-vellum-overlay {
 	position: relative;
 	overflow: hidden;
 }
@@ -155,19 +163,22 @@ body.single .wp-block-post-title {
  * The vignette ::after (inset:0) then covers the full auto height; since
  * figcaption has z-index:3 it renders above the vignette (z-index:2).
  */
-.vellum-overlay:has(figcaption) {
+.vellum-overlay:has(figcaption),
+.is-style-vellum-overlay:has(figcaption) {
 	overflow: visible;
 	height: auto !important;
 }
 
-.vellum-overlay:has(figcaption) img {
+.vellum-overlay:has(figcaption) img,
+.is-style-vellum-overlay:has(figcaption) img {
 	display: block;
 	width: 100%;
 	height: 600px;
 	object-fit: cover;
 }
 
-.vellum-overlay::after {
+.vellum-overlay::after,
+.is-style-vellum-overlay::after {
 	content: "";
 	position: absolute;
 	inset: 0;
@@ -176,7 +187,8 @@ body.single .wp-block-post-title {
 	z-index: 2;
 }
 
-.vellum-overlay img {
+.vellum-overlay img,
+.is-style-vellum-overlay img {
 	filter: sepia(0.35) saturate(0.7) contrast(0.9) brightness(1.02);
 	opacity: 0.88;
 }
@@ -416,6 +428,7 @@ body.single .wp-block-post-title {
 	align-items: center;
 	justify-content: center;
 	flex-shrink: 0;
+	border-color: var(--wp--custom--terra-tint) !important; /* overrides hardcoded inline hex; adapts per style variation */
 }
 
 /* === Equal Cards Layout === */

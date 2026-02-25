@@ -4,7 +4,7 @@ Tags: block-patterns, blog, custom-colors, custom-logo, custom-menu, editor-styl
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.3.1
+Stable tag: 0.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,23 @@ Yes. While the aesthetic is inspired by architectural drafting, the theme suits 
 Go to Appearance > Editor > Templates and select the template you want to edit. All content is editable directly in the Site Editor. You can also use the included patterns as starting points for your own pages.
 
 == Changelog ==
+
+= 0.4.0 =
+* Added static front-page template (hero, journal grid, principles strip, project studies)
+* Added Blog Home template (index/home with 3-col journal grid)
+* Added three new block patterns: Project Detail Header, Bio Card, Highlight Pull Quote (eleven total)
+* Added Principles page to demo installer with four numbered design principles
+* Added static front page / posts page reading settings to demo installer
+* Added font preload hints for four critical woff2 files (LCP improvement)
+* Added spacing scale tokens 70 (9rem) and 80 (12rem) for large section spacing
+* Fixed modified-date accent color to use textColor:terra so each style variation auto-adapts
+* Fixed footer template-part placement: moved outside </main> in front-page and home templates
+* Fixed all archive/tag/category/date/search templates: padding-top, grid layout, terra modified-date
+* Fixed principle-number border to adapt per style variation via CSS custom property
+* Refined style variation color palettes: deduplicated charcoal/ink in Drafting Blue and Sandstone Warm; corrected ink-faint distinction in Drafting Blue and Sandstone Warm; corrected terra-muted direction in Charcoal Blueprint
+* Improved Charcoal Blueprint logo filter: brightness(0) invert(1) reliably whites out any logo on dark background
+* Replaced screenshot with headless 1200x900 capture of default style front page
+* Code quality: phpcbf auto-fixed 468 formatting violations across all pattern files; 0 errors/warnings
 
 = 0.3.1 =
 * Fixed dot-grid and blueprint-line overlays hidden by accumulated styles.css in DB global styles record

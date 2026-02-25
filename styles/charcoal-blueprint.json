@@ -42,12 +42,12 @@
                 },
                 {
                     "slug": "terra-muted",
-                    "color": "#a86b55",
+                    "color": "#e09880",
                     "name": "Terra Muted"
                 },
                 {
                     "slug": "charcoal",
-                    "color": "#e8e3d8",
+                    "color": "#2a2825",
                     "name": "Charcoal"
                 },
                 {
@@ -64,7 +64,7 @@
             "gridLine": "rgba(80, 75, 68, 0.15)",
             "vellumEdge": "rgba(30, 29, 27, 0.6)",
             "terraTint": "rgba(212, 120, 94, 0.25)",
-            "logoFilter": "invert(1)"
+            "logoFilter": "brightness(0) invert(1)"
         }
     },
     "styles": {

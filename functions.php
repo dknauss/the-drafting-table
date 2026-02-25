@@ -59,6 +59,39 @@ if ( ! function_exists( 'the_drafting_table_register_patterns' ) ) {
 }
 add_action( 'init', 'the_drafting_table_register_patterns' );
 
+if ( ! function_exists( 'the_drafting_table_register_block_styles' ) ) {
+	/**
+	 * Registers custom block styles.
+	 *
+	 * Blueprint Frame: applies the double-border blueprint treatment to images.
+	 * Vellum Overlay: applies the sepia vellum overlay treatment to images.
+	 */
+	function the_drafting_table_register_block_styles() {
+		register_block_style(
+			'core/image',
+			array(
+				'name'  => 'blueprint-frame',
+				'label' => esc_html__( 'Blueprint Frame', 'the-drafting-table' ),
+			)
+		);
+		register_block_style(
+			'core/image',
+			array(
+				'name'  => 'vellum-overlay',
+				'label' => esc_html__( 'Vellum Overlay', 'the-drafting-table' ),
+			)
+		);
+		register_block_style(
+			'core/quote',
+			array(
+				'name'  => 'parchment',
+				'label' => esc_html__( 'Parchment', 'the-drafting-table' ),
+			)
+		);
+	}
+}
+add_action( 'init', 'the_drafting_table_register_block_styles' );
+
 if ( ! function_exists( 'the_drafting_table_hide_empty_meta' ) ) {
 	/**
 	 * Hides empty meta pair containers when dynamic block content is empty.
