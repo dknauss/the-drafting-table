@@ -31,3 +31,32 @@ if ( ! function_exists( 'the_drafting_table_enqueue_styles' ) ) {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'the_drafting_table_enqueue_styles' );
+
+if ( ! function_exists( 'the_drafting_table_preload_fonts' ) ) {
+	/**
+	 * Outputs <link rel="preload"> hints for the three critical woff2 font
+	 * files that affect LCP: Courier Prime regular (body text), Bodoni Moda
+	 * regular (headings), and Bodoni Moda italic (heading emphasis).
+	 *
+	 * WordPress does not automatically emit preload hints for fonts declared
+	 * in theme.json fontFamilies, so we add them manually here.
+	 *
+	 * @return void
+	 */
+	function the_drafting_table_preload_fonts() {
+		$fonts_url      = get_theme_file_uri( 'fonts/' );
+		$critical_fonts = array(
+			'courier-prime-v11-regular-latin.woff2',
+			'bodoni-moda-v28-latin.woff2',
+			'bodoni-moda-v28-italic-latin.woff2',
+			'josefin-sans-v34-latin.woff2',
+		);
+		foreach ( $critical_fonts as $font_file ) {
+			printf(
+				'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin="anonymous">' . "\n",
+				esc_url( $fonts_url . $font_file )
+			);
+		}
+	}
+}
+add_action( 'wp_head', 'the_drafting_table_preload_fonts', 2 );

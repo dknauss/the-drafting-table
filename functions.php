@@ -356,7 +356,7 @@ add_filter( 'the_content', 'the_drafting_table_post_incipit', 20 );
  */
 function the_drafting_table_noindex_paged() {
 	if ( is_paged() ) {
-		echo '<meta name="robots" content="noindex, follow">' . "\n";
+		echo '<meta name="robots" content="noindex, follow">' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static string, no user input
 	}
 }
 add_action( 'wp_head', 'the_drafting_table_noindex_paged', 1 );

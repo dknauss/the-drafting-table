@@ -24,7 +24,7 @@ The theme features:
 * Terra cotta accent color drawn from Wright's palette of earth and fire
 * Fade-in-up entry animations with reduced-motion support
 * Four style variations: Drafting Blue, Charcoal Blueprint, Sandstone Warm, Vellum
-* Seven block patterns: Hero, Portfolio Grid, Services Overview, Testimonial, Process Workflow, Contact Inquiry, Latest Journal Entries
+* Eleven block patterns: Hero, Portfolio Grid, Services Overview, Testimonial, Process Workflow, Contact Inquiry, Latest Journal Entries, Post Meta Row, Project Detail Header, Bio Card, Highlight Pull Quote
 * Custom page templates: About, Projects, Journal, Principles, Page (Wide), Page (No Title)
 * Threaded comments support
 * Accessibility: skip link, WCAG 2.1 AA focus styles, reduced-motion support, ARIA labels

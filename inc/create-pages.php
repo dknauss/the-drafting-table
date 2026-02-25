@@ -100,6 +100,7 @@ if ( ! function_exists( 'the_drafting_table_handle_install_demo' ) ) {
 
 		the_drafting_table_create_pages();
 		the_drafting_table_create_sample_posts();
+		the_drafting_table_configure_reading_settings();
 
 		update_option( 'the_drafting_table_demo_installed', '1' );
 		delete_option( 'the_drafting_table_demo_pending' );
@@ -138,6 +139,7 @@ if ( ! function_exists( 'the_drafting_table_demo_success_notice' ) ) {
 	 * @return void
 	 */
 	function the_drafting_table_demo_success_notice() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display flag set by our own nonce-verified install handler via wp_safe_redirect.
 		if ( empty( $_GET['the_drafting_table_demo'] ) || 'installed' !== $_GET['the_drafting_table_demo'] ) {
 			return;
 		}
@@ -157,9 +159,39 @@ add_action( 'admin_notices', 'the_drafting_table_demo_success_notice' );
 // Content creation — called only from the install handler above.
 // -------------------------------------------------------------------------
 
+if ( ! function_exists( 'the_drafting_table_configure_reading_settings' ) ) {
+	/**
+	 * Configures WordPress Reading Settings after demo content is installed.
+	 *
+	 * Sets the front page to a static page (activating front-page.html) and
+	 * sets the posts page to the Journal page (activating home.html for the
+	 * blog listing). Only runs if the pages were successfully created.
+	 *
+	 * @return void
+	 */
+	function the_drafting_table_configure_reading_settings() {
+		// Set a static front page so front-page.html template activates.
+		update_option( 'show_on_front', 'page' );
+
+		// Point "Front page" to About if no dedicated homepage page exists.
+		// The front-page.html template renders regardless of which page is
+		// designated — it is used whenever show_on_front = 'page'.
+		$front_page = get_page_by_path( 'about' );
+		if ( $front_page ) {
+			update_option( 'page_on_front', $front_page->ID );
+		}
+
+		// Point "Posts page" to Journal so home.html (Blog Home) activates.
+		$posts_page = get_page_by_path( 'journal' );
+		if ( $posts_page ) {
+			update_option( 'page_for_posts', $posts_page->ID );
+		}
+	}
+}
+
 if ( ! function_exists( 'the_drafting_table_create_pages' ) ) {
 	/**
-	 * Creates the About, Projects, and Journal starter pages.
+	 * Creates the About, Projects, Journal, and Principles starter pages.
 	 *
 	 * Skips any page whose slug already exists to prevent duplicates.
 	 *
@@ -172,24 +204,32 @@ if ( ! function_exists( 'the_drafting_table_create_pages' ) ) {
 				'slug'     => 'about',
 				'template' => 'page-about',
 				'content'  => '<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"courier-prime","style":{"typography":{"fontSize":"0.9375rem","lineHeight":"1.75"}}} -->' . "\n" .
-							  '<p class="has-ink-light-color has-text-color has-courier-prime-font-family" style="font-size:0.9375rem;line-height:1.75">The Drafting Table was founded in a converted carriage house on the outskirts of Madison, Wisconsin. From the beginning, our work has been guided by a single conviction: that architecture should serve the lives it shelters and honor the land upon which it stands.</p>' . "\n" .
-							  '<!-- /wp:paragraph -->',
+								'<p class="has-ink-light-color has-text-color has-courier-prime-font-family" style="font-size:0.9375rem;line-height:1.75">The Drafting Table was founded in a converted carriage house on the outskirts of Madison, Wisconsin. From the beginning, our work has been guided by a single conviction: that architecture should serve the lives it shelters and honor the land upon which it stands.</p>' . "\n" .
+								'<!-- /wp:paragraph -->',
 			),
 			array(
 				'title'    => 'Projects',
 				'slug'     => 'projects',
 				'template' => 'page-projects',
 				'content'  => '<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"courier-prime","style":{"typography":{"fontSize":"0.9375rem","lineHeight":"1.75"}}} -->' . "\n" .
-							  '<p class="has-ink-light-color has-text-color has-courier-prime-font-family" style="font-size:0.9375rem;line-height:1.75">Each project in our archive represents a unique conversation between client, site, and the possibilities of material and structure.</p>' . "\n" .
-							  '<!-- /wp:paragraph -->',
+								'<p class="has-ink-light-color has-text-color has-courier-prime-font-family" style="font-size:0.9375rem;line-height:1.75">Each project in our archive represents a unique conversation between client, site, and the possibilities of material and structure.</p>' . "\n" .
+								'<!-- /wp:paragraph -->',
 			),
 			array(
 				'title'    => 'Journal',
 				'slug'     => 'journal',
 				'template' => 'page-journal',
 				'content'  => '<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"courier-prime","style":{"typography":{"fontSize":"0.9375rem","lineHeight":"1.75"}}} -->' . "\n" .
-							  '<p class="has-ink-light-color has-text-color has-courier-prime-font-family" style="font-size:0.9375rem;line-height:1.75">The journal is where we think in public. Here you will find reflections on the design process, observations from site visits, and notes on materials and craft.</p>' . "\n" .
-							  '<!-- /wp:paragraph -->',
+								'<p class="has-ink-light-color has-text-color has-courier-prime-font-family" style="font-size:0.9375rem;line-height:1.75">The journal is where we think in public. Here you will find reflections on the design process, observations from site visits, and notes on materials and craft.</p>' . "\n" .
+								'<!-- /wp:paragraph -->',
+			),
+			array(
+				'title'    => 'Principles',
+				'slug'     => 'principles',
+				'template' => 'page-principles',
+				'content'  => '<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"courier-prime","style":{"typography":{"fontSize":"0.9375rem","lineHeight":"1.75"}}} -->' . "\n" .
+								'<p class="has-ink-light-color has-text-color has-courier-prime-font-family" style="font-size:0.9375rem;line-height:1.75">These are the convictions that guide our practice — not rules imposed from without, but principles discovered through the work itself. They are held lightly, revised willingly, and applied with care.</p>' . "\n" .
+								'<!-- /wp:paragraph -->',
 			),
 		);
 
