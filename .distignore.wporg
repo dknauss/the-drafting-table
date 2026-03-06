@@ -1,0 +1,9 @@
+# Extra exclusions for WordPress.org directory builds.
+.distignore.wporg
+companion-plugin/
+demo-content/
+dist/
+phpunit.xml.dist
+scripts/
+playwright-report/
+test-results/

@@ -5,9 +5,8 @@
  * @package The_Drafting_Table
  */
 
-require_once get_template_directory() . '/inc/styles.php';
-require_once get_template_directory() . '/inc/theme-assets-rewrite.php';
-require_once get_template_directory() . '/inc/create-pages.php';
+require_once __DIR__ . '/inc/styles.php';
+require_once __DIR__ . '/inc/theme-assets-rewrite.php';
 
 if ( ! function_exists( 'the_drafting_table_setup' ) ) {
 	/**
@@ -92,27 +91,79 @@ if ( ! function_exists( 'the_drafting_table_register_block_styles' ) ) {
 }
 add_action( 'init', 'the_drafting_table_register_block_styles' );
 
+if ( ! function_exists( 'the_drafting_table_get_featured_entry_post_id' ) ) {
+	/**
+	 * Returns the configured featured post ID for front-page hero treatment.
+	 *
+	 * @return int
+	 */
+	function the_drafting_table_get_featured_entry_post_id() {
+		$featured_ids = get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'meta_key'       => '_the_drafting_table_featured_entry',
+				'meta_value'     => '1',
+			)
+		);
+
+		return empty( $featured_ids ) ? 0 : (int) $featured_ids[0];
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_query_has_marker' ) ) {
+	/**
+	 * Checks query block attrs for a stable marker namespace or class token.
+	 *
+	 * @param WP_Block $block             Query block instance.
+	 * @param string   $namespace_marker  Expected namespace marker.
+	 * @param string   $class_marker      Expected class token.
+	 * @return bool
+	 */
+	function the_drafting_table_query_has_marker( $block, $namespace_marker, $class_marker ) {
+		$attrs        = ! empty( $block->parsed_block['attrs'] ) ? (array) $block->parsed_block['attrs'] : array();
+		$attr_ns      = ! empty( $attrs['namespace'] ) ? (string) $attrs['namespace'] : '';
+		$attr_classes = ! empty( $attrs['className'] ) ? (string) $attrs['className'] : '';
+
+		if ( $namespace_marker && $namespace_marker === $attr_ns ) {
+			return true;
+		}
+
+		if ( $class_marker && false !== strpos( $attr_classes, $class_marker ) ) {
+			return true;
+		}
+
+		return false;
+	}
+}
+
 if ( ! function_exists( 'the_drafting_table_filter_query_loop_vars' ) ) {
 	/**
-	 * Applies deterministic query-loop behavior for the front-page hero/feed.
+	 * Applies deterministic query-loop behavior for marked front-page loops.
 	 *
 	 * @param array<string, mixed> $query Parsed query vars from Query Loop.
 	 * @param WP_Block             $block Block instance for the loop.
 	 * @return array<string, mixed>
 	 */
 	function the_drafting_table_filter_query_loop_vars( $query, $block ) {
-		$query_id = ! empty( $block->parsed_block['attrs']['queryId'] )
-			? absint( $block->parsed_block['attrs']['queryId'] )
-			: 0;
+		$featured_post_id = the_drafting_table_get_featured_entry_post_id();
 
-		if ( ! $query_id ) {
-			return $query;
-		}
+		$is_hero_query       = the_drafting_table_query_has_marker(
+			$block,
+			'the-drafting-table/front-hero',
+			'is-the-drafting-table-front-hero'
+		);
+		$is_front_rail_query = the_drafting_table_query_has_marker(
+			$block,
+			'the-drafting-table/front-rail',
+			'is-the-drafting-table-front-rail'
+		);
 
-		$featured_post_id = the_drafting_table_get_demo_featured_post_id();
-
-		// Front-page hero: prioritize the explicitly marked featured demo post.
-		if ( 135 === $query_id ) {
+		if ( $is_hero_query && is_front_page() ) {
 			$query['post_type']           = 'post';
 			$query['posts_per_page']      = 1;
 			$query['ignore_sticky_posts'] = 1;
@@ -127,7 +178,7 @@ if ( ! function_exists( 'the_drafting_table_filter_query_loop_vars' ) ) {
 		}
 
 		// Front-page journal rail: avoid duplicating the hero post.
-		if ( 20 === $query_id && is_front_page() && $featured_post_id ) {
+		if ( $is_front_rail_query && is_front_page() && $featured_post_id ) {
 			$excluded_ids          = array_map( 'absint', (array) ( $query['post__not_in'] ?? array() ) );
 			$excluded_ids[]        = $featured_post_id;
 			$query['post__not_in'] = array_values( array_unique( $excluded_ids ) );
@@ -169,117 +220,6 @@ if ( ! function_exists( 'the_drafting_table_hide_empty_meta' ) ) {
 }
 add_filter( 'render_block_core/group', 'the_drafting_table_hide_empty_meta', 10, 2 );
 
-if ( ! function_exists( 'the_drafting_table_seo_meta' ) ) {
-	/**
-	 * Outputs SEO meta tags in the document head.
-	 */
-	function the_drafting_table_seo_meta() {
-		// Defer to dedicated SEO plugins to avoid duplicate meta descriptions.
-		if ( defined( 'WPSEO_VERSION' ) || defined( 'RANKMATH_VERSION' ) || defined( 'AIOSEO_VERSION' ) || class_exists( 'All_in_One_SEO_Pack' ) ) {
-			return;
-		}
-
-		if ( is_singular() ) {
-			$post = get_queried_object();
-			if ( $post && ! empty( $post->post_excerpt ) ) {
-				printf(
-					'<meta name="description" content="%s" />' . "\n",
-					esc_attr( wp_strip_all_tags( $post->post_excerpt ) )
-				);
-			} elseif ( $post && ! empty( $post->post_content ) ) {
-				$description = wp_trim_words( wp_strip_all_tags( $post->post_content ), 30, '...' );
-				printf(
-					'<meta name="description" content="%s" />' . "\n",
-					esc_attr( $description )
-				);
-			}
-		} elseif ( is_home() || is_front_page() ) {
-			$description = get_bloginfo( 'description', 'display' );
-			if ( $description ) {
-				printf(
-					'<meta name="description" content="%s" />' . "\n",
-					esc_attr( $description )
-				);
-			}
-		} elseif ( is_archive() ) {
-			$description = get_the_archive_description();
-			if ( $description ) {
-				printf(
-					'<meta name="description" content="%s" />' . "\n",
-					esc_attr( wp_strip_all_tags( $description ) )
-				);
-			}
-		}
-	}
-}
-add_action( 'wp_head', 'the_drafting_table_seo_meta', 1 );
-
-if ( ! function_exists( 'the_drafting_table_structured_data' ) ) {
-	/**
-	 * Outputs JSON-LD structured data for better SEO and AI/GEO discoverability.
-	 */
-	function the_drafting_table_structured_data() {
-		if ( is_front_page() || is_home() ) {
-			$data = array(
-				'@context' => 'https://schema.org',
-				'@type'    => 'WebSite',
-				'name'     => get_bloginfo( 'name' ),
-				'url'      => home_url( '/' ),
-			);
-
-			$description = get_bloginfo( 'description', 'display' );
-			if ( $description ) {
-				$data['description'] = $description;
-			}
-
-			$data['potentialAction'] = array(
-				'@type'       => 'SearchAction',
-				'target'      => home_url( '/?s={search_term_string}' ),
-				'query-input' => 'required name=search_term_string',
-			);
-
-			printf(
-				'<script type="application/ld+json">%s</script>' . "\n",
-				wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )
-			);
-		} elseif ( is_singular( 'post' ) ) {
-			$post = get_queried_object();
-
-			$data = array(
-				'@context'      => 'https://schema.org',
-				'@type'         => 'Article',
-				'headline'      => get_the_title( $post ),
-				'url'           => get_permalink( $post ),
-				'datePublished' => get_the_date( 'c', $post ),
-				'dateModified'  => get_the_modified_date( 'c', $post ),
-				'author'        => array(
-					'@type' => 'Person',
-					'name'  => get_the_author_meta( 'display_name', $post->post_author ),
-				),
-				'publisher'     => array(
-					'@type' => 'Organization',
-					'name'  => get_bloginfo( 'name' ),
-					'url'   => home_url( '/' ),
-				),
-			);
-
-			if ( has_post_thumbnail( $post ) ) {
-				$data['image'] = get_the_post_thumbnail_url( $post, 'full' );
-			}
-
-			if ( ! empty( $post->post_excerpt ) ) {
-				$data['description'] = wp_strip_all_tags( $post->post_excerpt );
-			}
-
-			printf(
-				'<script type="application/ld+json">%s</script>' . "\n",
-				wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )
-			);
-		}
-	}
-}
-add_action( 'wp_head', 'the_drafting_table_structured_data', 2 );
-
 if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 	/**
 	 * Injects the attachment caption as a semantic <figcaption> inside the
@@ -295,8 +235,8 @@ if ( ! function_exists( 'the_drafting_table_featured_image_caption' ) ) {
 	 *   not the article, so get_the_ID() reliably returns the wrong value.
 	 *   The third render_block filter arg ($wp_block, added in WP 5.9) exposes
 	 *   the block's rendering context, which carries the correct postId.
-	 * - is_singular() is replaced by a queryId context check: when queryId is
-	 *   set the block is inside an archive query loop and should be skipped.
+	 * - is_singular() gates output to singular post views only, so archive
+	 *   query loops are skipped without relying on brittle query IDs.
 	 *
 	 * The function bails early if a native caption is already present so that
 	 * future WordPress showCaption support on core/post-featured-image will not
@@ -423,19 +363,3 @@ function the_drafting_table_post_incipit( $content ) {
 	return $content;
 }
 add_filter( 'the_content', 'the_drafting_table_post_incipit', 20 );
-
-/**
- * Output a noindex meta tag on paginated archive pages (page 2, 3, …).
- *
- * Paged archives contain no content that doesn't already appear on page 1
- * of the archive, so noindexing them prevents duplicate-page dilution while
- * still allowing the crawler to follow links and discover posts.
- *
- * Priority 1 places the tag early in <head>, before SEO plugin output.
- */
-function the_drafting_table_noindex_paged() {
-	if ( is_paged() ) {
-		echo '<meta name="robots" content="noindex, follow">' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static string, no user input
-	}
-}
-add_action( 'wp_head', 'the_drafting_table_noindex_paged', 1 );
