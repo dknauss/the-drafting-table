@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200" role="img" aria-labelledby="title desc">
+  <title id="title">Glass Transparency Study</title>
+  <desc id="desc">A pavilion perspective showing a transparent wall opening to the landscape.</desc>
+  <rect width="1600" height="1200" fill="#f5f0e8"/>
+  <g fill="none" stroke="#d5cfc6" stroke-width="1">
+    <path d="M0 910h1600M0 990h1600"/>
+    <path d="M170 120l540 820M470 120l450 820M770 120l350 820M1070 120l250 820M1370 120l150 820"/>
+  </g>
+  <g fill="none" stroke="#2c2a26" stroke-width="8" stroke-linejoin="round">
+    <path d="M360 900V380l420-170 450 155v535"/>
+    <path d="M780 210v520"/>
+    <path d="M980 280v520"/>
+    <path d="M360 380l420 150 450-165"/>
+    <path d="M360 900h870"/>
+  </g>
+  <g fill="none" stroke="#5a5650" stroke-width="3">
+    <path d="M520 470v340M620 505v315M1080 455v365"/>
+    <path d="M1260 520c70 55 120 120 150 205"/>
+    <path d="M1015 320l235-85"/>
+  </g>
+  <g fill="#b5553d" font-family="'Courier Prime', monospace" font-size="42" letter-spacing="8">
+    <text x="180" y="150">DESIGN NOTE / GLASS AND TRANSPARENCY</text>
+  </g>
+  <g fill="#5a5650" font-family="'Josefin Sans', sans-serif" font-size="28" letter-spacing="6">
+    <text x="180" y="1030">DISSOLVED CORNER / CONTINUOUS HORIZON / FRAME WITHIN FRAME</text>
+  </g>
+</svg>

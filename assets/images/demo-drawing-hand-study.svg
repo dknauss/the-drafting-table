@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200" role="img" aria-labelledby="title desc">
+  <title id="title">Drawing Hand Study</title>
+  <desc id="desc">A notebook composition with a hand, pencil, and measured guide lines.</desc>
+  <rect width="1600" height="1200" fill="#f5f0e8"/>
+  <rect x="230" y="170" width="1140" height="860" fill="#ece5d8" stroke="#d5cfc6" stroke-width="3"/>
+  <g fill="none" stroke="#d5cfc6" stroke-width="1">
+    <path d="M280 280h1040M280 390h1040M280 500h1040M280 610h1040M280 720h1040M280 830h1040"/>
+  </g>
+  <g fill="none" stroke="#2c2a26" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M520 850c40-180 100-280 190-340 70-45 130-55 205-40 52 11 96 42 132 95 23 35 44 67 62 96"/>
+    <path d="M760 470c-14 74-29 149-42 223"/>
+    <path d="M1110 815l180-390"/>
+    <path d="M1180 665l90-25"/>
+    <path d="M1125 780l105 60"/>
+  </g>
+  <g fill="none" stroke="#5a5650" stroke-width="3">
+    <path d="M360 950h880"/>
+    <path d="M1180 665c22-82 45-155 75-220"/>
+    <path d="M650 335h330"/>
+    <path d="M650 335l-110 120"/>
+  </g>
+  <g fill="#b5553d" font-family="'Courier Prime', monospace" font-size="42" letter-spacing="8">
+    <text x="230" y="120">STUDIO NOTE / DRAWING BY HAND</text>
+  </g>
+  <g fill="#5a5650" font-family="'Josefin Sans', sans-serif" font-size="28" letter-spacing="6">
+    <text x="230" y="1090">THINKING HAND / PENCIL WEIGHT / PRODUCTIVE IMPRECISION</text>
+  </g>
+</svg>

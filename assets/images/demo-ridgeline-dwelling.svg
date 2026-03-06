@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200" role="img" aria-labelledby="title desc">
+  <title id="title">Ridgeline Dwelling Study</title>
+  <desc id="desc">A hillside residence rendered as an architectural line drawing with sunrise annotations.</desc>
+  <rect width="1600" height="1200" fill="#f5f0e8"/>
+  <circle cx="1210" cy="240" r="110" fill="#ece5d8" stroke="#b5553d" stroke-width="4"/>
+  <g fill="none" stroke="#d5cfc6" stroke-width="1">
+    <path d="M0 930C220 830 420 880 620 790s390-40 530-120 290-120 450-90"/>
+    <path d="M0 1010c250-40 450-10 620-70s260-160 450-150 340 80 530 40"/>
+    <path d="M0 1090c260-30 470 30 690-20s330-110 510-110 250 50 400 20"/>
+  </g>
+  <g fill="none" stroke="#2c2a26" stroke-width="8" stroke-linecap="square">
+    <path d="M390 805h520"/>
+    <path d="M470 805V610h230"/>
+    <path d="M700 610h310l90 65"/>
+    <path d="M1065 740h140"/>
+    <path d="M560 675h250"/>
+    <path d="M560 735h210"/>
+  </g>
+  <g fill="none" stroke="#5a5650" stroke-width="3">
+    <path d="M350 835h610"/>
+    <path d="M1040 740l120-170"/>
+    <path d="M1180 260l-90 170"/>
+    <path d="M1250 300l-165 90"/>
+  </g>
+  <g fill="#b5553d" font-family="'Courier Prime', monospace" font-size="42" letter-spacing="8">
+    <text x="210" y="150">SITE VISIT / RIDGELINE DWELLING</text>
+  </g>
+  <g fill="#5a5650" font-family="'Josefin Sans', sans-serif" font-size="28" letter-spacing="6">
+    <text x="210" y="1030">EAST LIGHT / OAK GROVE WINDBREAK / CANTILEVERED EAVE</text>
+  </g>
+</svg>

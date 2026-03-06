@@ -98,12 +98,22 @@ if ( ! function_exists( 'the_drafting_table_handle_install_demo' ) ) {
 
 		check_admin_referer( 'the_drafting_table_install_demo' );
 
-		the_drafting_table_create_pages();
-		the_drafting_table_create_sample_posts();
-		the_drafting_table_configure_reading_settings();
+		$install_result = the_drafting_table_install_demo_content();
+
+		if ( is_wp_error( $install_result ) ) {
+			update_option( 'the_drafting_table_demo_pending', '1' );
+			set_transient(
+				'the_drafting_table_demo_install_issues',
+				(array) $install_result->get_error_data( 'the_drafting_table_demo_install_failed' ),
+				10 * MINUTE_IN_SECONDS
+			);
+			wp_safe_redirect( admin_url( 'themes.php?the_drafting_table_demo=failed' ) );
+			exit;
+		}
 
 		update_option( 'the_drafting_table_demo_installed', '1' );
 		delete_option( 'the_drafting_table_demo_pending' );
+		delete_transient( 'the_drafting_table_demo_install_issues' );
 
 		wp_safe_redirect( admin_url( 'themes.php?the_drafting_table_demo=installed' ) );
 		exit;
@@ -155,6 +165,39 @@ if ( ! function_exists( 'the_drafting_table_demo_success_notice' ) ) {
 }
 add_action( 'admin_notices', 'the_drafting_table_demo_success_notice' );
 
+if ( ! function_exists( 'the_drafting_table_demo_failure_notice' ) ) {
+	/**
+	 * Show an actionable error notice when demo installation is incomplete.
+	 *
+	 * @return void
+	 */
+	function the_drafting_table_demo_failure_notice() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display flag set by our own nonce-verified install handler via wp_safe_redirect.
+		if ( empty( $_GET['the_drafting_table_demo'] ) || 'failed' !== $_GET['the_drafting_table_demo'] ) {
+			return;
+		}
+
+		$issues = get_transient( 'the_drafting_table_demo_install_issues' );
+		$issues = is_array( $issues ) ? $issues : array();
+		?>
+		<div class="notice notice-error">
+			<p>
+				<strong><?php esc_html_e( 'Demo content was only partially installed.', 'the-drafting-table' ); ?></strong>
+				<?php esc_html_e( 'Please resolve the issues below and run the installer again.', 'the-drafting-table' ); ?>
+			</p>
+			<?php if ( ! empty( $issues ) ) : ?>
+				<ul style="margin-left:1.25em;list-style:disc;">
+					<?php foreach ( $issues as $issue ) : ?>
+						<li><?php echo esc_html( $issue ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+}
+add_action( 'admin_notices', 'the_drafting_table_demo_failure_notice' );
+
 // -------------------------------------------------------------------------
 // Content creation — called only from the install handler above.
 // -------------------------------------------------------------------------
@@ -165,27 +208,393 @@ if ( ! function_exists( 'the_drafting_table_configure_reading_settings' ) ) {
 	 *
 	 * Sets the front page to a static page (activating front-page.html) and
 	 * sets the posts page to the Journal page (activating home.html for the
-	 * blog listing). Only runs if the pages were successfully created.
+	 * blog listing). Uses installer-created page IDs when available and falls
+	 * back to slug lookups for idempotent reruns.
 	 *
-	 * @return void
+	 * @param array<string, int> $page_ids Created page IDs keyed by slug.
+	 * @return bool True when both required pages could be mapped.
 	 */
-	function the_drafting_table_configure_reading_settings() {
+	function the_drafting_table_configure_reading_settings( $page_ids = array() ) {
 		// Set a static front page so front-page.html template activates.
 		update_option( 'show_on_front', 'page' );
 
 		// Point "Front page" to About if no dedicated homepage page exists.
 		// The front-page.html template renders regardless of which page is
 		// designated — it is used whenever show_on_front = 'page'.
-		$front_page = get_page_by_path( 'about' );
-		if ( $front_page ) {
-			update_option( 'page_on_front', $front_page->ID );
+		$front_page_id = ! empty( $page_ids['about'] ) ? absint( $page_ids['about'] ) : 0;
+		if ( ! $front_page_id ) {
+			$front_page = get_page_by_path( 'about' );
+			if ( $front_page ) {
+				$front_page_id = (int) $front_page->ID;
+			}
+		}
+		if ( $front_page_id ) {
+			update_option( 'page_on_front', $front_page_id );
 		}
 
 		// Point "Posts page" to Journal so home.html (Blog Home) activates.
-		$posts_page = get_page_by_path( 'journal' );
-		if ( $posts_page ) {
-			update_option( 'page_for_posts', $posts_page->ID );
+		$posts_page_id = ! empty( $page_ids['journal'] ) ? absint( $page_ids['journal'] ) : 0;
+		if ( ! $posts_page_id ) {
+			$posts_page = get_page_by_path( 'journal' );
+			if ( $posts_page ) {
+				$posts_page_id = (int) $posts_page->ID;
+			}
 		}
+		if ( $posts_page_id ) {
+			update_option( 'page_for_posts', $posts_page_id );
+		}
+
+		return (bool) ( $front_page_id && $posts_page_id );
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_install_demo_content' ) ) {
+	/**
+	 * Runs demo installation and returns a success payload or WP_Error.
+	 *
+	 * @return array<string, mixed>|WP_Error
+	 */
+	function the_drafting_table_install_demo_content() {
+		$page_ids = the_drafting_table_create_pages();
+		$post_ids = the_drafting_table_create_sample_posts();
+		$issues   = array();
+
+		foreach ( array( 'about', 'journal' ) as $required_page_slug ) {
+			if ( empty( $page_ids[ $required_page_slug ] ) ) {
+				/* translators: %s: required page slug. */
+				$issues[] = sprintf( __( 'Could not create or find the required "%s" page.', 'the-drafting-table' ), $required_page_slug );
+			}
+		}
+
+		$logo_id = the_drafting_table_install_demo_branding();
+		if ( ! $logo_id ) {
+			$issues[] = __( 'Could not import the bundled site logo.', 'the-drafting-table' );
+		}
+
+		$media_result = the_drafting_table_assign_demo_media( $post_ids );
+		if ( ! empty( $media_result['missing_posts'] ) ) {
+			$issues[] = __( 'One or more demo posts are missing, so featured images were not fully assigned.', 'the-drafting-table' );
+		}
+		if ( ! empty( $media_result['failed_assets'] ) ) {
+			$issues[] = __( 'One or more bundled images failed to import into the Media Library.', 'the-drafting-table' );
+		}
+
+		if ( ! the_drafting_table_mark_demo_featured_post( $post_ids ) ) {
+			$issues[] = __( 'Could not mark the featured demo journal entry.', 'the-drafting-table' );
+		}
+
+		if ( ! the_drafting_table_configure_reading_settings( $page_ids ) ) {
+			$issues[] = __( 'Could not set the front page and posts page reading settings.', 'the-drafting-table' );
+		}
+
+		if ( ! empty( $issues ) ) {
+			return new WP_Error(
+				'the_drafting_table_demo_install_failed',
+				__( 'The demo installer completed with errors.', 'the-drafting-table' ),
+				$issues
+			);
+		}
+
+		return array(
+			'page_ids' => $page_ids,
+			'post_ids' => $post_ids,
+			'logo_id'  => $logo_id,
+		);
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_get_demo_asset_definitions' ) ) {
+	/**
+	 * Returns the bundled placeholder assets used by the demo installer.
+	 *
+	 * @return array<string, array<string, mixed>>
+	 */
+	function the_drafting_table_get_demo_asset_definitions() {
+		return array(
+			'fallingwater-logo'        => array(
+				'file'   => 'assets/images/fallingwater-logo.svg',
+				'title'  => 'The Drafting Table Logo',
+				'alt'    => 'Fallingwater-inspired site logo',
+				'mime'   => 'image/svg+xml',
+				'width'  => 500,
+				'height' => 500,
+			),
+			'board-formed-concrete'    => array(
+				'file'   => 'assets/images/demo-board-formed-concrete.svg',
+				'title'  => 'Board-Formed Concrete Study',
+				'alt'    => 'Board-formed concrete elevation study',
+				'mime'   => 'image/svg+xml',
+				'width'  => 1600,
+				'height' => 1200,
+			),
+			'ridgeline-dwelling'       => array(
+				'file'   => 'assets/images/demo-ridgeline-dwelling.svg',
+				'title'  => 'Ridgeline Dwelling Study',
+				'alt'    => 'Hillside residence study at sunrise',
+				'mime'   => 'image/svg+xml',
+				'width'  => 1600,
+				'height' => 1200,
+			),
+			'copper-roof-study'        => array(
+				'file'   => 'assets/images/demo-copper-roof-study.svg',
+				'title'  => 'Copper Roof Study',
+				'alt'    => 'Standing-seam copper roof detail drawing',
+				'mime'   => 'image/svg+xml',
+				'width'  => 1600,
+				'height' => 1200,
+			),
+			'drawing-hand-study'       => array(
+				'file'   => 'assets/images/demo-drawing-hand-study.svg',
+				'title'  => 'Drawing Hand Study',
+				'alt'    => 'Sketchbook page with a drafting hand and pencil',
+				'mime'   => 'image/svg+xml',
+				'width'  => 1600,
+				'height' => 1200,
+			),
+			'timber-joinery-study'     => array(
+				'file'   => 'assets/images/demo-timber-joinery-study.svg',
+				'title'  => 'Timber Joinery Study',
+				'alt'    => 'Joinery diagram showing interlocking timber members',
+				'mime'   => 'image/svg+xml',
+				'width'  => 1600,
+				'height' => 1200,
+			),
+			'glass-transparency-study' => array(
+				'file'   => 'assets/images/demo-glass-transparency-study.svg',
+				'title'  => 'Glass Transparency Study',
+				'alt'    => 'Perspective sketch of a transparent glass wall facing landscape',
+				'mime'   => 'image/svg+xml',
+				'width'  => 1600,
+				'height' => 1200,
+			),
+		);
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_import_demo_asset' ) ) {
+	/**
+	 * Imports a bundled asset into the Media Library.
+	 *
+	 * @param string $asset_key Asset key from the demo asset definitions.
+	 * @return int Attachment ID, or 0 on failure.
+	 */
+	function the_drafting_table_import_demo_asset( $asset_key ) {
+		$existing_ids = get_posts(
+			array(
+				'post_type'      => 'attachment',
+				'post_status'    => 'inherit',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'meta_key'       => '_the_drafting_table_demo_asset',
+				'meta_value'     => $asset_key,
+			)
+		);
+
+		if ( ! empty( $existing_ids ) ) {
+			return (int) $existing_ids[0];
+		}
+
+		$assets = the_drafting_table_get_demo_asset_definitions();
+
+		if ( empty( $assets[ $asset_key ] ) ) {
+			return 0;
+		}
+
+		$asset       = $assets[ $asset_key ];
+		$source_path = get_theme_file_path( $asset['file'] );
+
+		if ( ! file_exists( $source_path ) ) {
+			return 0;
+		}
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Reads a trusted local SVG bundled with the theme package.
+		$contents = file_get_contents( $source_path );
+
+		if ( false === $contents ) {
+			return 0;
+		}
+
+		$upload = wp_upload_bits( wp_basename( $asset['file'] ), null, $contents );
+
+		if ( ! empty( $upload['error'] ) || empty( $upload['file'] ) ) {
+			return 0;
+		}
+
+		$attachment_id = wp_insert_attachment(
+			array(
+				'post_title'     => sanitize_text_field( $asset['title'] ),
+				'post_status'    => 'inherit',
+				'post_mime_type' => sanitize_mime_type( $asset['mime'] ),
+			),
+			$upload['file']
+		);
+
+		if ( is_wp_error( $attachment_id ) ) {
+			return 0;
+		}
+
+		wp_update_attachment_metadata(
+			$attachment_id,
+			array(
+				'width'  => absint( $asset['width'] ),
+				'height' => absint( $asset['height'] ),
+				'file'   => _wp_relative_upload_path( $upload['file'] ),
+			)
+		);
+
+		update_post_meta( $attachment_id, '_wp_attachment_image_alt', sanitize_text_field( $asset['alt'] ) );
+		update_post_meta( $attachment_id, '_the_drafting_table_demo_asset', sanitize_key( $asset_key ) );
+
+		return (int) $attachment_id;
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_install_demo_branding' ) ) {
+	/**
+	 * Applies the bundled site logo for demo installs.
+	 *
+	 * @return int Imported logo attachment ID, or 0 on failure.
+	 */
+	function the_drafting_table_install_demo_branding() {
+		$logo_id = the_drafting_table_import_demo_asset( 'fallingwater-logo' );
+
+		if ( $logo_id ) {
+			set_theme_mod( 'custom_logo', $logo_id );
+		}
+
+		return $logo_id;
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_assign_demo_media' ) ) {
+	/**
+	 * Assigns placeholder artwork to the sample journal posts.
+	 *
+	 * @param array<string, int> $post_ids Sample post IDs keyed by slug.
+	 * @return array<string, array<int, string>|int>
+	 */
+	function the_drafting_table_assign_demo_media( $post_ids ) {
+		$post_assets = array(
+			'character-of-board-formed-concrete'   => 'board-formed-concrete',
+			'morning-light-ridgeline-site'         => 'ridgeline-dwelling',
+			'cantilever-as-architectural-gesture'  => 'ridgeline-dwelling',
+			'selecting-copper-assembly-hall-roof'  => 'copper-roof-study',
+			'drawing-by-hand-digital-age'          => 'drawing-hand-study',
+			'timber-joinery-japanese-tradition'    => 'timber-joinery-study',
+			'limestone-walls-memory-of-the-sea'    => 'board-formed-concrete',
+			'glass-transparency-dissolution-walls' => 'glass-transparency-study',
+		);
+
+		$attachment_ids = array();
+		$result         = array(
+			'assigned'      => 0,
+			'missing_posts' => array(),
+			'failed_assets' => array(),
+		);
+
+		foreach ( $post_assets as $slug => $asset_key ) {
+			if ( empty( $post_ids[ $slug ] ) ) {
+				$result['missing_posts'][] = $slug;
+				continue;
+			}
+
+			if ( empty( $attachment_ids[ $asset_key ] ) ) {
+				$attachment_ids[ $asset_key ] = the_drafting_table_import_demo_asset( $asset_key );
+			}
+
+			if ( empty( $attachment_ids[ $asset_key ] ) ) {
+				$result['failed_assets'][] = $asset_key;
+				continue;
+			}
+
+			if ( false === set_post_thumbnail( $post_ids[ $slug ], $attachment_ids[ $asset_key ] ) ) {
+				$result['failed_assets'][] = $asset_key;
+				continue;
+			}
+
+			++$result['assigned'];
+		}
+
+		$result['missing_posts'] = array_values( array_unique( $result['missing_posts'] ) );
+		$result['failed_assets'] = array_values( array_unique( $result['failed_assets'] ) );
+
+		return $result;
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_get_demo_featured_post_id' ) ) {
+	/**
+	 * Returns the configured featured demo post ID, if one is marked.
+	 *
+	 * @return int
+	 */
+	function the_drafting_table_get_demo_featured_post_id() {
+		$featured_ids = get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'meta_key'       => '_the_drafting_table_featured_entry',
+				'meta_value'     => '1',
+			)
+		);
+
+		if ( empty( $featured_ids ) ) {
+			return 0;
+		}
+
+		return (int) $featured_ids[0];
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_mark_demo_featured_post' ) ) {
+	/**
+	 * Marks the lead demo journal entry for the front-page hero query.
+	 *
+	 * @param array<string, int> $post_ids Sample post IDs keyed by slug.
+	 * @return bool
+	 */
+	function the_drafting_table_mark_demo_featured_post( $post_ids ) {
+		$featured_slug = 'glass-transparency-dissolution-walls';
+
+		if ( empty( $post_ids[ $featured_slug ] ) ) {
+			return false;
+		}
+
+		$featured_post_id = (int) $post_ids[ $featured_slug ];
+		$existing_ids     = get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_the_drafting_table_featured_entry',
+				'meta_value'     => '1',
+			)
+		);
+
+		foreach ( $existing_ids as $existing_id ) {
+			if ( $featured_post_id !== (int) $existing_id ) {
+				delete_post_meta( (int) $existing_id, '_the_drafting_table_featured_entry' );
+			}
+		}
+
+		return false !== update_post_meta( $featured_post_id, '_the_drafting_table_featured_entry', '1' );
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_mark_demo_sticky_post' ) ) {
+	/**
+	 * Back-compat wrapper kept for older scripts/tests.
+	 *
+	 * @param array<string, int> $post_ids Sample post IDs keyed by slug.
+	 * @return bool
+	 */
+	function the_drafting_table_mark_demo_sticky_post( $post_ids ) {
+		return the_drafting_table_mark_demo_featured_post( $post_ids );
 	}
 }
 
@@ -195,9 +604,11 @@ if ( ! function_exists( 'the_drafting_table_create_pages' ) ) {
 	 *
 	 * Skips any page whose slug already exists to prevent duplicates.
 	 *
-	 * @return void
+	 * @return array<string, int>
 	 */
 	function the_drafting_table_create_pages() {
+		$page_ids = array();
+
 		$pages = array(
 			array(
 				'title'    => 'About',
@@ -237,6 +648,7 @@ if ( ! function_exists( 'the_drafting_table_create_pages' ) ) {
 			$existing = get_page_by_path( $page_data['slug'] );
 
 			if ( $existing ) {
+				$page_ids[ $page_data['slug'] ] = (int) $existing->ID;
 				continue;
 			}
 
@@ -255,8 +667,11 @@ if ( ! function_exists( 'the_drafting_table_create_pages' ) ) {
 
 			if ( ! is_wp_error( $page_id ) ) {
 				update_post_meta( $page_id, '_wp_page_template', sanitize_text_field( $page_data['template'] ) );
+				$page_ids[ $page_data['slug'] ] = (int) $page_id;
 			}
 		}
+
+		return $page_ids;
 	}
 }
 
@@ -266,9 +681,11 @@ if ( ! function_exists( 'the_drafting_table_create_sample_posts' ) ) {
 	 *
 	 * Skips any post whose slug already exists to prevent duplicates.
 	 *
-	 * @return void
+	 * @return array<string, int>
 	 */
 	function the_drafting_table_create_sample_posts() {
+		$post_ids = array();
+
 		$categories = array(
 			'design-notes'     => 'Design Notes',
 			'material-studies' => 'Material Studies',
@@ -326,6 +743,7 @@ if ( ! function_exists( 'the_drafting_table_create_sample_posts' ) ) {
 		foreach ( $posts as $post_data ) {
 			$existing = get_page_by_path( $post_data['slug'], OBJECT, 'post' );
 			if ( $existing ) {
+				$post_ids[ $post_data['slug'] ] = (int) $existing->ID;
 				continue;
 			}
 
@@ -359,7 +777,13 @@ if ( ! function_exists( 'the_drafting_table_create_sample_posts' ) ) {
 			if ( ! is_wp_error( $post_id ) && ! empty( $post_tags ) ) {
 				wp_set_post_terms( $post_id, $post_tags, 'post_tag' );
 			}
+
+			if ( ! is_wp_error( $post_id ) ) {
+				$post_ids[ $post_data['slug'] ] = (int) $post_id;
+			}
 		}
+
+		return $post_ids;
 	}
 }
 

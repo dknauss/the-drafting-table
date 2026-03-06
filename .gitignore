@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor artifacts
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+playwright-report/
+test-results/
+
+# Build artifacts
+*.zip
+*.tar.gz
+vendor/
+
+# Claude Code working files
+.claude/

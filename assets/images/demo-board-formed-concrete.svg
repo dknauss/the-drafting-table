@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200" role="img" aria-labelledby="title desc">
+  <title id="title">Board-Formed Concrete Study</title>
+  <desc id="desc">A drafting-sheet illustration of board-formed concrete walls and horizontal form lines.</desc>
+  <rect width="1600" height="1200" fill="#f5f0e8"/>
+  <g fill="none" stroke="#d5cfc6" stroke-width="1">
+    <path d="M0 160h1600M0 320h1600M0 480h1600M0 640h1600M0 800h1600M0 960h1600"/>
+    <path d="M160 0v1200M320 0v1200M480 0v1200M640 0v1200M800 0v1200M960 0v1200M1120 0v1200M1280 0v1200M1440 0v1200"/>
+  </g>
+  <g fill="none" stroke="#2c2a26" stroke-width="8" stroke-linecap="square">
+    <path d="M250 860h1100"/>
+    <path d="M330 860V430h340v430"/>
+    <path d="M790 860V350h470v510"/>
+    <path d="M1010 350V250h180v100"/>
+  </g>
+  <g fill="none" stroke="#5a5650" stroke-width="3">
+    <path d="M330 500h340M330 560h340M330 620h340M330 680h340M330 740h340M330 800h340"/>
+    <path d="M790 430h470M790 500h470M790 570h470M790 640h470M790 710h470M790 780h470"/>
+  </g>
+  <g fill="#b5553d" font-family="'Courier Prime', monospace" font-size="42" letter-spacing="8">
+    <text x="250" y="160">MATERIAL STUDY / BOARD-FORMED CONCRETE</text>
+  </g>
+  <g fill="#5a5650" font-family="'Josefin Sans', sans-serif" font-size="28" letter-spacing="6">
+    <text x="250" y="1030">FORM TIE LINES / SAWN BOARD IMPRESSION / AGGREGATE WARMTH</text>
+  </g>
+</svg>

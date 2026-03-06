@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200" role="img" aria-labelledby="title desc">
+  <title id="title">Copper Roof Study</title>
+  <desc id="desc">A sectional roof detail with standing seams and rain path annotations.</desc>
+  <rect width="1600" height="1200" fill="#f5f0e8"/>
+  <g fill="none" stroke="#d5cfc6" stroke-width="1">
+    <path d="M150 210h1300M150 420h1300M150 630h1300M150 840h1300"/>
+    <path d="M280 120v960M540 120v960M800 120v960M1060 120v960M1320 120v960"/>
+  </g>
+  <g fill="none" stroke="#2c2a26" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M290 720l260-270h500l250 180"/>
+    <path d="M360 820l230-240h470l230 160"/>
+    <path d="M360 820h860"/>
+  </g>
+  <g fill="none" stroke="#b5553d" stroke-width="4">
+    <path d="M570 560v230M650 560v230M730 560v230M810 560v230M890 560v230M970 560v230"/>
+    <path d="M1110 605c35 25 55 55 65 120"/>
+  </g>
+  <g fill="#b5553d" font-family="'Courier Prime', monospace" font-size="42" letter-spacing="8">
+    <text x="210" y="150">DETAIL STUDY / STANDING-SEAM COPPER</text>
+  </g>
+  <g fill="#5a5650" font-family="'Josefin Sans', sans-serif" font-size="28" letter-spacing="6">
+    <text x="210" y="1030">WEATHERING PATH / DRAINAGE EDGE / VERDIGRIS FIELD</text>
+  </g>
+</svg>

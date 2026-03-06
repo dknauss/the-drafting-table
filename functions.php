@@ -92,6 +92,52 @@ if ( ! function_exists( 'the_drafting_table_register_block_styles' ) ) {
 }
 add_action( 'init', 'the_drafting_table_register_block_styles' );
 
+if ( ! function_exists( 'the_drafting_table_filter_query_loop_vars' ) ) {
+	/**
+	 * Applies deterministic query-loop behavior for the front-page hero/feed.
+	 *
+	 * @param array<string, mixed> $query Parsed query vars from Query Loop.
+	 * @param WP_Block             $block Block instance for the loop.
+	 * @return array<string, mixed>
+	 */
+	function the_drafting_table_filter_query_loop_vars( $query, $block ) {
+		$query_id = ! empty( $block->parsed_block['attrs']['queryId'] )
+			? absint( $block->parsed_block['attrs']['queryId'] )
+			: 0;
+
+		if ( ! $query_id ) {
+			return $query;
+		}
+
+		$featured_post_id = the_drafting_table_get_demo_featured_post_id();
+
+		// Front-page hero: prioritize the explicitly marked featured demo post.
+		if ( 135 === $query_id ) {
+			$query['post_type']           = 'post';
+			$query['posts_per_page']      = 1;
+			$query['ignore_sticky_posts'] = 1;
+
+			if ( $featured_post_id ) {
+				$query['post__in'] = array( $featured_post_id );
+				$query['orderby']  = 'post__in';
+			} else {
+				$query['orderby'] = 'date';
+				$query['order']   = 'DESC';
+			}
+		}
+
+		// Front-page journal rail: avoid duplicating the hero post.
+		if ( 20 === $query_id && is_front_page() && $featured_post_id ) {
+			$excluded_ids          = array_map( 'absint', (array) ( $query['post__not_in'] ?? array() ) );
+			$excluded_ids[]        = $featured_post_id;
+			$query['post__not_in'] = array_values( array_unique( $excluded_ids ) );
+		}
+
+		return $query;
+	}
+}
+add_filter( 'query_loop_block_query_vars', 'the_drafting_table_filter_query_loop_vars', 10, 2 );
+
 if ( ! function_exists( 'the_drafting_table_hide_empty_meta' ) ) {
 	/**
 	 * Hides empty meta pair containers when dynamic block content is empty.
