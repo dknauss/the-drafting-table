@@ -46,10 +46,19 @@ https://scripts.sil.org/OFL
 BUNDLED ASSETS — IMAGES
 --------------------------------------------------------------------------------
 
-No bundled images are included in this theme. The templates and patterns do
-not reference any theme-bundled imagery. Users are expected to add their own
-images through the WordPress block editor (Site Editor > Templates).
+Original image assets created for The Drafting Table theme
+License: GPLv2 or later
+Copyright: Copyright 2025 Dan Knauss
+Files:
+- screenshot.png
+- assets/images/fallingwater-logo.svg
+- assets/images/demo-board-formed-concrete.svg
+- assets/images/demo-ridgeline-dwelling.svg
+- assets/images/demo-copper-roof-study.svg
+- assets/images/demo-drawing-hand-study.svg
+- assets/images/demo-timber-joinery-study.svg
+- assets/images/demo-glass-transparency-study.svg
 
-The theme's visual design is intentionally typographic and structural, and
-works well with or without photography. Where images are used in patterns
-or templates, block editor placeholders are provided.
+These files are bundled only to support the theme preview image, site logo,
+and the optional demo-content installer. Users can replace them through the
+Site Editor and Media Library after activation.

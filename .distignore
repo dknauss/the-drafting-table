@@ -1,9 +1,18 @@
 # Files excluded from the production distribution zip
 .distignore
+.github/
 .git
 .gitignore
+.wp-env.json
 .planning/
-demo-content/
-run_themecheck.php
+composer.json
+composer.lock
+package.json
+package-lock.json
+phpcs.xml.dist
+playwright.config.mjs
+run-themecheck.php
+tests/
 *.log
 node_modules/
+vendor/

@@ -4,7 +4,7 @@ Tags: block-patterns, blog, custom-colors, custom-logo, custom-menu, editor-styl
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,7 +34,8 @@ The theme features:
 1. In your WordPress dashboard, go to Appearance > Themes > Add New.
 2. Search for "The Drafting Table" and click Install, then Activate.
 3. Go to Appearance > Editor to customize your site using the Site Editor.
-4. Use the included block patterns (under Patterns in the inserter) to build pages quickly.
+4. Use the demo-content notice in Appearance > Themes to install the starter pages, journal entries, featured artwork, logo, and reading settings.
+5. Use the included block patterns (under Patterns in the inserter) to build pages quickly.
 
 == Frequently Asked Questions ==
 
@@ -48,7 +49,11 @@ Go to Appearance > Editor > Styles. You can switch between the four built-in sty
 
 = How do I add navigation menus? =
 
-In a block theme, navigation is managed through the Site Editor. Go to Appearance > Editor, click on the header, and edit the Navigation block directly.
+The bundled header and footer use a Page List navigation block, so newly created pages appear automatically. If you need a custom menu structure, go to Appearance > Editor, click on the header or footer, and replace the Page List with a custom Navigation block.
+
+= How do I install the demo content? =
+
+After activating the theme, visit Appearance > Themes and use the "Install Demo Content" action in the admin notice. The installer creates the starter pages, sample journal posts, featured images, the site logo, and the static front page / posts page reading settings.
 
 = Can I use this theme for a non-architecture site? =
 
@@ -58,7 +63,24 @@ Yes. While the aesthetic is inspired by architectural drafting, the theme suits 
 
 Go to Appearance > Editor > Templates and select the template you want to edit. All content is editable directly in the Site Editor. You can also use the included patterns as starting points for your own pages.
 
+== Development ==
+
+* `composer install` then `composer lint:php` for WordPress Coding Standards checks
+* `npm install`
+* `npm run env:start` and `npm run env:setup` to provision a local wp-env instance with demo content
+* `npm run themecheck` to run the Theme Check plugin against the active theme
+* `npm run test:smoke` to run the Playwright smoke suite against the local wp-env site
+
 == Changelog ==
+
+= 0.5.0 =
+* Replaced broken database-bound navigation references with portable Page List navigation in the header and footer
+* Expanded the built-in demo installer to create featured artwork, assign the bundled logo, and mark the lead journal post as sticky
+* Removed the obsolete WXR demo import path in favor of the single `inc/create-pages.php` installer
+* Loaded `editor-style.css` in the block editor so the editor reflects the parchment/grid treatment
+* Replaced hard-coded template and pattern border colors with theme tokens so style variations recolor consistently
+* Added local QA tooling: Composer + PHPCS, Theme Check runner, wp-env bootstrap, and Playwright smoke coverage
+* Fixed `index.html` landmark structure so the footer renders outside `<main>`
 
 = 0.4.0 =
 * Added static front-page template (hero, journal grid, principles strip, project studies)
@@ -117,5 +139,12 @@ Go to Appearance > Editor > Templates and select the template you want to edit. 
   Copyright: 2010 The Josefin Sans Project Authors
   License: SIL Open Font License 1.1 — https://scripts.sil.org/OFL
 
-* No bundled images — templates and patterns use block editor placeholders.
-  Add your own images via the WordPress Site Editor.
+* Original bundled image assets created for this theme package by Dan Knauss.
+  Files: screenshot.png, assets/images/fallingwater-logo.svg,
+  assets/images/demo-board-formed-concrete.svg,
+  assets/images/demo-ridgeline-dwelling.svg,
+  assets/images/demo-copper-roof-study.svg,
+  assets/images/demo-drawing-hand-study.svg,
+  assets/images/demo-timber-joinery-study.svg,
+  assets/images/demo-glass-transparency-study.svg
+  License: GPLv2 or later
