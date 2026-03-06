@@ -5,7 +5,10 @@
  * Categories: the-drafting-table
  * Description: Post metadata row showing categories, tags, author, and last-updated date. Intended for single post templates.
  * Inserter: false
+ *
+ * @package The_Drafting_Table
  */
+
 ?>
 <!-- wp:group {"style":{"spacing":{"margin":{"top":"0"},"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"2rem","right":"2rem"}}},"layout":{"type":"constrained","contentSize":"720px"}} -->
 <div class="wp-block-group" style="margin-top:0;padding-top:var(--wp--preset--spacing--40);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--40);padding-left:2rem"><!-- wp:group {"className":"meta-row","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->

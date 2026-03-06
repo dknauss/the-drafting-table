@@ -6,10 +6,13 @@
  * Categories: the-drafting-table
  * Keywords: quote, pullquote, highlight, featured
  * Inserter: true
+ *
+ * @package The_Drafting_Table
  */
+
 ?>
-<!-- wp:group {"align":"full","backgroundColor":"parchment","ariaLabel":"Featured quote","style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50","left":"2rem","right":"2rem"}},"border":{"top":{"color":"#d5cfc6","width":"1px"},"bottom":{"color":"#d5cfc6","width":"1px"}}},"layout":{"type":"constrained","contentSize":"680px"}} -->
-<div class="wp-block-group alignfull has-parchment-background-color has-background" aria-label="Featured quote" style="border-top-color:#d5cfc6;border-top-width:1px;border-bottom-color:#d5cfc6;border-bottom-width:1px;padding-top:var(--wp--preset--spacing--50);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--50);padding-left:2rem">
+<!-- wp:group {"align":"full","backgroundColor":"parchment","ariaLabel":"Featured quote","style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50","left":"2rem","right":"2rem"}},"border":{"top":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"},"bottom":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"constrained","contentSize":"680px"}} -->
+<div class="wp-block-group alignfull has-parchment-background-color has-background" aria-label="Featured quote" style="border-top-color:var(--wp--preset--color--ink-ghost);border-top-width:1px;border-bottom-color:var(--wp--preset--color--ink-ghost);border-bottom-width:1px;padding-top:var(--wp--preset--spacing--50);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--50);padding-left:2rem">
 
 	<!-- wp:group {"className":"terra-rule","layout":{"type":"default"}} -->
 	<div class="wp-block-group terra-rule">

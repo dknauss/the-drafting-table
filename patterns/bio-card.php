@@ -6,13 +6,16 @@
  * Categories: the-drafting-table
  * Keywords: bio, team, about, profile, architect
  * Inserter: true
+ *
+ * @package The_Drafting_Table
  */
+
 ?>
 <!-- wp:group {"style":{"spacing":{"margin":{"top":"0"},"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60","left":"2rem","right":"2rem"}}},"layout":{"type":"constrained","contentSize":"860px"}} -->
 <div class="wp-block-group" style="margin-top:0;padding-top:var(--wp--preset--spacing--60);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--60);padding-left:2rem">
 
-	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"#d5cfc6","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-	<div class="wp-block-group" style="border-bottom-color:#d5cfc6;border-bottom-width:1px;padding-bottom:1rem">
+	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--ink-ghost);border-bottom-width:1px;padding-bottom:1rem">
 		<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"josefin","style":{"typography":{"fontStyle":"normal","fontWeight":"600","fontSize":"0.5625rem","letterSpacing":"0.35em","textTransform":"uppercase"}}} -->
 		<p class="has-ink-light-color has-text-color has-josefin-font-family" style="font-size:0.5625rem;font-style:normal;font-weight:600;letter-spacing:0.35em;text-transform:uppercase">Studio</p>
 		<!-- /wp:paragraph -->

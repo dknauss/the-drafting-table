@@ -4,12 +4,15 @@
  * Slug: the-drafting-table/contact-inquiry
  * Categories: featured
  * Description: A contact section styled as a project consultation request form with studio details.
+ *
+ * @package The_Drafting_Table
  */
+
 ?>
-<!-- wp:group {"backgroundColor":"parchment-dark","style":{"spacing":{"margin":{"top":"0"},"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60","left":"2rem","right":"2rem"}},"border":{"top":{"color":"#d5cfc6","width":"1px"}}},"layout":{"type":"constrained","wideSize":"1280px"}} -->
-<div class="wp-block-group has-parchment-dark-background-color has-background" style="border-top-color:#d5cfc6;border-top-width:1px;margin-top:0;padding-top:var(--wp--preset--spacing--60);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--60);padding-left:2rem">
-	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"#d5cfc6","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-	<div class="wp-block-group" style="border-bottom-color:#d5cfc6;border-bottom-width:1px;padding-bottom:1rem">
+<!-- wp:group {"backgroundColor":"parchment-dark","style":{"spacing":{"margin":{"top":"0"},"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60","left":"2rem","right":"2rem"}},"border":{"top":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"constrained","wideSize":"1280px"}} -->
+<div class="wp-block-group has-parchment-dark-background-color has-background" style="border-top-color:var(--wp--preset--color--ink-ghost);border-top-width:1px;margin-top:0;padding-top:var(--wp--preset--spacing--60);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--60);padding-left:2rem">
+	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--ink-ghost);border-bottom-width:1px;padding-bottom:1rem">
 		<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"josefin","style":{"typography":{"fontStyle":"normal","fontWeight":"600","fontSize":"0.5625rem","letterSpacing":"0.35em","textTransform":"uppercase"}}} -->
 		<p class="has-ink-light-color has-text-color has-josefin-font-family" style="font-size:0.5625rem;font-style:normal;font-weight:600;letter-spacing:0.35em;text-transform:uppercase">Project Consultation</p>
 		<!-- /wp:paragraph -->
@@ -56,8 +59,8 @@
 
 		<!-- wp:column {"width":"45%"} -->
 		<div class="wp-block-column" style="flex-basis:45%">
-			<!-- wp:group {"style":{"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"2rem","right":"2rem"}},"border":{"width":"1px","color":"#d5cfc680"}},"backgroundColor":"parchment","layout":{"type":"default"}} -->
-			<div class="wp-block-group has-border-color has-parchment-background-color has-background" style="border-color:#d5cfc680;border-width:1px;padding-top:2rem;padding-right:2rem;padding-bottom:2rem;padding-left:2rem">
+			<!-- wp:group {"style":{"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"2rem","right":"2rem"}},"border":{"width":"1px","color":"var(--wp--custom--border-light)"}},"backgroundColor":"parchment","layout":{"type":"default"}} -->
+			<div class="wp-block-group has-border-color has-parchment-background-color has-background" style="border-color:var(--wp--custom--border-light);border-width:1px;padding-top:2rem;padding-right:2rem;padding-bottom:2rem;padding-left:2rem">
 				<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"josefin","style":{"typography":{"fontStyle":"normal","fontWeight":"600","fontSize":"0.5625rem","letterSpacing":"0.35em","textTransform":"uppercase"},"spacing":{"margin":{"bottom":"1.25rem"}}}} -->
 				<p class="has-ink-light-color has-text-color has-josefin-font-family" style="margin-bottom:1.25rem;font-size:0.5625rem;font-style:normal;font-weight:600;letter-spacing:0.35em;text-transform:uppercase">Studio Details</p>
 				<!-- /wp:paragraph -->

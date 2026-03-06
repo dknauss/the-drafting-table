@@ -6,7 +6,10 @@
  * Categories: the-drafting-table
  * Keywords: project, header, cover, blueprint
  * Inserter: true
+ *
+ * @package The_Drafting_Table
  */
+
 ?>
 <!-- wp:group {"align":"full","className":"blueprint-frame","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"padding":{"top":"0","bottom":"0","left":"0","right":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group alignfull blueprint-frame" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">

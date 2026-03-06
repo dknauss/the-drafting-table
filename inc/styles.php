@@ -12,7 +12,12 @@ if ( ! function_exists( 'the_drafting_table_editor_styles' ) ) {
 	 */
 	function the_drafting_table_editor_styles() {
 		add_theme_support( 'editor-styles' );
-		add_editor_style( 'style.css' );
+		add_editor_style(
+			array(
+				'style.css',
+				'editor-style.css',
+			)
+		);
 	}
 }
 add_action( 'after_setup_theme', 'the_drafting_table_editor_styles' );

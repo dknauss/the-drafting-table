@@ -4,12 +4,15 @@
  * Slug: the-drafting-table/latest-journal-entries
  * Categories: featured
  * Description: A dynamic query loop displaying the latest blog posts as journal entry cards.
+ *
+ * @package The_Drafting_Table
  */
+
 ?>
 <!-- wp:group {"style":{"spacing":{"margin":{"top":"0"},"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60","left":"2rem","right":"2rem"}}},"layout":{"type":"constrained","wideSize":"1280px"}} -->
 <div class="wp-block-group" style="margin-top:0;padding-top:var(--wp--preset--spacing--60);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--60);padding-left:2rem">
-	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"#d5cfc6","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-	<div class="wp-block-group" style="border-bottom-color:#d5cfc6;border-bottom-width:1px;padding-bottom:1rem">
+	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--ink-ghost);border-bottom-width:1px;padding-bottom:1rem">
 		<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"josefin","style":{"typography":{"fontStyle":"normal","fontWeight":"600","fontSize":"0.5625rem","letterSpacing":"0.35em","textTransform":"uppercase"}}} -->
 		<p class="has-ink-light-color has-text-color has-josefin-font-family" style="font-size:0.5625rem;font-style:normal;font-weight:600;letter-spacing:0.35em;text-transform:uppercase">From the Journal</p>
 		<!-- /wp:paragraph -->
@@ -26,8 +29,8 @@
 
 	<!-- wp:query {"queryId":10,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false}} -->
 	<!-- wp:post-template {"layout":{"type":"grid","columnCount":3}} -->
-		<!-- wp:group {"backgroundColor":"parchment","className":"journal-card","style":{"spacing":{"padding":{"top":"1.75rem","bottom":"1.75rem","left":"1.5rem","right":"1.5rem"}},"border":{"width":"1px","color":"#d5cfc680"}},"layout":{"type":"default"}} -->
-		<div class="wp-block-group journal-card has-border-color has-parchment-background-color has-background" style="border-color:#d5cfc680;border-width:1px;padding-top:1.75rem;padding-right:1.5rem;padding-bottom:1.75rem;padding-left:1.5rem">
+		<!-- wp:group {"backgroundColor":"parchment","className":"journal-card","style":{"spacing":{"padding":{"top":"1.75rem","bottom":"1.75rem","left":"1.5rem","right":"1.5rem"}},"border":{"width":"1px","color":"var(--wp--custom--border-light)"}},"layout":{"type":"default"}} -->
+		<div class="wp-block-group journal-card has-border-color has-parchment-background-color has-background" style="border-color:var(--wp--custom--border-light);border-width:1px;padding-top:1.75rem;padding-right:1.5rem;padding-bottom:1.75rem;padding-left:1.5rem">
 			<!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap"}} -->
 			<div class="wp-block-group"><!-- wp:post-date {"format":"M j, Y","style":{"typography":{"fontSize":"0.6875rem","letterSpacing":"0.1em"}},"textColor":"ink-faint","fontFamily":"courier-prime"} /-->
 

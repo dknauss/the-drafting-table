@@ -4,12 +4,15 @@
  * Slug: the-drafting-table/hero-cover
  * Categories: featured
  * Description: A full-width hero section with blueprint-framed architectural imagery and drafting annotations.
+ *
+ * @package The_Drafting_Table
  */
+
 ?>
 <!-- wp:group {"style":{"spacing":{"margin":{"top":"0"},"padding":{"top":"5rem","bottom":"0","left":"2rem","right":"2rem"}}},"layout":{"type":"constrained","wideSize":"1280px"}} -->
 <div class="wp-block-group" style="margin-top:0;padding-top:5rem;padding-right:2rem;padding-bottom:0;padding-left:2rem">
-	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1.5rem"}},"border":{"bottom":{"color":"#d5cfc6","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-	<div class="wp-block-group" style="border-bottom-color:#d5cfc6;border-bottom-width:1px;padding-bottom:1.5rem">
+	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1.5rem"}},"border":{"bottom":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--ink-ghost);border-bottom-width:1px;padding-bottom:1.5rem">
 		<!-- wp:paragraph {"textColor":"ink-faint","fontFamily":"josefin","style":{"typography":{"fontStyle":"normal","fontWeight":"300","fontSize":"0.625rem","letterSpacing":"0.5em","textTransform":"uppercase"}}} -->
 		<p class="has-ink-faint-color has-text-color has-josefin-font-family" style="font-size:0.625rem;font-style:normal;font-weight:300;letter-spacing:0.5em;text-transform:uppercase">Notes on Form and Nature</p>
 		<!-- /wp:paragraph -->

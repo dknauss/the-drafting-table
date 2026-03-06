@@ -4,12 +4,15 @@
  * Slug: the-drafting-table/process-workflow
  * Categories: featured
  * Description: A step-by-step design process section styled as a drafting methodology diagram.
+ *
+ * @package The_Drafting_Table
  */
+
 ?>
 <!-- wp:group {"style":{"spacing":{"margin":{"top":"0"},"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60","left":"2rem","right":"2rem"}}},"layout":{"type":"constrained","contentSize":"860px"}} -->
 <div class="wp-block-group" style="margin-top:0;padding-top:var(--wp--preset--spacing--60);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--60);padding-left:2rem">
-	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"#d5cfc6","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-	<div class="wp-block-group" style="border-bottom-color:#d5cfc6;border-bottom-width:1px;padding-bottom:1rem">
+	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--ink-ghost);border-bottom-width:1px;padding-bottom:1rem">
 		<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"josefin","style":{"typography":{"fontStyle":"normal","fontWeight":"600","fontSize":"0.5625rem","letterSpacing":"0.35em","textTransform":"uppercase"}}} -->
 		<p class="has-ink-light-color has-text-color has-josefin-font-family" style="font-size:0.5625rem;font-style:normal;font-weight:600;letter-spacing:0.35em;text-transform:uppercase">Design Methodology</p>
 		<!-- /wp:paragraph -->
@@ -36,10 +39,10 @@
 	</div>
 	<!-- /wp:group -->
 
-	<!-- wp:group {"style":{"spacing":{"padding":{"top":"2rem","bottom":"2rem"}},"border":{"top":{"color":"#d5cfc6","width":"1px"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
-	<div class="wp-block-group" style="border-top-color:#d5cfc6;border-top-width:1px;padding-top:2rem;padding-bottom:2rem">
-		<!-- wp:group {"className":"principle-number","style":{"spacing":{"padding":{"top":"0.6rem","bottom":"0.6rem","left":"1rem","right":"1rem"}},"border":{"width":"1px","color":"#b5553d40"},"layout":{"selfStretch":"fixed","flexSize":"48px"}},"layout":{"type":"default"}} -->
-		<div class="wp-block-group principle-number has-border-color" style="border-color:#b5553d40;border-width:1px;padding-top:0.6rem;padding-right:1rem;padding-bottom:0.6rem;padding-left:1rem">
+	<!-- wp:group {"style":{"spacing":{"padding":{"top":"2rem","bottom":"2rem"}},"border":{"top":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
+	<div class="wp-block-group" style="border-top-color:var(--wp--preset--color--ink-ghost);border-top-width:1px;padding-top:2rem;padding-bottom:2rem">
+		<!-- wp:group {"className":"principle-number","style":{"spacing":{"padding":{"top":"0.6rem","bottom":"0.6rem","left":"1rem","right":"1rem"}},"border":{"width":"1px","color":"var(--wp--custom--terra-tint)"},"layout":{"selfStretch":"fixed","flexSize":"48px"}},"layout":{"type":"default"}} -->
+		<div class="wp-block-group principle-number has-border-color" style="border-color:var(--wp--custom--terra-tint);border-width:1px;padding-top:0.6rem;padding-right:1rem;padding-bottom:0.6rem;padding-left:1rem">
 			<!-- wp:paragraph {"textColor":"terra","style":{"typography":{"fontSize":"0.875rem","letterSpacing":"0.05em","textAlign":"center"}},"fontFamily":"bodoni"} -->
 			<p class="has-text-align-center has-terra-color has-text-color has-bodoni-font-family" style="font-size:0.875rem;letter-spacing:0.05em">I</p>
 			<!-- /wp:paragraph -->
@@ -66,8 +69,8 @@
 
 	<!-- wp:group {"style":{"spacing":{"padding":{"top":"2rem","bottom":"2rem"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
 	<div class="wp-block-group" style="padding-top:2rem;padding-bottom:2rem">
-		<!-- wp:group {"className":"principle-number","style":{"spacing":{"padding":{"top":"0.6rem","bottom":"0.6rem","left":"1rem","right":"1rem"}},"border":{"width":"1px","color":"#b5553d40"},"layout":{"selfStretch":"fixed","flexSize":"48px"}},"layout":{"type":"default"}} -->
-		<div class="wp-block-group principle-number has-border-color" style="border-color:#b5553d40;border-width:1px;padding-top:0.6rem;padding-right:1rem;padding-bottom:0.6rem;padding-left:1rem">
+		<!-- wp:group {"className":"principle-number","style":{"spacing":{"padding":{"top":"0.6rem","bottom":"0.6rem","left":"1rem","right":"1rem"}},"border":{"width":"1px","color":"var(--wp--custom--terra-tint)"},"layout":{"selfStretch":"fixed","flexSize":"48px"}},"layout":{"type":"default"}} -->
+		<div class="wp-block-group principle-number has-border-color" style="border-color:var(--wp--custom--terra-tint);border-width:1px;padding-top:0.6rem;padding-right:1rem;padding-bottom:0.6rem;padding-left:1rem">
 			<!-- wp:paragraph {"textColor":"terra","style":{"typography":{"fontSize":"0.875rem","letterSpacing":"0.05em","textAlign":"center"}},"fontFamily":"bodoni"} -->
 			<p class="has-text-align-center has-terra-color has-text-color has-bodoni-font-family" style="font-size:0.875rem;letter-spacing:0.05em">II</p>
 			<!-- /wp:paragraph -->
@@ -94,8 +97,8 @@
 
 	<!-- wp:group {"style":{"spacing":{"padding":{"top":"2rem","bottom":"2rem"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
 	<div class="wp-block-group" style="padding-top:2rem;padding-bottom:2rem">
-		<!-- wp:group {"className":"principle-number","style":{"spacing":{"padding":{"top":"0.6rem","bottom":"0.6rem","left":"1rem","right":"1rem"}},"border":{"width":"1px","color":"#b5553d40"},"layout":{"selfStretch":"fixed","flexSize":"48px"}},"layout":{"type":"default"}} -->
-		<div class="wp-block-group principle-number has-border-color" style="border-color:#b5553d40;border-width:1px;padding-top:0.6rem;padding-right:1rem;padding-bottom:0.6rem;padding-left:1rem">
+		<!-- wp:group {"className":"principle-number","style":{"spacing":{"padding":{"top":"0.6rem","bottom":"0.6rem","left":"1rem","right":"1rem"}},"border":{"width":"1px","color":"var(--wp--custom--terra-tint)"},"layout":{"selfStretch":"fixed","flexSize":"48px"}},"layout":{"type":"default"}} -->
+		<div class="wp-block-group principle-number has-border-color" style="border-color:var(--wp--custom--terra-tint);border-width:1px;padding-top:0.6rem;padding-right:1rem;padding-bottom:0.6rem;padding-left:1rem">
 			<!-- wp:paragraph {"textColor":"terra","style":{"typography":{"fontSize":"0.875rem","letterSpacing":"0.05em","textAlign":"center"}},"fontFamily":"bodoni"} -->
 			<p class="has-text-align-center has-terra-color has-text-color has-bodoni-font-family" style="font-size:0.875rem;letter-spacing:0.05em">III</p>
 			<!-- /wp:paragraph -->
@@ -122,8 +125,8 @@
 
 	<!-- wp:group {"style":{"spacing":{"padding":{"top":"2rem","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
 	<div class="wp-block-group" style="padding-top:2rem;padding-bottom:0">
-		<!-- wp:group {"className":"principle-number","style":{"spacing":{"padding":{"top":"0.6rem","bottom":"0.6rem","left":"1rem","right":"1rem"}},"border":{"width":"1px","color":"#b5553d40"},"layout":{"selfStretch":"fixed","flexSize":"48px"}},"layout":{"type":"default"}} -->
-		<div class="wp-block-group principle-number has-border-color" style="border-color:#b5553d40;border-width:1px;padding-top:0.6rem;padding-right:1rem;padding-bottom:0.6rem;padding-left:1rem">
+		<!-- wp:group {"className":"principle-number","style":{"spacing":{"padding":{"top":"0.6rem","bottom":"0.6rem","left":"1rem","right":"1rem"}},"border":{"width":"1px","color":"var(--wp--custom--terra-tint)"},"layout":{"selfStretch":"fixed","flexSize":"48px"}},"layout":{"type":"default"}} -->
+		<div class="wp-block-group principle-number has-border-color" style="border-color:var(--wp--custom--terra-tint);border-width:1px;padding-top:0.6rem;padding-right:1rem;padding-bottom:0.6rem;padding-left:1rem">
 			<!-- wp:paragraph {"textColor":"terra","style":{"typography":{"fontSize":"0.875rem","letterSpacing":"0.05em","textAlign":"center"}},"fontFamily":"bodoni"} -->
 			<p class="has-text-align-center has-terra-color has-text-color has-bodoni-font-family" style="font-size:0.875rem;letter-spacing:0.05em">IV</p>
 			<!-- /wp:paragraph -->
