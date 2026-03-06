@@ -1,0 +1,13 @@
+{
+    "core": "WordPress/WordPress#6.9",
+    "themes": [
+        "."
+    ],
+    "mappings": {
+        "wp-content/mu-plugins": "./tests/wp-env/mu-plugins"
+    },
+    "config": {
+        "WP_DEBUG": true,
+        "SCRIPT_DEBUG": true
+    }
+}

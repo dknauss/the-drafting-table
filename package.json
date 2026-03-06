@@ -1,0 +1,19 @@
+{
+    "name": "the-drafting-table",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "env:start": "wp-env start --update",
+        "env:stop": "wp-env stop",
+        "env:destroy": "wp-env destroy",
+        "env:setup": "wp-env run cli wp theme activate the-drafting-table && wp-env run cli wp eval-file wp-content/themes/the-drafting-table/tests/wp-env/install-demo.php",
+        "themecheck": "wp-env run cli wp plugin install theme-check --activate && wp-env run cli wp eval-file wp-content/themes/the-drafting-table/run-themecheck.php",
+        "test:smoke": "playwright test",
+        "test:smoke:install": "playwright install --with-deps chromium",
+        "qa": "npm run env:start && npm run env:setup && npm run themecheck && npm run test:smoke"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.49.1",
+        "@wordpress/env": "^10.17.0"
+    }
+}

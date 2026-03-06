@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<ruleset name="The Drafting Table">
+	<description>WordPress Coding Standards for The Drafting Table theme.</description>
+
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg value="p"/>
+
+	<config name="minimum_supported_wp_version" value="6.4"/>
+	<config name="testVersion" value="7.4-"/>
+
+	<file>functions.php</file>
+	<file>run-themecheck.php</file>
+	<file>inc</file>
+	<file>patterns</file>
+
+	<exclude-pattern>tests/*</exclude-pattern>
+	<exclude-pattern>*.js</exclude-pattern>
+
+	<rule ref="WordPress-Core"/>
+	<rule ref="WordPress-Docs"/>
+	<rule ref="WordPress-Extra"/>
+	<rule ref="PHPCompatibilityWP"/>
+	<rule ref="Squiz.Commenting.FileComment.Missing">
+		<severity>0</severity>
+	</rule>
+</ruleset>
