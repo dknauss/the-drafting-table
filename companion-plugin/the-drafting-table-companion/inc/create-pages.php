@@ -775,7 +775,7 @@ if ( ! function_exists( 'the_drafting_table_import_demo_asset' ) ) {
 
 		$allow_svg_upload = null;
 		if ( ! empty( $asset['mime'] ) && 'image/svg+xml' === sanitize_mime_type( $asset['mime'] ) ) {
-			$allow_svg_upload = static function( $mimes ) {
+			$allow_svg_upload = static function ( $mimes ) {
 				$mimes['svg'] = 'image/svg+xml';
 				return $mimes;
 			};

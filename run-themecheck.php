@@ -72,7 +72,7 @@ if ( ! function_exists( 'the_drafting_table_run_themecheck' ) ) {
 			);
 		}
 
-		$pass       = run_themechecks_against_theme( $theme, $theme_slug );
+		$pass = run_themechecks_against_theme( $theme, $theme_slug );
 
 		$check_errors = array();
 		foreach ( $themechecks as $check ) {
