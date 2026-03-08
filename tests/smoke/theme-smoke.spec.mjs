@@ -95,21 +95,21 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	} );
 
 	test( 'single post renders title and featured image', async ( { page } ) => {
-		await page.goto( '/glass-transparency-dissolution-walls/' );
+		await page.goto( '/?name=glass-transparency-dissolution-walls' );
 
 		await expect( page.getByRole( 'heading', { level: 1, name: /Glass, Transparency, and the Dissolution of Walls/i } ) ).toBeVisible();
 		await expect( page.getByRole( 'img', { name: /transparent glass wall facing landscape/i } ) ).toBeVisible();
 	} );
 
 	test( 'archive template renders archive heading and post cards', async ( { page } ) => {
-		await page.goto( '/category/material-studies/' );
+		await page.goto( '/?category_name=material-studies' );
 
 		await expect( page.getByRole( 'heading', { level: 1, name: /Category:\s*Material Studies/i } ) ).toBeVisible();
 		await expect( page.locator( '.journal-card' ).first() ).toBeVisible();
 	} );
 
 	test( 'a11y fixture content from theme test data imports correctly', async ( { page } ) => {
-		await page.goto( '/lorem-ipsum/' );
+		await page.goto( '/?pagename=lorem-ipsum' );
 
 		await expect( page.getByRole( 'heading', { level: 1, name: /Lorem Ipsum/i } ) ).toBeVisible();
 	} );
@@ -122,7 +122,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	} );
 
 	test( '404 template renders fallback content and site navigation', async ( { page } ) => {
-		await page.goto( '/__drafting-table-route-that-does-not-exist__/' );
+		await page.goto( '/?pagename=__drafting-table-route-that-does-not-exist__' );
 
 		await expect( page.getByRole( 'heading', { level: 1, name: /Sheet Not on File/i } ) ).toBeVisible();
 		await expect( page.locator( 'header nav[aria-label*="Main navigation"]' ).first() ).toBeVisible();
@@ -178,7 +178,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await page.goto( '/wp-admin/options-reading.php' );
 		await expect( page.getByRole( 'radio', { name: /Your latest posts/i } ) ).toBeChecked();
 
-		const removedPostResponse = await page.goto( '/glass-transparency-dissolution-walls/' );
+		const removedPostResponse = await page.goto( '/?name=glass-transparency-dissolution-walls' );
 		expect( removedPostResponse?.status() ).toBe( 404 );
 
 		await page.goto( '/wp-admin/themes.php' );
@@ -193,7 +193,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.getByLabel( /Homepage:/i ) ).not.toHaveValue( '0' );
 		await expect( page.getByLabel( /Posts page:/i ) ).not.toHaveValue( '0' );
 
-		const restoredPostResponse = await page.goto( '/glass-transparency-dissolution-walls/' );
+		const restoredPostResponse = await page.goto( '/?name=glass-transparency-dissolution-walls' );
 		expect( restoredPostResponse?.status() ).toBe( 200 );
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: /Glass, Transparency, and the Dissolution of Walls/i } )
@@ -203,13 +203,13 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	test( 'critical accessibility checks pass across templates and imported fixtures', async ( { page } ) => {
 		const routes = [
 			'/',
-			'/journal/',
-			'/glass-transparency-dissolution-walls/',
-			'/category/material-studies/',
+			'/?the_drafting_table_preview_template=home',
+			'/?name=glass-transparency-dissolution-walls',
+			'/?category_name=material-studies',
 			'/?s=glass',
-			'/__drafting-table-route-that-does-not-exist__/',
-			'/lorem-ipsum/',
-			'/keyboard-navigation/',
+			'/?pagename=__drafting-table-route-that-does-not-exist__',
+			'/?pagename=lorem-ipsum',
+			'/?pagename=keyboard-navigation',
 		];
 
 		for ( const routePath of routes ) {
