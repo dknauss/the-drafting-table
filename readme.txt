@@ -4,7 +4,7 @@ Tags: block-patterns, blog, custom-colors, custom-logo, custom-menu, editor-styl
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.6.0
+Stable tag: 0.6.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,12 @@ Go to Appearance > Editor > Templates and select the template you want to edit. 
 * `npm run test:smoke` to run the Playwright smoke suite against the local wp-env site
 
 == Changelog ==
+
+= 0.6.1 =
+* Stabilized Playwright smoke tests in CI by disabling canonical redirects for query-based smoke routes in the test-only MU plugin
+* Added smoke-only REST state endpoint for deterministic assertions around demo installer lifecycle checks
+* Reworked installer rollback smoke assertions to validate stable user-visible outcomes across remove/reinstall flows
+* Hardened single/archive smoke route targeting and removed rewrite-environment assumptions that caused GitHub Actions flakes
 
 = 0.6.0 =
 * Added hardened GitHub Actions QA workflow defaults (CI mode, npm cache, npm ci, concurrency guard, timeout)
