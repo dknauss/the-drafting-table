@@ -377,14 +377,26 @@ if ( ! function_exists( 'the_drafting_table_capture_demo_site_state' ) ) {
 	/**
 	 * Capture mutable site settings before demo install modifies them.
 	 *
-	 * @return array<string, int|string>
+	 * @return array<string, mixed>
 	 */
 	function the_drafting_table_capture_demo_site_state() {
+		$featured_entry_ids = get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_the_drafting_table_featured_entry',
+				'meta_value'     => '1',
+			)
+		);
+
 		return array(
-			'show_on_front'  => (string) get_option( 'show_on_front', 'posts' ),
-			'page_on_front'  => (int) get_option( 'page_on_front', 0 ),
-			'page_for_posts' => (int) get_option( 'page_for_posts', 0 ),
-			'custom_logo'    => (int) get_theme_mod( 'custom_logo', 0 ),
+			'show_on_front'      => (string) get_option( 'show_on_front', 'posts' ),
+			'page_on_front'      => (int) get_option( 'page_on_front', 0 ),
+			'page_for_posts'     => (int) get_option( 'page_for_posts', 0 ),
+			'custom_logo'        => (int) get_theme_mod( 'custom_logo', 0 ),
+			'featured_entry_ids' => array_values( array_unique( array_map( 'absint', (array) $featured_entry_ids ) ) ),
 		);
 	}
 }
@@ -466,7 +478,7 @@ if ( ! function_exists( 'the_drafting_table_restore_demo_site_state' ) ) {
 	/**
 	 * Restore reading settings and custom logo captured pre-install.
 	 *
-	 * @param array<string, int|string> $state Captured previous settings.
+	 * @param array<string, mixed> $state Captured previous settings.
 	 * @return void
 	 */
 	function the_drafting_table_restore_demo_site_state( $state ) {
@@ -481,6 +493,39 @@ if ( ! function_exists( 'the_drafting_table_restore_demo_site_state' ) ) {
 			set_theme_mod( 'custom_logo', absint( $state['custom_logo'] ) );
 		} else {
 			remove_theme_mod( 'custom_logo' );
+		}
+
+		/*
+		 * Backward compatibility: only restore featured-entry markers when
+		 * the manifest captured them. Older manifests do not include this key.
+		 */
+		if ( ! array_key_exists( 'featured_entry_ids', $state ) ) {
+			return;
+		}
+
+		$target_featured_ids  = array_values( array_unique( array_map( 'absint', (array) $state['featured_entry_ids'] ) ) );
+		$current_featured_ids = get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_the_drafting_table_featured_entry',
+				'meta_value'     => '1',
+			)
+		);
+
+		foreach ( $current_featured_ids as $current_featured_id ) {
+			$current_featured_id = (int) $current_featured_id;
+			if ( ! in_array( $current_featured_id, $target_featured_ids, true ) ) {
+				delete_post_meta( $current_featured_id, '_the_drafting_table_featured_entry' );
+			}
+		}
+
+		foreach ( $target_featured_ids as $target_featured_id ) {
+			if ( $target_featured_id && get_post( $target_featured_id ) ) {
+				update_post_meta( $target_featured_id, '_the_drafting_table_featured_entry', '1' );
+			}
 		}
 	}
 }
@@ -540,11 +585,6 @@ if ( ! function_exists( 'the_drafting_table_remove_demo_content' ) ) {
 
 		the_drafting_table_restore_demo_site_state( (array) ( $manifest['previous_state'] ?? array() ) );
 
-		delete_option( 'the_drafting_table_demo_installed' );
-		update_option( 'the_drafting_table_demo_pending', '1' );
-		delete_option( 'the_drafting_table_demo_manifest' );
-		delete_transient( 'the_drafting_table_demo_install_issues' );
-
 		if ( ! empty( $issues ) ) {
 			return new WP_Error(
 				'the_drafting_table_demo_remove_failed',
@@ -552,6 +592,11 @@ if ( ! function_exists( 'the_drafting_table_remove_demo_content' ) ) {
 				$issues
 			);
 		}
+
+		delete_option( 'the_drafting_table_demo_installed' );
+		update_option( 'the_drafting_table_demo_pending', '1' );
+		delete_option( 'the_drafting_table_demo_manifest' );
+		delete_transient( 'the_drafting_table_demo_install_issues' );
 
 		return true;
 	}
@@ -574,9 +619,6 @@ if ( ! function_exists( 'the_drafting_table_configure_reading_settings' ) ) {
 	 * @return bool True when both required pages could be mapped.
 	 */
 	function the_drafting_table_configure_reading_settings( $page_ids = array() ) {
-		// Set a static front page so front-page.html template activates.
-		update_option( 'show_on_front', 'page' );
-
 		// Point "Front page" to About if no dedicated homepage page exists.
 		// The front-page.html template renders regardless of which page is
 		// designated — it is used whenever show_on_front = 'page'.
@@ -587,9 +629,6 @@ if ( ! function_exists( 'the_drafting_table_configure_reading_settings' ) ) {
 				$front_page_id = (int) $front_page->ID;
 			}
 		}
-		if ( $front_page_id ) {
-			update_option( 'page_on_front', $front_page_id );
-		}
 
 		// Point "Posts page" to Journal so home.html (Blog Home) activates.
 		$posts_page_id = ! empty( $page_ids['journal'] ) ? absint( $page_ids['journal'] ) : 0;
@@ -599,11 +638,20 @@ if ( ! function_exists( 'the_drafting_table_configure_reading_settings' ) ) {
 				$posts_page_id = (int) $posts_page->ID;
 			}
 		}
-		if ( $posts_page_id ) {
-			update_option( 'page_for_posts', $posts_page_id );
+
+		/*
+		 * Apply reading settings atomically so failed page resolution does not
+		 * leave "show_on_front=page" with missing front/posts assignments.
+		 */
+		if ( ! $front_page_id || ! $posts_page_id ) {
+			return false;
 		}
 
-		return (bool) ( $front_page_id && $posts_page_id );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $front_page_id );
+		update_option( 'page_for_posts', $posts_page_id );
+
+		return true;
 	}
 }
 

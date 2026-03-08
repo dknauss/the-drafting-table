@@ -125,6 +125,7 @@ class TheDraftingTable_DemoInstaller_Test extends WP_UnitTestCase {
 		);
 		update_option( 'the_drafting_table_demo_installed', '1' );
 		update_option( 'show_on_front', 'page' );
+		delete_option( 'the_drafting_table_demo_pending' );
 
 		$result = the_drafting_table_remove_demo_content();
 		remove_filter( 'pre_delete_post', $block_delete_filter, 10 );
@@ -132,8 +133,13 @@ class TheDraftingTable_DemoInstaller_Test extends WP_UnitTestCase {
 		$this->assertWPError( $result );
 		$this->assertSame( 'the_drafting_table_demo_remove_failed', $result->get_error_code() );
 		$this->assertSame( 'posts', get_option( 'show_on_front' ) );
-		$this->assertSame( '1', get_option( 'the_drafting_table_demo_pending' ) );
-		$this->assertFalse( get_option( 'the_drafting_table_demo_manifest', false ) );
+		$this->assertFalse( get_option( 'the_drafting_table_demo_pending', false ) );
+		$this->assertSame( '1', get_option( 'the_drafting_table_demo_installed' ) );
+		$manifest = get_option( 'the_drafting_table_demo_manifest' );
+		$this->assertIsArray( $manifest );
+		if ( is_array( $manifest ) ) {
+			$this->assertContains( $demo_post_id, (array) $manifest['post_ids'] );
+		}
 	}
 
 	public function test_install_demo_content_is_idempotent_across_repeated_runs() {
