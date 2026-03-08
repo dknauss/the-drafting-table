@@ -3,7 +3,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "env:start": "wp-env start --update",
+        "preflight:env": "node ./scripts/preflight-wp-env.mjs",
+        "env:start": "npm run preflight:env && wp-env start --update",
         "env:stop": "wp-env stop",
         "env:destroy": "wp-env destroy",
         "env:setup": "wp-env run cli wp theme activate the-drafting-table && (wp-env run cli wp plugin is-active the-drafting-table-companion || wp-env run cli wp plugin activate the-drafting-table-companion) && wp-env run cli wp plugin install wordpress-importer --activate --force && wp-env run cli wp eval-file wp-content/themes/the-drafting-table/tests/wp-env/install-demo.php",
