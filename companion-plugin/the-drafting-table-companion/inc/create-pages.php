@@ -20,6 +20,10 @@ if ( ! function_exists( 'the_drafting_table_demo_notice_init' ) ) {
 	 * @return void
 	 */
 	function the_drafting_table_demo_notice_init() {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			return;
+		}
+
 		if ( ! get_option( 'the_drafting_table_demo_installed' ) ) {
 			update_option( 'the_drafting_table_demo_pending', '1' );
 		}
@@ -38,7 +42,11 @@ if ( ! function_exists( 'the_drafting_table_demo_admin_notice' ) ) {
 	 * @return void
 	 */
 	function the_drafting_table_demo_admin_notice() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_theme_options' ) ) {
 			return;
 		}
 
@@ -92,16 +100,26 @@ if ( ! function_exists( 'the_drafting_table_handle_install_demo' ) ) {
 	 * @return void
 	 */
 	function the_drafting_table_handle_install_demo() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			wp_safe_redirect( admin_url( 'themes.php' ) );
+			exit;
+		}
+
+		if ( ! current_user_can( 'edit_theme_options' ) ) {
 			wp_die( esc_html__( 'You do not have permission to perform this action.', 'the-drafting-table' ) );
 		}
 
 		check_admin_referer( 'the_drafting_table_install_demo' );
 
+		$previous_state = the_drafting_table_capture_demo_site_state();
 		$install_result = the_drafting_table_install_demo_content();
 
 		if ( is_wp_error( $install_result ) ) {
 			update_option( 'the_drafting_table_demo_pending', '1' );
+			update_option(
+				'the_drafting_table_demo_manifest',
+				the_drafting_table_collect_demo_manifest( 0, $previous_state )
+			);
 			set_transient(
 				'the_drafting_table_demo_install_issues',
 				(array) $install_result->get_error_data( 'the_drafting_table_demo_install_failed' ),
@@ -111,6 +129,13 @@ if ( ! function_exists( 'the_drafting_table_handle_install_demo' ) ) {
 			exit;
 		}
 
+		update_option(
+			'the_drafting_table_demo_manifest',
+			the_drafting_table_collect_demo_manifest(
+				! empty( $install_result['logo_id'] ) ? (int) $install_result['logo_id'] : 0,
+				$previous_state
+			)
+		);
 		update_option( 'the_drafting_table_demo_installed', '1' );
 		delete_option( 'the_drafting_table_demo_pending' );
 		delete_transient( 'the_drafting_table_demo_install_issues' );
@@ -128,7 +153,12 @@ if ( ! function_exists( 'the_drafting_table_handle_dismiss_demo' ) ) {
 	 * @return void
 	 */
 	function the_drafting_table_handle_dismiss_demo() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			wp_safe_redirect( admin_url( 'themes.php' ) );
+			exit;
+		}
+
+		if ( ! current_user_can( 'edit_theme_options' ) ) {
 			wp_die( esc_html__( 'You do not have permission to perform this action.', 'the-drafting-table' ) );
 		}
 
@@ -149,6 +179,10 @@ if ( ! function_exists( 'the_drafting_table_demo_success_notice' ) ) {
 	 * @return void
 	 */
 	function the_drafting_table_demo_success_notice() {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			return;
+		}
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display flag set by our own nonce-verified install handler via wp_safe_redirect.
 		if ( empty( $_GET['the_drafting_table_demo'] ) || 'installed' !== $_GET['the_drafting_table_demo'] ) {
 			return;
@@ -172,6 +206,10 @@ if ( ! function_exists( 'the_drafting_table_demo_failure_notice' ) ) {
 	 * @return void
 	 */
 	function the_drafting_table_demo_failure_notice() {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			return;
+		}
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display flag set by our own nonce-verified install handler via wp_safe_redirect.
 		if ( empty( $_GET['the_drafting_table_demo'] ) || 'failed' !== $_GET['the_drafting_table_demo'] ) {
 			return;
@@ -197,6 +235,327 @@ if ( ! function_exists( 'the_drafting_table_demo_failure_notice' ) ) {
 	}
 }
 add_action( 'admin_notices', 'the_drafting_table_demo_failure_notice' );
+
+if ( ! function_exists( 'the_drafting_table_demo_management_notice' ) ) {
+	/**
+	 * Show management actions once demo content has been installed.
+	 *
+	 * @return void
+	 */
+	function the_drafting_table_demo_management_notice() {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_theme_options' ) || ! get_option( 'the_drafting_table_demo_installed' ) ) {
+			return;
+		}
+
+		$remove_url = wp_nonce_url(
+			admin_url( 'admin-post.php?action=the_drafting_table_remove_demo' ),
+			'the_drafting_table_remove_demo'
+		);
+		?>
+		<div class="notice notice-info is-dismissible">
+			<p>
+				<strong><?php esc_html_e( 'Demo content tools', 'the-drafting-table' ); ?></strong>
+				<?php esc_html_e( 'Need a clean slate? Remove the imported demo content and restore the previous reading/logo settings.', 'the-drafting-table' ); ?>
+			</p>
+			<p>
+				<a href="<?php echo esc_url( $remove_url ); ?>" class="button">
+					<?php esc_html_e( 'Remove Demo Content', 'the-drafting-table' ); ?>
+				</a>
+			</p>
+		</div>
+		<?php
+	}
+}
+add_action( 'admin_notices', 'the_drafting_table_demo_management_notice' );
+
+if ( ! function_exists( 'the_drafting_table_handle_remove_demo' ) ) {
+	/**
+	 * Handle removal of installer-created demo content.
+	 *
+	 * @return void
+	 */
+	function the_drafting_table_handle_remove_demo() {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			wp_safe_redirect( admin_url( 'themes.php' ) );
+			exit;
+		}
+
+		if ( ! current_user_can( 'edit_theme_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'the-drafting-table' ) );
+		}
+
+		check_admin_referer( 'the_drafting_table_remove_demo' );
+
+		$remove_result = the_drafting_table_remove_demo_content();
+
+		if ( is_wp_error( $remove_result ) ) {
+			set_transient(
+				'the_drafting_table_demo_remove_issues',
+				(array) $remove_result->get_error_data( 'the_drafting_table_demo_remove_failed' ),
+				10 * MINUTE_IN_SECONDS
+			);
+			wp_safe_redirect( admin_url( 'themes.php?the_drafting_table_demo=remove_failed' ) );
+			exit;
+		}
+
+		delete_transient( 'the_drafting_table_demo_remove_issues' );
+		wp_safe_redirect( admin_url( 'themes.php?the_drafting_table_demo=removed' ) );
+		exit;
+	}
+}
+add_action( 'admin_post_the_drafting_table_remove_demo', 'the_drafting_table_handle_remove_demo' );
+
+if ( ! function_exists( 'the_drafting_table_demo_removed_notice' ) ) {
+	/**
+	 * Show a one-time success notice when demo content is removed.
+	 *
+	 * @return void
+	 */
+	function the_drafting_table_demo_removed_notice() {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display flag set by our own nonce-verified remove handler via wp_safe_redirect.
+		if ( empty( $_GET['the_drafting_table_demo'] ) || 'removed' !== $_GET['the_drafting_table_demo'] ) {
+			return;
+		}
+		?>
+		<div class="notice notice-success is-dismissible">
+			<p>
+				<strong><?php esc_html_e( 'Demo content removed.', 'the-drafting-table' ); ?></strong>
+				<?php esc_html_e( 'Installer-created posts, pages, media, and terms have been cleaned up.', 'the-drafting-table' ); ?>
+			</p>
+		</div>
+		<?php
+	}
+}
+add_action( 'admin_notices', 'the_drafting_table_demo_removed_notice' );
+
+if ( ! function_exists( 'the_drafting_table_demo_remove_failure_notice' ) ) {
+	/**
+	 * Show actionable errors when demo removal is incomplete.
+	 *
+	 * @return void
+	 */
+	function the_drafting_table_demo_remove_failure_notice() {
+		if ( ! the_drafting_table_companion_is_theme_active() ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display flag set by our own nonce-verified remove handler via wp_safe_redirect.
+		if ( empty( $_GET['the_drafting_table_demo'] ) || 'remove_failed' !== $_GET['the_drafting_table_demo'] ) {
+			return;
+		}
+
+		$issues = get_transient( 'the_drafting_table_demo_remove_issues' );
+		$issues = is_array( $issues ) ? $issues : array();
+		?>
+		<div class="notice notice-error">
+			<p>
+				<strong><?php esc_html_e( 'Demo content removal was incomplete.', 'the-drafting-table' ); ?></strong>
+				<?php esc_html_e( 'Please resolve the issues below and run the remover again.', 'the-drafting-table' ); ?>
+			</p>
+			<?php if ( ! empty( $issues ) ) : ?>
+				<ul style="margin-left:1.25em;list-style:disc;">
+					<?php foreach ( $issues as $issue ) : ?>
+						<li><?php echo esc_html( $issue ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+}
+add_action( 'admin_notices', 'the_drafting_table_demo_remove_failure_notice' );
+
+if ( ! function_exists( 'the_drafting_table_capture_demo_site_state' ) ) {
+	/**
+	 * Capture mutable site settings before demo install modifies them.
+	 *
+	 * @return array<string, int|string>
+	 */
+	function the_drafting_table_capture_demo_site_state() {
+		return array(
+			'show_on_front'  => (string) get_option( 'show_on_front', 'posts' ),
+			'page_on_front'  => (int) get_option( 'page_on_front', 0 ),
+			'page_for_posts' => (int) get_option( 'page_for_posts', 0 ),
+			'custom_logo'    => (int) get_theme_mod( 'custom_logo', 0 ),
+		);
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_collect_demo_manifest' ) ) {
+	/**
+	 * Collect installer-managed IDs so demo content can be removed safely.
+	 *
+	 * @param int                      $logo_id        Imported logo attachment ID.
+	 * @param array<string, int>|array $previous_state Site settings captured pre-install.
+	 * @return array<string, mixed>
+	 */
+	function the_drafting_table_collect_demo_manifest( $logo_id = 0, $previous_state = array() ) {
+		$post_ids = get_posts(
+			array(
+				'post_type'      => array( 'post', 'page' ),
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_the_drafting_table_demo_content',
+				'meta_value'     => '1',
+			)
+		);
+
+		$asset_ids = get_posts(
+			array(
+				'post_type'      => 'attachment',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_the_drafting_table_demo_asset',
+			)
+		);
+
+		$featured_ids = get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_the_drafting_table_featured_entry',
+				'meta_value'     => '1',
+			)
+		);
+
+		$term_ids = array();
+		foreach ( array( 'category', 'post_tag' ) as $taxonomy ) {
+			$tax_term_ids = get_terms(
+				array(
+					'taxonomy'   => $taxonomy,
+					'hide_empty' => false,
+					'fields'     => 'ids',
+					'meta_query' => array(
+						array(
+							'key'   => '_the_drafting_table_demo_content',
+							'value' => '1',
+						),
+					),
+				)
+			);
+
+			if ( ! is_wp_error( $tax_term_ids ) ) {
+				$term_ids = array_merge( $term_ids, array_map( 'absint', $tax_term_ids ) );
+			}
+		}
+
+		return array(
+			'post_ids'       => array_values( array_unique( array_map( 'absint', $post_ids ) ) ),
+			'asset_ids'      => array_values( array_unique( array_map( 'absint', $asset_ids ) ) ),
+			'featured_ids'   => array_values( array_unique( array_map( 'absint', $featured_ids ) ) ),
+			'term_ids'       => array_values( array_unique( array_map( 'absint', $term_ids ) ) ),
+			'logo_id'        => absint( $logo_id ),
+			'previous_state' => is_array( $previous_state ) ? $previous_state : array(),
+		);
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_restore_demo_site_state' ) ) {
+	/**
+	 * Restore reading settings and custom logo captured pre-install.
+	 *
+	 * @param array<string, int|string> $state Captured previous settings.
+	 * @return void
+	 */
+	function the_drafting_table_restore_demo_site_state( $state ) {
+		$state = is_array( $state ) ? $state : array();
+
+		$show_on_front = ! empty( $state['show_on_front'] ) ? (string) $state['show_on_front'] : 'posts';
+		update_option( 'show_on_front', in_array( $show_on_front, array( 'posts', 'page' ), true ) ? $show_on_front : 'posts' );
+		update_option( 'page_on_front', ! empty( $state['page_on_front'] ) ? absint( $state['page_on_front'] ) : 0 );
+		update_option( 'page_for_posts', ! empty( $state['page_for_posts'] ) ? absint( $state['page_for_posts'] ) : 0 );
+
+		if ( isset( $state['custom_logo'] ) ) {
+			set_theme_mod( 'custom_logo', absint( $state['custom_logo'] ) );
+		} else {
+			remove_theme_mod( 'custom_logo' );
+		}
+	}
+}
+
+if ( ! function_exists( 'the_drafting_table_remove_demo_content' ) ) {
+	/**
+	 * Removes installer-created demo content and restores prior site settings.
+	 *
+	 * @return true|WP_Error
+	 */
+	function the_drafting_table_remove_demo_content() {
+		$manifest = get_option( 'the_drafting_table_demo_manifest' );
+		$manifest = is_array( $manifest ) ? $manifest : array();
+		$issues   = array();
+
+		$post_ids = array_map( 'absint', (array) ( $manifest['post_ids'] ?? array() ) );
+		foreach ( $post_ids as $post_id ) {
+			if ( $post_id && false === wp_delete_post( $post_id, true ) ) {
+				$issues[] = __( 'One or more demo posts/pages could not be deleted.', 'the-drafting-table' );
+				break;
+			}
+		}
+
+		$asset_ids = array_map( 'absint', (array) ( $manifest['asset_ids'] ?? array() ) );
+		foreach ( $asset_ids as $asset_id ) {
+			if ( $asset_id && false === wp_delete_attachment( $asset_id, true ) ) {
+				$issues[] = __( 'One or more demo media assets could not be deleted.', 'the-drafting-table' );
+				break;
+			}
+		}
+
+		$term_ids = array_map( 'absint', (array) ( $manifest['term_ids'] ?? array() ) );
+		foreach ( $term_ids as $term_id ) {
+			$taxonomy = null;
+
+			if ( term_exists( $term_id, 'category' ) ) {
+				$taxonomy = 'category';
+			} elseif ( term_exists( $term_id, 'post_tag' ) ) {
+				$taxonomy = 'post_tag';
+			}
+
+			if ( ! $taxonomy ) {
+				continue;
+			}
+
+			$deleted = wp_delete_term( $term_id, $taxonomy );
+			if ( is_wp_error( $deleted ) || ! $deleted ) {
+				$issues[] = __( 'One or more demo terms could not be deleted.', 'the-drafting-table' );
+				break;
+			}
+		}
+
+		$featured_ids = array_map( 'absint', (array) ( $manifest['featured_ids'] ?? array() ) );
+		foreach ( $featured_ids as $featured_id ) {
+			delete_post_meta( $featured_id, '_the_drafting_table_featured_entry' );
+		}
+
+		the_drafting_table_restore_demo_site_state( (array) ( $manifest['previous_state'] ?? array() ) );
+
+		delete_option( 'the_drafting_table_demo_installed' );
+		update_option( 'the_drafting_table_demo_pending', '1' );
+		delete_option( 'the_drafting_table_demo_manifest' );
+		delete_transient( 'the_drafting_table_demo_install_issues' );
+
+		if ( ! empty( $issues ) ) {
+			return new WP_Error(
+				'the_drafting_table_demo_remove_failed',
+				__( 'The demo remover completed with errors.', 'the-drafting-table' ),
+				$issues
+			);
+		}
+
+		return true;
+	}
+}
 
 // -------------------------------------------------------------------------
 // Content creation — called only from the install handler above.
@@ -652,21 +1011,23 @@ if ( ! function_exists( 'the_drafting_table_create_pages' ) ) {
 				continue;
 			}
 
-			$page_id = wp_insert_post(
-				array(
-					'post_title'   => sanitize_text_field( $page_data['title'] ),
-					'post_name'    => sanitize_title( $page_data['slug'] ),
-					'post_content' => wp_kses_post( $page_data['content'] ),
-					'post_status'  => 'publish',
-					'post_type'    => 'page',
-					'meta_input'   => array(
-						'_wp_page_template' => sanitize_text_field( $page_data['template'] ),
-					),
-				)
-			);
+				$page_id = wp_insert_post(
+					array(
+						'post_title'   => sanitize_text_field( $page_data['title'] ),
+						'post_name'    => sanitize_title( $page_data['slug'] ),
+						'post_content' => wp_kses_post( $page_data['content'] ),
+						'post_status'  => 'publish',
+						'post_type'    => 'page',
+						'meta_input'   => array(
+							'_wp_page_template' => sanitize_text_field( $page_data['template'] ),
+							'_the_drafting_table_demo_content' => '1',
+						),
+					)
+				);
 
 			if ( ! is_wp_error( $page_id ) ) {
 				update_post_meta( $page_id, '_wp_page_template', sanitize_text_field( $page_data['template'] ) );
+				update_post_meta( $page_id, '_the_drafting_table_demo_content', '1' );
 				$page_ids[ $page_data['slug'] ] = (int) $page_id;
 			}
 		}
@@ -696,13 +1057,14 @@ if ( ! function_exists( 'the_drafting_table_create_sample_posts' ) ) {
 
 		$cat_ids = array();
 		foreach ( $categories as $slug => $name ) {
-			$existing = get_term_by( 'slug', $slug, 'category' );
+				$existing = get_term_by( 'slug', $slug, 'category' );
 			if ( $existing ) {
 				$cat_ids[ $slug ] = $existing->term_id;
 			} else {
 				$term = wp_insert_term( $name, 'category', array( 'slug' => $slug ) );
 				if ( ! is_wp_error( $term ) ) {
 					$cat_ids[ $slug ] = $term['term_id'];
+					update_term_meta( $term['term_id'], '_the_drafting_table_demo_content', '1' );
 				}
 			}
 		}
@@ -727,13 +1089,14 @@ if ( ! function_exists( 'the_drafting_table_create_sample_posts' ) ) {
 
 		$tag_ids = array();
 		foreach ( $tags as $slug => $name ) {
-			$existing = get_term_by( 'slug', $slug, 'post_tag' );
+				$existing = get_term_by( 'slug', $slug, 'post_tag' );
 			if ( $existing ) {
 				$tag_ids[ $slug ] = $existing->term_id;
 			} else {
 				$term = wp_insert_term( $name, 'post_tag', array( 'slug' => $slug ) );
 				if ( ! is_wp_error( $term ) ) {
 					$tag_ids[ $slug ] = $term['term_id'];
+					update_term_meta( $term['term_id'], '_the_drafting_table_demo_content', '1' );
 				}
 			}
 		}
@@ -761,24 +1124,28 @@ if ( ! function_exists( 'the_drafting_table_create_sample_posts' ) ) {
 				}
 			}
 
-			$post_id = wp_insert_post(
-				array(
-					'post_title'    => sanitize_text_field( $post_data['title'] ),
-					'post_name'     => sanitize_title( $post_data['slug'] ),
-					'post_content'  => wp_kses_post( $post_data['content'] ),
-					'post_excerpt'  => sanitize_text_field( $post_data['excerpt'] ),
-					'post_status'   => 'publish',
-					'post_type'     => 'post',
-					'post_date'     => sanitize_text_field( $post_data['date'] ),
-					'post_category' => array_map( 'absint', $post_cats ),
-				)
-			);
+				$post_id = wp_insert_post(
+					array(
+						'post_title'    => sanitize_text_field( $post_data['title'] ),
+						'post_name'     => sanitize_title( $post_data['slug'] ),
+						'post_content'  => wp_kses_post( $post_data['content'] ),
+						'post_excerpt'  => sanitize_text_field( $post_data['excerpt'] ),
+						'post_status'   => 'publish',
+						'post_type'     => 'post',
+						'post_date'     => sanitize_text_field( $post_data['date'] ),
+						'post_category' => array_map( 'absint', $post_cats ),
+						'meta_input'    => array(
+							'_the_drafting_table_demo_content' => '1',
+						),
+					)
+				);
 
 			if ( ! is_wp_error( $post_id ) && ! empty( $post_tags ) ) {
 				wp_set_post_terms( $post_id, $post_tags, 'post_tag' );
 			}
 
 			if ( ! is_wp_error( $post_id ) ) {
+				update_post_meta( $post_id, '_the_drafting_table_demo_content', '1' );
 				$post_ids[ $post_data['slug'] ] = (int) $post_id;
 			}
 		}
