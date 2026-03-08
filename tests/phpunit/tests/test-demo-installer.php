@@ -91,6 +91,35 @@ class TheDraftingTable_DemoInstaller_Test extends WP_UnitTestCase {
 		$this->assertSame( 0, get_post_thumbnail_id( $post_id ) );
 	}
 
+	public function test_create_pages_skips_failed_inserts_that_return_zero() {
+		$force_insert_failure = static function () {
+			return true;
+		};
+		add_filter( 'wp_insert_post_empty_content', $force_insert_failure, 10, 2 );
+
+		$page_ids = the_drafting_table_create_pages();
+
+		remove_filter( 'wp_insert_post_empty_content', $force_insert_failure, 10 );
+
+		$this->assertArrayNotHasKey( 'about', $page_ids );
+		$this->assertArrayNotHasKey( 'projects', $page_ids );
+		$this->assertArrayNotHasKey( 'journal', $page_ids );
+		$this->assertArrayNotHasKey( 'principles', $page_ids );
+	}
+
+	public function test_create_sample_posts_skips_failed_inserts_that_return_zero() {
+		$force_insert_failure = static function () {
+			return true;
+		};
+		add_filter( 'wp_insert_post_empty_content', $force_insert_failure, 10, 2 );
+
+		$post_ids = the_drafting_table_create_sample_posts();
+
+		remove_filter( 'wp_insert_post_empty_content', $force_insert_failure, 10 );
+
+		$this->assertSame( array(), $post_ids );
+	}
+
 	public function test_remove_demo_content_returns_error_and_still_restores_state_on_delete_failure() {
 		$demo_post_id = self::factory()->post->create(
 			array(

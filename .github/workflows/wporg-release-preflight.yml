@@ -20,7 +20,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.3'
           tools: composer
 
       - name: Install Composer dependencies
@@ -37,6 +37,9 @@ jobs:
 
       - name: Run Node syntax lint
         run: npm run lint:node
+
+      - name: Validate documentation commands
+        run: npm run check:docs
 
       - name: Start wp-env
         run: npm run env:start

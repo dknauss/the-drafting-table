@@ -846,10 +846,15 @@ if ( ! function_exists( 'the_drafting_table_import_demo_asset' ) ) {
 				'post_status'    => 'inherit',
 				'post_mime_type' => sanitize_mime_type( $asset['mime'] ),
 			),
-			$upload['file']
+			$upload['file'],
+			0,
+			true
 		);
 
-		if ( is_wp_error( $attachment_id ) ) {
+		if ( is_wp_error( $attachment_id ) || $attachment_id <= 0 ) {
+			if ( file_exists( $upload['file'] ) ) {
+				wp_delete_file( $upload['file'] );
+			}
 			return 0;
 		}
 
@@ -1083,25 +1088,28 @@ if ( ! function_exists( 'the_drafting_table_create_pages' ) ) {
 				continue;
 			}
 
-				$page_id = wp_insert_post(
-					array(
-						'post_title'   => sanitize_text_field( $page_data['title'] ),
-						'post_name'    => sanitize_title( $page_data['slug'] ),
-						'post_content' => wp_kses_post( $page_data['content'] ),
-						'post_status'  => 'publish',
-						'post_type'    => 'page',
-						'meta_input'   => array(
-							'_wp_page_template' => sanitize_text_field( $page_data['template'] ),
-							'_the_drafting_table_demo_content' => '1',
-						),
-					)
-				);
+			$page_id = wp_insert_post(
+				array(
+					'post_title'   => sanitize_text_field( $page_data['title'] ),
+					'post_name'    => sanitize_title( $page_data['slug'] ),
+					'post_content' => wp_kses_post( $page_data['content'] ),
+					'post_status'  => 'publish',
+					'post_type'    => 'page',
+					'meta_input'   => array(
+						'_wp_page_template'                => sanitize_text_field( $page_data['template'] ),
+						'_the_drafting_table_demo_content' => '1',
+					),
+				),
+				true
+			);
 
-			if ( ! is_wp_error( $page_id ) ) {
-				update_post_meta( $page_id, '_wp_page_template', sanitize_text_field( $page_data['template'] ) );
-				update_post_meta( $page_id, '_the_drafting_table_demo_content', '1' );
-				$page_ids[ $page_data['slug'] ] = (int) $page_id;
+			if ( is_wp_error( $page_id ) || $page_id <= 0 ) {
+				continue;
 			}
+
+			update_post_meta( $page_id, '_wp_page_template', sanitize_text_field( $page_data['template'] ) );
+			update_post_meta( $page_id, '_the_drafting_table_demo_content', '1' );
+			$page_ids[ $page_data['slug'] ] = (int) $page_id;
 		}
 
 		return $page_ids;
@@ -1196,30 +1204,33 @@ if ( ! function_exists( 'the_drafting_table_create_sample_posts' ) ) {
 				}
 			}
 
-				$post_id = wp_insert_post(
-					array(
-						'post_title'    => sanitize_text_field( $post_data['title'] ),
-						'post_name'     => sanitize_title( $post_data['slug'] ),
-						'post_content'  => wp_kses_post( $post_data['content'] ),
-						'post_excerpt'  => sanitize_text_field( $post_data['excerpt'] ),
-						'post_status'   => 'publish',
-						'post_type'     => 'post',
-						'post_date'     => sanitize_text_field( $post_data['date'] ),
-						'post_category' => array_map( 'absint', $post_cats ),
-						'meta_input'    => array(
-							'_the_drafting_table_demo_content' => '1',
-						),
-					)
-				);
+			$post_id = wp_insert_post(
+				array(
+					'post_title'    => sanitize_text_field( $post_data['title'] ),
+					'post_name'     => sanitize_title( $post_data['slug'] ),
+					'post_content'  => wp_kses_post( $post_data['content'] ),
+					'post_excerpt'  => sanitize_text_field( $post_data['excerpt'] ),
+					'post_status'   => 'publish',
+					'post_type'     => 'post',
+					'post_date'     => sanitize_text_field( $post_data['date'] ),
+					'post_category' => array_map( 'absint', $post_cats ),
+					'meta_input'    => array(
+						'_the_drafting_table_demo_content' => '1',
+					),
+				),
+				true
+			);
 
-			if ( ! is_wp_error( $post_id ) && ! empty( $post_tags ) ) {
+			if ( is_wp_error( $post_id ) || $post_id <= 0 ) {
+				continue;
+			}
+
+			if ( ! empty( $post_tags ) ) {
 				wp_set_post_terms( $post_id, $post_tags, 'post_tag' );
 			}
 
-			if ( ! is_wp_error( $post_id ) ) {
-				update_post_meta( $post_id, '_the_drafting_table_demo_content', '1' );
-				$post_ids[ $post_data['slug'] ] = (int) $post_id;
-			}
+			update_post_meta( $post_id, '_the_drafting_table_demo_content', '1' );
+			$post_ids[ $post_data['slug'] ] = (int) $post_id;
 		}
 
 		return $post_ids;
