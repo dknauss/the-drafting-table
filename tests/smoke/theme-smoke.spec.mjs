@@ -1,19 +1,29 @@
 import { expect, test } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 test.describe( 'The Drafting Table smoke suite', () => {
 	test.describe.configure( { mode: 'serial' } );
 
-	async function loginToAdmin( page ) {
-		await page.goto( '/wp-admin/' );
-
-		if ( page.url().includes( '/wp-login.php' ) ) {
-			await page.locator( '#user_login' ).fill( 'admin' );
-			await page.locator( '#user_pass' ).fill( 'password' );
+	async function loginToUser( page, username, password ) {
+		await page.goto( '/wp-login.php?action=logout' );
+		if ( await page.getByRole( 'link', { name: /log out/i } ).count() ) {
 			await Promise.all( [
-				page.waitForURL( ( url ) => ! url.pathname.includes( '/wp-login.php' ), { timeout: 15000 } ),
-				page.locator( '#wp-submit' ).click(),
+				page.waitForURL( /wp-login\.php\?loggedout=true/ ),
+				page.getByRole( 'link', { name: /log out/i } ).click(),
 			] );
 		}
+
+		await page.goto( '/wp-login.php' );
+		await page.locator( '#user_login' ).fill( username );
+		await page.locator( '#user_pass' ).fill( password );
+		await Promise.all( [
+			page.waitForURL( ( url ) => ! url.pathname.includes( '/wp-login.php' ), { timeout: 15000 } ),
+			page.locator( '#wp-submit' ).click(),
+		] );
+	}
+
+	async function loginToAdmin( page ) {
+		await loginToUser( page, 'admin', 'password' );
 	}
 
 	async function ensureDemoInstalled( page ) {
@@ -32,6 +42,27 @@ test.describe( 'The Drafting Table smoke suite', () => {
 				installDemoLink.click(),
 			] );
 		}
+	}
+
+	function formatAxeViolations( violations ) {
+		return violations
+			.map(
+				( violation ) =>
+					`${ violation.id }: ${ violation.help } (${ violation.nodes.length } node${ violation.nodes.length === 1 ? '' : 's' })`
+			)
+			.join( '\n' );
+	}
+
+	async function assertNoCriticalA11yViolations( page, routePath ) {
+		await page.goto( routePath );
+
+		const results = await new AxeBuilder( { page } ).analyze();
+		const criticalViolations = results.violations.filter( ( violation ) => 'critical' === violation.impact );
+
+		expect(
+			criticalViolations,
+			`Critical accessibility violations on ${ routePath }:\n${ formatAxeViolations( criticalViolations ) }`
+		).toEqual( [] );
 	}
 
 	test.beforeEach( async ( { page } ) => {
@@ -111,6 +142,16 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.getByRole( 'link', { name: /Remove Demo Content|Install Demo Content/i } ) ).toBeVisible();
 	} );
 
+	test( 'installer actions are hidden and blocked for editor role', async ( { page } ) => {
+		await loginToUser( page, 'editor', 'password' );
+		await page.goto( '/wp-admin/themes.php' );
+
+		await expect( page.getByRole( 'link', { name: /Remove Demo Content|Install Demo Content/i } ) ).toHaveCount( 0 );
+
+		await page.goto( '/wp-admin/admin-post.php?action=the_drafting_table_install_demo' );
+		await expect( page.getByText( /You do not have permission to perform this action/i ) ).toBeVisible();
+	} );
+
 	test( 'installer behavior removes and reinstalls demo content with setting rollback', async ( { page } ) => {
 		await loginToAdmin( page );
 		await page.goto( '/wp-admin/themes.php' );
@@ -156,5 +197,22 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: /Glass, Transparency, and the Dissolution of Walls/i } )
 		).toBeVisible();
+	} );
+
+	test( 'critical accessibility checks pass across templates and imported fixtures', async ( { page } ) => {
+		const routes = [
+			'/',
+			'/journal/',
+			'/glass-transparency-dissolution-walls/',
+			'/category/material-studies/',
+			'/?s=glass',
+			'/__drafting-table-route-that-does-not-exist__/',
+			'/lorem-ipsum/',
+			'/keyboard-navigation/',
+		];
+
+		for ( const routePath of routes ) {
+			await assertNoCriticalA11yViolations( page, routePath );
+		}
 	} );
 } );

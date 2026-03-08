@@ -145,6 +145,18 @@ foreach ( $auto_drafts as $auto_draft ) {
 
 update_option( 'blogname', 'The Drafting Table' );
 update_option( 'blogdescription', 'Notes on Form, Nature, and the Drawn Line' );
+
+$editor_user_id = username_exists( 'editor' );
+if ( ! $editor_user_id ) {
+	$editor_user_id = wp_create_user( 'editor', 'password', 'editor@example.com' );
+}
+if ( $editor_user_id && ! is_wp_error( $editor_user_id ) ) {
+	$editor_user = get_user_by( 'id', (int) $editor_user_id );
+	if ( $editor_user instanceof WP_User ) {
+		$editor_user->set_role( 'editor' );
+	}
+}
+
 global $wp_rewrite;
 if ( isset( $wp_rewrite ) && $wp_rewrite instanceof WP_Rewrite ) {
 	$wp_rewrite->set_permalink_structure( '/%postname%/' );

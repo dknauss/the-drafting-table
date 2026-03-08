@@ -17,6 +17,7 @@
         "qa": "npm run env:start && npm run env:setup && npm run test:phpunit && npm run wporg:check && npm run test:smoke"
     },
     "devDependencies": {
+        "@axe-core/playwright": "^4.11.1",
         "@playwright/test": "^1.49.1",
         "@wordpress/env": "^10.17.0"
     }
