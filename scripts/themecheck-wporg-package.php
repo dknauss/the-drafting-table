@@ -77,12 +77,12 @@ if ( ! function_exists( 'the_drafting_table_themecheck_copy_dir' ) ) {
 	}
 }
 
-$theme_root   = trailingslashit( get_theme_root() );
-$source_dir   = $theme_root . 'the-drafting-table/dist/wporg/the-drafting-table';
-$target_slug  = 'the-drafting-table-wporg-check';
-$target_dir   = $theme_root . $target_slug;
-$runner_file  = $theme_root . 'the-drafting-table/run-themecheck.php';
-$active_theme = get_stylesheet();
+$theme_root           = trailingslashit( get_theme_root() );
+$source_dir           = $theme_root . 'the-drafting-table/dist/wporg/the-drafting-table';
+$target_slug          = 'the-drafting-table';
+$isolated_theme_root  = $theme_root . '.the-drafting-table-themecheck';
+$target_dir           = $isolated_theme_root . DIRECTORY_SEPARATOR . $target_slug;
+$runner_file          = $theme_root . 'the-drafting-table/run-themecheck.php';
 
 if ( ! is_dir( $source_dir ) ) {
 	fwrite( STDERR, "WP.org package directory was not found: {$source_dir}\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- CLI-only status output.
@@ -94,7 +94,7 @@ if ( ! file_exists( $runner_file ) ) {
 	exit( 1 );
 }
 
-the_drafting_table_themecheck_delete_dir( $target_dir );
+the_drafting_table_themecheck_delete_dir( $isolated_theme_root );
 if ( ! the_drafting_table_themecheck_copy_dir( $source_dir, $target_dir ) ) {
 	fwrite( STDERR, "Could not copy built package into a temporary theme directory.\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- CLI-only status output.
 	exit( 1 );
@@ -105,16 +105,18 @@ $result = array(
 );
 
 try {
-	switch_theme( $target_slug );
+	register_theme_directory( $isolated_theme_root );
+	wp_clean_themes_cache( true );
 
 	define( 'THE_DRAFTING_TABLE_THEMECHECK_AUTO_RUN', false );
 	define( 'THE_DRAFTING_TABLE_THEMECHECK_THEME_SLUG', $target_slug );
+	define( 'THE_DRAFTING_TABLE_THEMECHECK_THEME_ROOT', $isolated_theme_root );
 	require_once $runner_file;
 
-	$result = the_drafting_table_run_themecheck( $target_slug );
+	$result = the_drafting_table_run_themecheck( $target_slug, $isolated_theme_root );
 } finally {
-	switch_theme( $active_theme );
-	the_drafting_table_themecheck_delete_dir( $target_dir );
+	wp_clean_themes_cache( true );
+	the_drafting_table_themecheck_delete_dir( $isolated_theme_root );
 }
 
 exit( ! empty( $result['pass'] ) ? 0 : 1 );

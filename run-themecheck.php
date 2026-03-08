@@ -34,9 +34,10 @@ if ( ! function_exists( 'the_drafting_table_run_themecheck' ) ) {
 	 * Executes Theme Check and prints summarized results.
 	 *
 	 * @param string $theme_slug Theme slug to validate.
+	 * @param string $theme_root Optional theme root to resolve the slug from.
 	 * @return array{pass:bool, counts:array<string,int>}
 	 */
-	function the_drafting_table_run_themecheck( $theme_slug = '' ) {
+	function the_drafting_table_run_themecheck( $theme_slug = '', $theme_root = '' ) {
 		$counts = array(
 			'REQUIRED'    => 0,
 			'RECOMMENDED' => 0,
@@ -57,7 +58,20 @@ if ( ! function_exists( 'the_drafting_table_run_themecheck' ) ) {
 		global $themechecks;
 
 		$theme_slug = $theme_slug ? sanitize_key( $theme_slug ) : get_stylesheet();
-		$theme      = wp_get_theme( $theme_slug );
+		$theme_root = $theme_root ? wp_normalize_path( untrailingslashit( (string) $theme_root ) ) : '';
+		$theme      = $theme_root ? wp_get_theme( $theme_slug, $theme_root ) : wp_get_theme( $theme_slug );
+
+		if ( ! $theme->exists() ) {
+			$counts['REQUIRED'] = 1;
+			echo 'REQUIRED: Theme slug could not be resolved for Theme Check.' . "\n\n";
+			echo 'Pass: NO' . "\n";
+			echo 'Counts: REQUIRED=1 RECOMMENDED=0 WARNING=0 INFO=0' . "\n";
+			return array(
+				'pass'   => false,
+				'counts' => $counts,
+			);
+		}
+
 		$pass       = run_themechecks_against_theme( $theme, $theme_slug );
 
 		$check_errors = array();
@@ -100,6 +114,7 @@ if ( ! function_exists( 'the_drafting_table_run_themecheck' ) ) {
 
 if ( ! defined( 'THE_DRAFTING_TABLE_THEMECHECK_AUTO_RUN' ) || THE_DRAFTING_TABLE_THEMECHECK_AUTO_RUN ) {
 	$theme_slug = defined( 'THE_DRAFTING_TABLE_THEMECHECK_THEME_SLUG' ) ? (string) constant( 'THE_DRAFTING_TABLE_THEMECHECK_THEME_SLUG' ) : '';
-	$result     = the_drafting_table_run_themecheck( $theme_slug );
+	$theme_root = defined( 'THE_DRAFTING_TABLE_THEMECHECK_THEME_ROOT' ) ? (string) constant( 'THE_DRAFTING_TABLE_THEMECHECK_THEME_ROOT' ) : '';
+	$result     = the_drafting_table_run_themecheck( $theme_slug, $theme_root );
 	exit( ! empty( $result['pass'] ) ? 0 : 1 );
 }
