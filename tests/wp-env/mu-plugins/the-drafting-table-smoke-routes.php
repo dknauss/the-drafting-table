@@ -92,3 +92,36 @@ if ( ! function_exists( 'the_drafting_table_smoke_render_template_preview' ) ) {
 	}
 }
 add_action( 'template_redirect', 'the_drafting_table_smoke_render_template_preview', 0 );
+
+if ( ! function_exists( 'the_drafting_table_smoke_disable_canonical_redirects' ) ) {
+	/**
+	 * Keeps query-based smoke routes on their original URLs.
+	 *
+	 * CI environments can fail Apache-level pretty-permalink rewrites even when
+	 * WordPress query routes resolve correctly. Returning false here keeps smoke
+	 * requests on query URLs like `/?p=123` and `/?cat=9`.
+	 *
+	 * @param string|false|null $redirect_url Candidate canonical URL.
+	 * @return string|false|null
+	 */
+	function the_drafting_table_smoke_disable_canonical_redirects( $redirect_url ) {
+		if ( ! isset( $_GET ) || ! is_array( $_GET ) ) {
+			return $redirect_url;
+		}
+
+		$query_routes = array(
+			'p',
+			'cat',
+			'the_drafting_table_preview_template',
+		);
+
+		foreach ( $query_routes as $query_key ) {
+			if ( array_key_exists( $query_key, $_GET ) ) {
+				return false;
+			}
+		}
+
+		return $redirect_url;
+	}
+}
+add_filter( 'redirect_canonical', 'the_drafting_table_smoke_disable_canonical_redirects' );
