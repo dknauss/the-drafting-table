@@ -142,8 +142,9 @@ if ( packagedFunctions.includes( 'inc/create-pages.php' ) || packagedFunctions.i
 }
 
 if ( process.env.CI === 'true' ) {
-	runCommand( 'npm run themecheck' );
-	pass( 'Theme Check executed in CI mode.' );
+	runCommand( 'npx wp-env run cli wp plugin install theme-check --activate' );
+	runCommand( 'npx wp-env run cli wp eval-file wp-content/themes/the-drafting-table/scripts/themecheck-wporg-package.php' );
+	pass( 'Theme Check executed in CI mode against the built package profile.' );
 } else {
 	console.log( 'INFO: Skipping Theme Check locally (set CI=true to enforce).' );
 }
