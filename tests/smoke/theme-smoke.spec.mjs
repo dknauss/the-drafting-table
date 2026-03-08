@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 test.describe( 'The Drafting Table smoke suite', () => {
+	test.describe.configure( { mode: 'serial' } );
+
 	async function loginToAdmin( page ) {
 		await page.goto( '/wp-admin/' );
 
@@ -13,6 +15,28 @@ test.describe( 'The Drafting Table smoke suite', () => {
 			] );
 		}
 	}
+
+	async function ensureDemoInstalled( page ) {
+		await loginToAdmin( page );
+		await page.goto( '/wp-admin/themes.php' );
+
+		const removeDemoLink = page.getByRole( 'link', { name: /Remove Demo Content/i } ).first();
+		if ( ( await removeDemoLink.count() ) > 0 ) {
+			return;
+		}
+
+		const installDemoLink = page.getByRole( 'link', { name: /Install Demo Content/i } ).first();
+		if ( ( await installDemoLink.count() ) > 0 ) {
+			await Promise.all( [
+				page.waitForURL( /the_drafting_table_demo=installed/ ),
+				installDemoLink.click(),
+			] );
+		}
+	}
+
+	test.beforeEach( async ( { page } ) => {
+		await ensureDemoInstalled( page );
+	} );
 
 	test( 'front page renders hero media and portable navigation', async ( { page } ) => {
 		await page.goto( '/' );
@@ -85,5 +109,52 @@ test.describe( 'The Drafting Table smoke suite', () => {
 
 		await expect( page.getByText( /Demo content tools|Install Demo Content/i ) ).toBeVisible();
 		await expect( page.getByRole( 'link', { name: /Remove Demo Content|Install Demo Content/i } ) ).toBeVisible();
+	} );
+
+	test( 'installer behavior removes and reinstalls demo content with setting rollback', async ( { page } ) => {
+		await loginToAdmin( page );
+		await page.goto( '/wp-admin/themes.php' );
+
+		const removeDemoLink = page.getByRole( 'link', { name: /Remove Demo Content/i } ).first();
+		const installDemoLink = page.getByRole( 'link', { name: /Install Demo Content/i } ).first();
+
+		if ( ( await removeDemoLink.count() ) === 0 ) {
+			await expect( installDemoLink ).toBeVisible();
+			await Promise.all( [
+				page.waitForURL( /the_drafting_table_demo=installed/ ),
+				installDemoLink.click(),
+			] );
+			await page.goto( '/wp-admin/themes.php' );
+		}
+
+		await expect( removeDemoLink ).toBeVisible();
+		await Promise.all( [
+			page.waitForURL( /the_drafting_table_demo=removed/ ),
+			removeDemoLink.click(),
+		] );
+
+		await page.goto( '/wp-admin/options-reading.php' );
+		await expect( page.getByRole( 'radio', { name: /Your latest posts/i } ) ).toBeChecked();
+
+		const removedPostResponse = await page.goto( '/glass-transparency-dissolution-walls/' );
+		expect( removedPostResponse?.status() ).toBe( 404 );
+
+		await page.goto( '/wp-admin/themes.php' );
+		await expect( installDemoLink ).toBeVisible();
+		await Promise.all( [
+			page.waitForURL( /the_drafting_table_demo=installed/ ),
+			installDemoLink.click(),
+		] );
+
+		await page.goto( '/wp-admin/options-reading.php' );
+		await expect( page.getByRole( 'radio', { name: /A static page/i } ) ).toBeChecked();
+		await expect( page.getByLabel( /Homepage:/i ) ).not.toHaveValue( '0' );
+		await expect( page.getByLabel( /Posts page:/i ) ).not.toHaveValue( '0' );
+
+		const restoredPostResponse = await page.goto( '/glass-transparency-dissolution-walls/' );
+		expect( restoredPostResponse?.status() ).toBe( 200 );
+		await expect(
+			page.getByRole( 'heading', { level: 1, name: /Glass, Transparency, and the Dissolution of Walls/i } )
+		).toBeVisible();
 	} );
 } );
