@@ -30,22 +30,69 @@ if ( ! function_exists( 'the_drafting_table_install_demo_content' ) ) {
 	exit( 1 );
 }
 
-if ( ! class_exists( 'WP_Importer' ) ) {
-	require_once ABSPATH . 'wp-admin/includes/class-wp-importer.php';
-}
+if ( ! function_exists( 'the_drafting_table_load_wp_importer' ) ) {
+	/**
+	 * Loads WordPress importer classes in CLI-safe order.
+	 *
+	 * @return bool
+	 */
+	function the_drafting_table_load_wp_importer() {
+		if ( class_exists( 'WP_Import' ) ) {
+			return true;
+		}
 
-if ( ! class_exists( 'WP_Import' ) ) {
-	$importer_file = WP_PLUGIN_DIR . '/wordpress-importer/wordpress-importer.php';
+		if ( ! class_exists( 'WP_Importer' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/class-wp-importer.php';
+		}
 
-	if ( file_exists( $importer_file ) ) {
-		require_once $importer_file;
+		$importer_dir = WP_PLUGIN_DIR . '/wordpress-importer';
+		if ( ! is_dir( $importer_dir ) ) {
+			return false;
+		}
+
+		$required_files = array(
+			$importer_dir . '/compat.php',
+			$importer_dir . '/parsers/class-wxr-parser.php',
+			$importer_dir . '/parsers/class-wxr-parser-simplexml.php',
+			$importer_dir . '/parsers/class-wxr-parser-xml.php',
+			$importer_dir . '/parsers/class-wxr-parser-regex.php',
+			$importer_dir . '/parsers/class-wxr-parser-xml-processor.php',
+			$importer_dir . '/class-wp-import.php',
+		);
+
+		if ( ! class_exists( 'WordPress\XML\XMLProcessor' ) && file_exists( $importer_dir . '/php-toolkit/load.php' ) ) {
+			require_once $importer_dir . '/php-toolkit/load.php';
+		}
+
+		foreach ( $required_files as $required_file ) {
+			if ( ! file_exists( $required_file ) ) {
+				return false;
+			}
+			require_once $required_file;
+		}
+
+		return class_exists( 'WP_Import' );
 	}
 }
 
-if ( ! class_exists( 'WP_Import' ) ) {
+if ( ! the_drafting_table_load_wp_importer() ) {
 	fwrite( STDERR, "WordPress Importer plugin is not available.\n" );
 	exit( 1 );
 }
+
+if ( ! function_exists( 'the_drafting_table_demo_upload_mimes' ) ) {
+	/**
+	 * Allows bundled SVG fixtures used by the demo installer.
+	 *
+	 * @param array<string, string> $mimes Allowed MIME map.
+	 * @return array<string, string>
+	 */
+	function the_drafting_table_demo_upload_mimes( $mimes ) {
+		$mimes['svg'] = 'image/svg+xml';
+		return $mimes;
+	}
+}
+add_filter( 'upload_mimes', 'the_drafting_table_demo_upload_mimes' );
 
 if ( ! function_exists( 'the_drafting_table_import_wxr_fixture' ) ) {
 	/**
@@ -98,7 +145,12 @@ foreach ( $auto_drafts as $auto_draft ) {
 
 update_option( 'blogname', 'The Drafting Table' );
 update_option( 'blogdescription', 'Notes on Form, Nature, and the Drawn Line' );
-update_option( 'permalink_structure', '/%postname%/' );
+global $wp_rewrite;
+if ( isset( $wp_rewrite ) && $wp_rewrite instanceof WP_Rewrite ) {
+	$wp_rewrite->set_permalink_structure( '/%postname%/' );
+} else {
+	update_option( 'permalink_structure', '/%postname%/' );
+}
 
 $fixtures = array(
 	get_theme_file_path( 'tests/fixtures/themeunittestdata.wordpress.xml' ),
@@ -138,3 +190,11 @@ update_option( 'the_drafting_table_demo_installed', '1' );
 delete_option( 'the_drafting_table_demo_pending' );
 
 flush_rewrite_rules();
+
+if ( ! function_exists( 'save_mod_rewrite_rules' ) ) {
+	require_once ABSPATH . 'wp-admin/includes/misc.php';
+}
+
+if ( function_exists( 'save_mod_rewrite_rules' ) ) {
+	save_mod_rewrite_rules();
+}

@@ -773,7 +773,20 @@ if ( ! function_exists( 'the_drafting_table_import_demo_asset' ) ) {
 			return 0;
 		}
 
+		$allow_svg_upload = null;
+		if ( ! empty( $asset['mime'] ) && 'image/svg+xml' === sanitize_mime_type( $asset['mime'] ) ) {
+			$allow_svg_upload = static function( $mimes ) {
+				$mimes['svg'] = 'image/svg+xml';
+				return $mimes;
+			};
+			add_filter( 'upload_mimes', $allow_svg_upload );
+		}
+
 		$upload = wp_upload_bits( wp_basename( $asset['file'] ), null, $contents );
+
+		if ( $allow_svg_upload ) {
+			remove_filter( 'upload_mimes', $allow_svg_upload );
+		}
 
 		if ( ! empty( $upload['error'] ) || empty( $upload['file'] ) ) {
 			return 0;
@@ -866,7 +879,13 @@ if ( ! function_exists( 'the_drafting_table_assign_demo_media' ) ) {
 				continue;
 			}
 
-			if ( false === set_post_thumbnail( $post_ids[ $slug ], $attachment_ids[ $asset_key ] ) ) {
+			$thumbnail_set = set_post_thumbnail( $post_ids[ $slug ], $attachment_ids[ $asset_key ] );
+			if ( ! $thumbnail_set ) {
+				update_post_meta( (int) $post_ids[ $slug ], '_thumbnail_id', (int) $attachment_ids[ $asset_key ] );
+				$thumbnail_set = ( (int) get_post_thumbnail_id( (int) $post_ids[ $slug ] ) === (int) $attachment_ids[ $asset_key ] );
+			}
+
+			if ( ! $thumbnail_set ) {
 				$result['failed_assets'][] = $asset_key;
 				continue;
 			}
@@ -941,7 +960,12 @@ if ( ! function_exists( 'the_drafting_table_mark_demo_featured_post' ) ) {
 			}
 		}
 
-		return false !== update_post_meta( $featured_post_id, '_the_drafting_table_featured_entry', '1' );
+		$update_result = update_post_meta( $featured_post_id, '_the_drafting_table_featured_entry', '1' );
+		if ( false === $update_result && '1' !== (string) get_post_meta( $featured_post_id, '_the_drafting_table_featured_entry', true ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }
 
