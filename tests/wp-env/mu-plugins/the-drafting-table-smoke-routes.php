@@ -164,12 +164,35 @@ if ( ! function_exists( 'the_drafting_table_smoke_register_rest_routes' ) ) {
 						)
 					);
 
+					$demo_featured_query = new WP_Query(
+						array(
+							'post_type'      => 'post',
+							'post_status'    => 'publish',
+							'posts_per_page' => 1,
+							'fields'         => 'ids',
+							'meta_query'     => array(
+								'relation' => 'AND',
+								array(
+									'key'   => '_the_drafting_table_featured_entry',
+									'value' => '1',
+								),
+								array(
+									'key'   => '_the_drafting_table_demo_content',
+									'value' => '1',
+								),
+							),
+							'no_found_rows'  => true,
+						)
+					);
+
 					$featured_post_id = ! empty( $featured_query->posts ) ? (int) $featured_query->posts[0] : 0;
+					$demo_featured_post_id = ! empty( $demo_featured_query->posts ) ? (int) $demo_featured_query->posts[0] : 0;
 					$demo_content_ids = array_map( 'intval', (array) $demo_content_query->posts );
 
 					return rest_ensure_response(
 						array(
 							'featured_post_id' => $featured_post_id,
+							'demo_featured_post_id' => $demo_featured_post_id,
 							'demo_content_ids' => $demo_content_ids,
 							'demo_content_count' => count( $demo_content_ids ),
 						)

@@ -67,7 +67,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 
 	async function resolveFeaturedPostQueryPath( page ) {
 		const demoState = await getDemoState( page );
-		const featuredPostId = Number( demoState.featured_post_id || 0 );
+		const featuredPostId = Number( demoState.demo_featured_post_id || 0 );
 		expect( featuredPostId ).toBeGreaterThan( 0 );
 		return `/?p=${ featuredPostId }`;
 	}
@@ -199,7 +199,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 
 		await expect( removeDemoLink ).toBeVisible();
 		const demoStateBeforeRemoval = await getDemoState( page );
-		expect( Number( demoStateBeforeRemoval.featured_post_id || 0 ) ).toBeGreaterThan( 0 );
+		expect( Number( demoStateBeforeRemoval.demo_featured_post_id || 0 ) ).toBeGreaterThan( 0 );
 		expect( Number( demoStateBeforeRemoval.demo_content_count || 0 ) ).toBeGreaterThan( 0 );
 
 		await Promise.all( [
@@ -211,7 +211,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.getByRole( 'radio', { name: /Your latest posts/i } ) ).toBeChecked();
 
 		const demoStateAfterRemoval = await getDemoState( page );
-		expect( Number( demoStateAfterRemoval.featured_post_id || 0 ) ).toBe( 0 );
+		expect( Number( demoStateAfterRemoval.demo_featured_post_id || 0 ) ).toBe( 0 );
 		expect( Number( demoStateAfterRemoval.demo_content_count || 0 ) ).toBe( 0 );
 
 		await page.goto( '/wp-admin/themes.php' );
@@ -227,7 +227,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.getByLabel( /Posts page:/i ) ).not.toHaveValue( '0' );
 
 		const demoStateAfterRestore = await getDemoState( page );
-		const featuredPostIdAfterRestore = Number( demoStateAfterRestore.featured_post_id || 0 );
+		const featuredPostIdAfterRestore = Number( demoStateAfterRestore.demo_featured_post_id || 0 );
 		expect( featuredPostIdAfterRestore ).toBeGreaterThan( 0 );
 		expect( Number( demoStateAfterRestore.demo_content_count || 0 ) ).toBeGreaterThan( 0 );
 
