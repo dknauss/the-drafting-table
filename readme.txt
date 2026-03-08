@@ -4,7 +4,7 @@ Tags: block-patterns, blog, custom-colors, custom-logo, custom-menu, editor-styl
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.5.0
+Stable tag: 0.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,14 @@ Go to Appearance > Editor > Templates and select the template you want to edit. 
 * `npm run test:smoke` to run the Playwright smoke suite against the local wp-env site
 
 == Changelog ==
+
+= 0.6.0 =
+* Added hardened GitHub Actions QA workflow defaults (CI mode, npm cache, npm ci, concurrency guard, timeout)
+* Expanded PHPUnit coverage for demo installer edge cases and query marker behavior
+* Expanded Playwright coverage with installer lifecycle behavior (remove and reinstall demo content + reading settings rollback/restore)
+* Updated Theme Check package runner to validate against an isolated slug-matched theme root (removes directory-name warning)
+* Added `npm run wporg:dry-run` script for isolated packaged-theme install/activate verification with fatal-log checks
+* Added manual `WP.org Release Preflight` workflow and a release checklist document
 
 = 0.5.0 =
 * Replaced broken database-bound navigation references with portable Page List navigation in the header and footer
