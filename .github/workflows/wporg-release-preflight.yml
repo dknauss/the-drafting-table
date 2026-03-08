@@ -1,0 +1,55 @@
+name: WP.org Release Preflight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CI: 'true'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci --no-fund --no-audit
+
+      - name: Start wp-env
+        run: npm run env:start
+
+      - name: Provision demo content
+        run: npm run env:setup
+
+      - name: Run PHPUnit suite
+        run: npm run test:phpunit
+
+      - name: Run WP.org preflight checks
+        run: npm run wporg:check
+
+      - name: Run isolated package install dry run
+        run: npm run wporg:dry-run
+
+      - name: Stop wp-env
+        if: always()
+        run: npm run env:stop

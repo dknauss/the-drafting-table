@@ -13,6 +13,7 @@
         "test:smoke:install": "playwright install --with-deps chromium",
         "build:wporg": "bash ./scripts/build-wporg.sh",
         "wporg:check": "node ./scripts/wporg-check.mjs",
+        "wporg:dry-run": "node ./scripts/wporg-dry-run.mjs",
         "qa": "npm run env:start && npm run env:setup && npm run test:phpunit && npm run wporg:check && npm run test:smoke"
     },
     "devDependencies": {
