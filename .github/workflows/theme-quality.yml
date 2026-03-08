@@ -41,8 +41,11 @@ jobs:
       - name: Provision demo content
         run: npm run env:setup
 
-      - name: Run Theme Check
-        run: npm run themecheck
+      - name: Run PHPUnit suite
+        run: npm run test:phpunit
+
+      - name: Run WP.org preflight checks
+        run: npm run wporg:check
 
       - name: Run smoke tests
         run: npm run test:smoke
