@@ -85,9 +85,9 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	} );
 
 	test( 'home template renders featured and archive entries with demo media', async ( { page } ) => {
-		await page.goto( '/__drafting-table/home-preview/' );
+		await page.goto( '/?the_drafting_table_preview_template=home' );
 
-		await expect( page ).toHaveURL( /\/__drafting-table\/home-preview\/$/ );
+		await expect( page ).toHaveURL( /the_drafting_table_preview_template=home/ );
 		await expect( page.getByRole( 'heading', { level: 1 } ).first() ).toBeVisible();
 		const journalCardCount = await page.locator( '.journal-card' ).count();
 		expect( journalCardCount ).toBeGreaterThanOrEqual( 3 );
@@ -129,7 +129,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	} );
 
 	test( 'index fallback preview keeps the footer outside main', async ( { page } ) => {
-		await page.goto( '/__drafting-table/index-preview/' );
+		await page.goto( '/?the_drafting_table_preview_template=index' );
 		await expect( page.locator( 'header nav[aria-label*="Main navigation"]' ).first() ).toBeVisible();
 		await expect( page.locator( 'footer nav[aria-label*="Footer navigation"]' ).first() ).toBeVisible();
 		await expect( page.locator( 'main footer' ) ).toHaveCount( 0 );
