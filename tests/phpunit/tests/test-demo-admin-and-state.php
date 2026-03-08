@@ -146,6 +146,135 @@ class TheDraftingTable_DemoAdminAndState_Test extends WP_UnitTestCase {
 		$this->assertSame( 0, (int) get_theme_mod( 'custom_logo', 0 ) );
 	}
 
+	public function test_capture_demo_site_state_includes_existing_featured_entry_ids() {
+		$featured_one_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
+		$featured_two_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
+
+		update_post_meta( $featured_one_id, '_the_drafting_table_featured_entry', '1' );
+		update_post_meta( $featured_two_id, '_the_drafting_table_featured_entry', '1' );
+
+		$state = the_drafting_table_capture_demo_site_state();
+		$this->assertArrayHasKey( 'featured_entry_ids', $state );
+
+		$captured_ids = array_map( 'intval', (array) $state['featured_entry_ids'] );
+		sort( $captured_ids );
+		$expected_ids = array( $featured_one_id, $featured_two_id );
+		sort( $expected_ids );
+
+		$this->assertSame( $expected_ids, $captured_ids );
+	}
+
+	public function test_restore_demo_site_state_restores_featured_entry_markers_from_captured_state() {
+		$preexisting_featured_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
+		$demo_featured_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
+		$unexpected_featured_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
+
+		update_post_meta( $demo_featured_id, '_the_drafting_table_featured_entry', '1' );
+		update_post_meta( $unexpected_featured_id, '_the_drafting_table_featured_entry', '1' );
+
+		the_drafting_table_restore_demo_site_state(
+			array(
+				'show_on_front'      => 'posts',
+				'page_on_front'      => 0,
+				'page_for_posts'     => 0,
+				'custom_logo'        => 0,
+				'featured_entry_ids' => array( $preexisting_featured_id ),
+			)
+		);
+
+		$this->assertSame( '1', get_post_meta( $preexisting_featured_id, '_the_drafting_table_featured_entry', true ) );
+		$this->assertSame( '', (string) get_post_meta( $demo_featured_id, '_the_drafting_table_featured_entry', true ) );
+		$this->assertSame( '', (string) get_post_meta( $unexpected_featured_id, '_the_drafting_table_featured_entry', true ) );
+	}
+
+	public function test_restore_demo_site_state_keeps_featured_markers_when_state_omits_key() {
+		$featured_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
+		update_post_meta( $featured_id, '_the_drafting_table_featured_entry', '1' );
+
+		the_drafting_table_restore_demo_site_state(
+			array(
+				'show_on_front'  => 'posts',
+				'page_on_front'  => 0,
+				'page_for_posts' => 0,
+				'custom_logo'    => 0,
+			)
+		);
+
+		$this->assertSame( '1', get_post_meta( $featured_id, '_the_drafting_table_featured_entry', true ) );
+	}
+
+	public function test_configure_reading_settings_is_atomic_when_required_pages_are_missing() {
+		$existing_front_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'Existing Front',
+				'post_name'   => 'existing-front',
+			)
+		);
+		$existing_posts_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'Existing Posts',
+				'post_name'   => 'existing-posts',
+			)
+		);
+		$about_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'About',
+				'post_name'   => 'about',
+			)
+		);
+
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $existing_front_id );
+		update_option( 'page_for_posts', $existing_posts_id );
+
+		$result = the_drafting_table_configure_reading_settings(
+			array(
+				'about' => $about_id,
+			)
+		);
+
+		$this->assertFalse( $result );
+		$this->assertSame( 'page', get_option( 'show_on_front' ) );
+		$this->assertSame( $existing_front_id, (int) get_option( 'page_on_front' ) );
+		$this->assertSame( $existing_posts_id, (int) get_option( 'page_for_posts' ) );
+	}
+
 	public function test_configure_reading_settings_falls_back_to_about_and_journal_slugs() {
 		$about_id = self::factory()->post->create(
 			array(
