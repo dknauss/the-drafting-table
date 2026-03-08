@@ -12,6 +12,7 @@
 	<file>functions.php</file>
 	<file>run-themecheck.php</file>
 	<file>inc</file>
+	<file>companion-plugin/the-drafting-table-companion</file>
 	<file>patterns</file>
 
 	<exclude-pattern>tests/*</exclude-pattern>
