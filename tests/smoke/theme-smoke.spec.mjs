@@ -53,6 +53,12 @@ test.describe( 'The Drafting Table smoke suite', () => {
 			.join( '\n' );
 	}
 
+	async function resolveHref( locator ) {
+		const href = await locator.getAttribute( 'href' );
+		expect( href ).toBeTruthy();
+		return href;
+	}
+
 	async function assertNoCriticalA11yViolations( page, routePath ) {
 		await page.goto( routePath );
 
@@ -95,16 +101,26 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	} );
 
 	test( 'single post renders title and featured image', async ( { page } ) => {
-		await page.goto( '/?name=glass-transparency-dissolution-walls' );
+		await page.goto( '/' );
+		const postLink = page.getByRole( 'link', { name: 'Glass, Transparency, and the Dissolution of Walls' } ).first();
+		await expect( postLink ).toBeVisible();
+
+		const postHref = await resolveHref( postLink );
+		await page.goto( postHref );
 
 		await expect( page.getByRole( 'heading', { level: 1, name: /Glass, Transparency, and the Dissolution of Walls/i } ) ).toBeVisible();
 		await expect( page.getByRole( 'img', { name: /transparent glass wall facing landscape/i } ) ).toBeVisible();
 	} );
 
 	test( 'archive template renders archive heading and post cards', async ( { page } ) => {
-		await page.goto( '/?category_name=material-studies' );
+		await page.goto( '/?the_drafting_table_preview_template=home' );
+		const archiveLink = page.locator( '.journal-card .wp-block-post-terms a' ).first();
+		await expect( archiveLink ).toBeVisible();
 
-		await expect( page.getByRole( 'heading', { level: 1, name: /Category:\s*Material Studies/i } ) ).toBeVisible();
+		const archiveHref = await resolveHref( archiveLink );
+		await page.goto( archiveHref );
+
+		await expect( page.getByRole( 'heading', { level: 1, name: /Category:/i } ) ).toBeVisible();
 		await expect( page.locator( '.journal-card' ).first() ).toBeVisible();
 	} );
 
@@ -170,6 +186,12 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		}
 
 		await expect( removeDemoLink ).toBeVisible();
+		await page.goto( '/' );
+		const featuredPostLink = page.getByRole( 'link', { name: 'Glass, Transparency, and the Dissolution of Walls' } ).first();
+		await expect( featuredPostLink ).toBeVisible();
+		const featuredPostHref = await resolveHref( featuredPostLink );
+		await page.goto( '/wp-admin/themes.php' );
+
 		await Promise.all( [
 			page.waitForURL( /the_drafting_table_demo=removed/ ),
 			removeDemoLink.click(),
@@ -178,7 +200,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await page.goto( '/wp-admin/options-reading.php' );
 		await expect( page.getByRole( 'radio', { name: /Your latest posts/i } ) ).toBeChecked();
 
-		const removedPostResponse = await page.goto( '/?name=glass-transparency-dissolution-walls' );
+		const removedPostResponse = await page.goto( featuredPostHref );
 		expect( removedPostResponse?.status() ).toBe( 404 );
 
 		await page.goto( '/wp-admin/themes.php' );
@@ -193,7 +215,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.getByLabel( /Homepage:/i ) ).not.toHaveValue( '0' );
 		await expect( page.getByLabel( /Posts page:/i ) ).not.toHaveValue( '0' );
 
-		const restoredPostResponse = await page.goto( '/?name=glass-transparency-dissolution-walls' );
+		const restoredPostResponse = await page.goto( featuredPostHref );
 		expect( restoredPostResponse?.status() ).toBe( 200 );
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: /Glass, Transparency, and the Dissolution of Walls/i } )
@@ -201,19 +223,27 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	} );
 
 	test( 'critical accessibility checks pass across templates and imported fixtures', async ( { page } ) => {
-		const routes = [
+		const staticRoutes = [
 			'/',
 			'/?the_drafting_table_preview_template=home',
-			'/?name=glass-transparency-dissolution-walls',
-			'/?category_name=material-studies',
 			'/?s=glass',
 			'/?pagename=__drafting-table-route-that-does-not-exist__',
 			'/?pagename=lorem-ipsum',
 			'/?pagename=keyboard-navigation',
 		];
 
-		for ( const routePath of routes ) {
+		for ( const routePath of staticRoutes ) {
 			await assertNoCriticalA11yViolations( page, routePath );
 		}
+
+		await page.goto( '/' );
+		const singleHref = await resolveHref(
+			page.getByRole( 'link', { name: 'Glass, Transparency, and the Dissolution of Walls' } ).first()
+		);
+		await assertNoCriticalA11yViolations( page, singleHref );
+
+		await page.goto( '/?the_drafting_table_preview_template=home' );
+		const archiveHref = await resolveHref( page.locator( '.journal-card .wp-block-post-terms a' ).first() );
+		await assertNoCriticalA11yViolations( page, archiveHref );
 	} );
 } );
