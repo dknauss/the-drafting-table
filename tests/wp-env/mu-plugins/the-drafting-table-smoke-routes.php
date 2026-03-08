@@ -35,6 +35,11 @@ if ( ! function_exists( 'the_drafting_table_smoke_add_rewrite_rules' ) ) {
 			'index.php?the_drafting_table_preview_template=index',
 			'top'
 		);
+		add_rewrite_rule(
+			'^__drafting-table/home-preview/?$',
+			'index.php?the_drafting_table_preview_template=home',
+			'top'
+		);
 	}
 }
 add_action( 'init', 'the_drafting_table_smoke_add_rewrite_rules' );

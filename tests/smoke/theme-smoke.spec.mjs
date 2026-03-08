@@ -85,9 +85,9 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	} );
 
 	test( 'home template renders featured and archive entries with demo media', async ( { page } ) => {
-		await page.goto( '/journal/' );
+		await page.goto( '/__drafting-table/home-preview/' );
 
-		await expect( page ).toHaveURL( /\/journal\/$/ );
+		await expect( page ).toHaveURL( /\/__drafting-table\/home-preview\/$/ );
 		await expect( page.getByRole( 'heading', { level: 1 } ).first() ).toBeVisible();
 		const journalCardCount = await page.locator( '.journal-card' ).count();
 		expect( journalCardCount ).toBeGreaterThanOrEqual( 3 );
