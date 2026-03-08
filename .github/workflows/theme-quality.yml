@@ -43,6 +43,9 @@ jobs:
       - name: Install npm dependencies
         run: npm ci --no-fund --no-audit
 
+      - name: Run Node syntax lint
+        run: npm run lint:node
+
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
@@ -52,8 +55,11 @@ jobs:
       - name: Provision demo content
         run: npm run env:setup
 
-      - name: Run PHPUnit suite
-        run: npm run test:phpunit
+      - name: Run PHPUnit coverage suite
+        run: npm run test:phpunit:coverage
+
+      - name: Validate PHPUnit coverage thresholds
+        run: npm run test:phpunit:coverage:check
 
       - name: Run WP.org preflight checks
         run: npm run wporg:check

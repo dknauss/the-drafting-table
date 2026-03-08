@@ -7,14 +7,17 @@
         "env:stop": "wp-env stop",
         "env:destroy": "wp-env destroy",
         "env:setup": "wp-env run cli wp theme activate the-drafting-table && (wp-env run cli wp plugin is-active the-drafting-table-companion || wp-env run cli wp plugin activate the-drafting-table-companion) && wp-env run cli wp plugin install wordpress-importer --activate --force && wp-env run cli wp eval-file wp-content/themes/the-drafting-table/tests/wp-env/install-demo.php",
+        "lint:node": "node ./scripts/lint-node.mjs",
         "themecheck": "wp-env run cli wp plugin install theme-check --activate && wp-env run cli wp eval-file wp-content/themes/the-drafting-table/run-themecheck.php",
         "test:phpunit": "wp-env run tests-cli php wp-content/themes/the-drafting-table/vendor/bin/phpunit -c wp-content/themes/the-drafting-table/phpunit.xml.dist",
+        "test:phpunit:coverage": "wp-env run tests-cli bash -lc 'mkdir -p wp-content/themes/the-drafting-table/test-results/phpunit && phpdbg -qrr wp-content/themes/the-drafting-table/vendor/bin/phpunit -c wp-content/themes/the-drafting-table/phpunit.xml.dist --coverage-clover wp-content/themes/the-drafting-table/test-results/phpunit/clover.xml --coverage-text'",
+        "test:phpunit:coverage:check": "node ./scripts/check-phpunit-coverage.mjs",
         "test:smoke": "playwright test",
         "test:smoke:install": "playwright install --with-deps chromium",
         "build:wporg": "bash ./scripts/build-wporg.sh",
         "wporg:check": "node ./scripts/wporg-check.mjs",
         "wporg:dry-run": "node ./scripts/wporg-dry-run.mjs",
-        "qa": "npm run env:start && npm run env:setup && npm run test:phpunit && npm run wporg:check && npm run test:smoke"
+        "qa": "npm run env:start && npm run env:setup && npm run lint:node && npm run test:phpunit:coverage && npm run test:phpunit:coverage:check && npm run wporg:check && npm run test:smoke"
     },
     "devDependencies": {
         "@axe-core/playwright": "^4.11.1",

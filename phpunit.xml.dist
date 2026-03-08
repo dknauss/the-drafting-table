@@ -4,6 +4,14 @@
     colors="true"
     beStrictAboutTestsThatDoNotTestAnything="false"
 >
+    <coverage processUncoveredFiles="false">
+        <include>
+            <file>functions.php</file>
+            <directory suffix=".php">inc</directory>
+            <directory suffix=".php">companion-plugin/the-drafting-table-companion/inc</directory>
+            <file>companion-plugin/the-drafting-table-companion/the-drafting-table-companion.php</file>
+        </include>
+    </coverage>
     <testsuites>
         <testsuite name="The Drafting Table PHPUnit">
             <directory suffix=".php">tests/phpunit/tests</directory>
