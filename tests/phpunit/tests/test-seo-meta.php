@@ -149,14 +149,11 @@ class TheDraftingTable_SeoMeta_Test extends WP_UnitTestCase {
 		$this->assertSame( '', trim( $front_output ) );
 	}
 
-	/**
-	 * @runInSeparateProcess
-	 * @preserveGlobalState disabled
-	 */
 	public function test_seo_meta_bails_when_external_seo_plugin_is_detected() {
-		if ( ! class_exists( 'All_in_One_SEO_Pack', false ) ) {
-			eval( 'class All_in_One_SEO_Pack {}' );
-		}
+		$external_seo_plugin_filter = static function () {
+			return true;
+		};
+		add_filter( 'the_drafting_table_has_external_seo_plugin', $external_seo_plugin_filter );
 
 		$post_id = self::factory()->post->create(
 			array(
@@ -167,9 +164,14 @@ class TheDraftingTable_SeoMeta_Test extends WP_UnitTestCase {
 		);
 		$this->go_to( get_permalink( $post_id ) );
 
-		ob_start();
-		the_drafting_table_seo_meta();
-		$output = trim( (string) ob_get_clean() );
+		$output = '';
+		try {
+			ob_start();
+			the_drafting_table_seo_meta();
+			$output = trim( (string) ob_get_clean() );
+		} finally {
+			remove_filter( 'the_drafting_table_has_external_seo_plugin', $external_seo_plugin_filter );
+		}
 
 		$this->assertSame( '', $output );
 	}

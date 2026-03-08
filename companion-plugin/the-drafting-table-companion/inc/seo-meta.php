@@ -15,7 +15,9 @@ if ( ! function_exists( 'the_drafting_table_seo_meta' ) ) {
 		}
 
 		// Defer to dedicated SEO plugins to avoid duplicate meta descriptions.
-		if ( defined( 'WPSEO_VERSION' ) || defined( 'RANKMATH_VERSION' ) || defined( 'AIOSEO_VERSION' ) || class_exists( 'All_in_One_SEO_Pack' ) ) {
+		$has_external_seo_plugin = defined( 'WPSEO_VERSION' ) || defined( 'RANKMATH_VERSION' ) || defined( 'AIOSEO_VERSION' ) || class_exists( 'All_in_One_SEO_Pack' );
+		$has_external_seo_plugin = (bool) apply_filters( 'the_drafting_table_has_external_seo_plugin', $has_external_seo_plugin );
+		if ( $has_external_seo_plugin ) {
 			return;
 		}
 
