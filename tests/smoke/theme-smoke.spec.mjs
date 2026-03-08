@@ -59,11 +59,21 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		return response.json();
 	}
 
-	async function resolvePostQueryPathBySlug( page, slug ) {
+	async function findPostIdBySlug( page, slug ) {
 		const posts = await getJson( page, `/?rest_route=/wp/v2/posts&slug=${ encodeURIComponent( slug ) }&_fields=id` );
 		expect( Array.isArray( posts ) ).toBeTruthy();
-		expect( posts.length ).toBeGreaterThan( 0 );
-		return `/?p=${ posts[ 0 ].id }`;
+
+		if ( 0 === posts.length ) {
+			return null;
+		}
+
+		return posts[ 0 ].id;
+	}
+
+	async function resolvePostQueryPathBySlug( page, slug ) {
+		const postId = await findPostIdBySlug( page, slug );
+		expect( postId ).not.toBeNull();
+		return `/?p=${ postId }`;
 	}
 
 	async function resolveCategoryQueryPathBySlug( page, slug ) {
@@ -192,7 +202,10 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		}
 
 		await expect( removeDemoLink ).toBeVisible();
-		const featuredPostQueryPathBeforeRemoval = await resolvePostQueryPathBySlug( page, 'glass-transparency-dissolution-walls' );
+		const featuredPostSlug = 'glass-transparency-dissolution-walls';
+		const featuredPostId = await findPostIdBySlug( page, featuredPostSlug );
+		expect( featuredPostId ).not.toBeNull();
+		const featuredPostQueryPathBeforeRemoval = `/?p=${ featuredPostId }`;
 
 		await Promise.all( [
 			page.waitForURL( /the_drafting_table_demo=removed/ ),
@@ -202,8 +215,8 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await page.goto( '/wp-admin/options-reading.php' );
 		await expect( page.getByRole( 'radio', { name: /Your latest posts/i } ) ).toBeChecked();
 
-		const removedPostResponse = await page.goto( featuredPostQueryPathBeforeRemoval );
-		expect( removedPostResponse?.status() ).toBe( 404 );
+		const removedPostId = await findPostIdBySlug( page, featuredPostSlug );
+		expect( removedPostId ).toBeNull();
 
 		await page.goto( '/wp-admin/themes.php' );
 		await expect( installDemoLink ).toBeVisible();
@@ -217,7 +230,9 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.getByLabel( /Homepage:/i ) ).not.toHaveValue( '0' );
 		await expect( page.getByLabel( /Posts page:/i ) ).not.toHaveValue( '0' );
 
-		const featuredPostQueryPathAfterRestore = await resolvePostQueryPathBySlug( page, 'glass-transparency-dissolution-walls' );
+		const featuredPostIdAfterRestore = await findPostIdBySlug( page, featuredPostSlug );
+		expect( featuredPostIdAfterRestore ).not.toBeNull();
+		const featuredPostQueryPathAfterRestore = `/?p=${ featuredPostIdAfterRestore }`;
 		const restoredPostResponse           = await page.goto( featuredPostQueryPathAfterRestore );
 		expect( restoredPostResponse?.status() ).toBe( 200 );
 		await expect(
