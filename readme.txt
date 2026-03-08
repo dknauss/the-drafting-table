@@ -34,7 +34,7 @@ The theme features:
 1. In your WordPress dashboard, go to Appearance > Themes > Add New.
 2. Search for "The Drafting Table" and click Install, then Activate.
 3. Go to Appearance > Editor to customize your site using the Site Editor.
-4. Use the demo-content notice in Appearance > Themes to install the starter pages, journal entries, featured artwork, logo, and reading settings.
+4. (Optional) Install and activate the companion plugin if you want demo-content onboarding and built-in SEO/meta helpers.
 5. Use the included block patterns (under Patterns in the inserter) to build pages quickly.
 
 == Frequently Asked Questions ==
@@ -53,7 +53,7 @@ The bundled header and footer use a Page List navigation block, so newly created
 
 = How do I install the demo content? =
 
-After activating the theme, visit Appearance > Themes and use the "Install Demo Content" action in the admin notice. The installer creates the starter pages, sample journal posts, featured images, the site logo, and the static front page / posts page reading settings.
+Demo-content onboarding is provided by the optional companion plugin. After activating both the theme and companion plugin, visit Appearance > Themes and use the "Install Demo Content" action in the admin notice. The installer creates starter pages, sample journal posts, featured images, the site logo, and static front page / posts page reading settings.
 
 = Can I use this theme for a non-architecture site? =
 
@@ -68,18 +68,21 @@ Go to Appearance > Editor > Templates and select the template you want to edit. 
 * `composer install` then `composer lint:php` for WordPress Coding Standards checks
 * `npm install`
 * `npm run env:start` and `npm run env:setup` to provision a local wp-env instance with demo content
+* `npm run test:phpunit` for WordPress PHPUnit coverage against theme and companion logic
 * `npm run themecheck` to run the Theme Check plugin against the active theme
+* `npm run wporg:check` for WordPress.org preflight checks (headers, screenshot, package profile, Theme Check in CI)
+* `npm run build:wporg` to build the directory-safe package profile
 * `npm run test:smoke` to run the Playwright smoke suite against the local wp-env site
 
 == Changelog ==
 
 = 0.5.0 =
 * Replaced broken database-bound navigation references with portable Page List navigation in the header and footer
-* Expanded the built-in demo installer to create featured artwork, assign the bundled logo, and mark the lead journal post as sticky
-* Removed the obsolete WXR demo import path in favor of the single `inc/create-pages.php` installer
+* Expanded the companion demo installer to create featured artwork, assign the bundled logo, and mark the lead journal post with a dedicated featured-entry meta marker (not sticky posts)
+* Moved demo onboarding and optional SEO/meta runtime to the companion plugin for WordPress.org-safe theme packaging
 * Loaded `editor-style.css` in the block editor so the editor reflects the parchment/grid treatment
 * Replaced hard-coded template and pattern border colors with theme tokens so style variations recolor consistently
-* Added local QA tooling: Composer + PHPCS, Theme Check runner, wp-env bootstrap, and Playwright smoke coverage
+* Added local QA tooling: Composer + PHPCS, WordPress PHPUnit bootstrap, Theme Check runner, wp-env bootstrap, and expanded Playwright smoke coverage
 * Fixed `index.html` landmark structure so the footer renders outside `<main>`
 
 = 0.4.0 =
@@ -148,3 +151,7 @@ Go to Appearance > Editor > Templates and select the template you want to edit. 
   assets/images/demo-timber-joinery-study.svg,
   assets/images/demo-glass-transparency-study.svg
   License: GPLv2 or later
+
+* Test fixtures for automated QA:
+  WordPress Theme Test Data — https://github.com/WordPress/theme-test-data
+  Accessibility Theme Unit Test Data — https://github.com/wpaccessibility/a11y-theme-unit-test
