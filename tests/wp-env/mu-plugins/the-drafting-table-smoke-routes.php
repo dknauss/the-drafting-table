@@ -125,3 +125,58 @@ if ( ! function_exists( 'the_drafting_table_smoke_disable_canonical_redirects' )
 	}
 }
 add_filter( 'redirect_canonical', 'the_drafting_table_smoke_disable_canonical_redirects' );
+
+if ( ! function_exists( 'the_drafting_table_smoke_register_rest_routes' ) ) {
+	/**
+	 * Registers smoke-only REST endpoints for deterministic assertions.
+	 *
+	 * @return void
+	 */
+	function the_drafting_table_smoke_register_rest_routes() {
+		register_rest_route(
+			'the-drafting-table-smoke/v1',
+			'/demo-state',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'permission_callback' => '__return_true',
+				'callback'            => function () {
+					$featured_query = new WP_Query(
+						array(
+							'post_type'      => 'post',
+							'post_status'    => 'publish',
+							'posts_per_page' => 1,
+							'fields'         => 'ids',
+							'meta_key'       => '_the_drafting_table_featured_entry',
+							'meta_value'     => '1',
+							'no_found_rows'  => true,
+						)
+					);
+
+					$demo_content_query = new WP_Query(
+						array(
+							'post_type'      => array( 'post', 'page' ),
+							'post_status'    => 'any',
+							'posts_per_page' => -1,
+							'fields'         => 'ids',
+							'meta_key'       => '_the_drafting_table_demo_content',
+							'meta_value'     => '1',
+							'no_found_rows'  => true,
+						)
+					);
+
+					$featured_post_id = ! empty( $featured_query->posts ) ? (int) $featured_query->posts[0] : 0;
+					$demo_content_ids = array_map( 'intval', (array) $demo_content_query->posts );
+
+					return rest_ensure_response(
+						array(
+							'featured_post_id' => $featured_post_id,
+							'demo_content_ids' => $demo_content_ids,
+							'demo_content_count' => count( $demo_content_ids ),
+						)
+					);
+				},
+			)
+		);
+	}
+}
+add_action( 'rest_api_init', 'the_drafting_table_smoke_register_rest_routes' );

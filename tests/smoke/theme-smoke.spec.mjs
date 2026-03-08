@@ -59,21 +59,17 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		return response.json();
 	}
 
-	async function findPostIdBySlug( page, slug ) {
-		const posts = await getJson( page, `/?rest_route=/wp/v2/posts&slug=${ encodeURIComponent( slug ) }&_fields=id` );
-		expect( Array.isArray( posts ) ).toBeTruthy();
-
-		if ( 0 === posts.length ) {
-			return null;
-		}
-
-		return posts[ 0 ].id;
+	async function getDemoState( page ) {
+		const demoState = await getJson( page, '/?rest_route=/the-drafting-table-smoke/v1/demo-state' );
+		expect( demoState && 'object' === typeof demoState ).toBeTruthy();
+		return demoState;
 	}
 
-	async function resolvePostQueryPathBySlug( page, slug ) {
-		const postId = await findPostIdBySlug( page, slug );
-		expect( postId ).not.toBeNull();
-		return `/?p=${ postId }`;
+	async function resolveFeaturedPostQueryPath( page ) {
+		const demoState = await getDemoState( page );
+		const featuredPostId = Number( demoState.featured_post_id || 0 );
+		expect( featuredPostId ).toBeGreaterThan( 0 );
+		return `/?p=${ featuredPostId }`;
 	}
 
 	async function resolveCategoryQueryPathBySlug( page, slug ) {
@@ -125,7 +121,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	} );
 
 	test( 'single post renders title and featured image', async ( { page } ) => {
-		const postQueryPath = await resolvePostQueryPathBySlug( page, 'glass-transparency-dissolution-walls' );
+		const postQueryPath = await resolveFeaturedPostQueryPath( page );
 		await page.goto( postQueryPath );
 
 		await expect( page.getByRole( 'heading', { level: 1, name: /Glass, Transparency, and the Dissolution of Walls/i } ) ).toBeVisible();
@@ -202,10 +198,9 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		}
 
 		await expect( removeDemoLink ).toBeVisible();
-		const featuredPostSlug = 'glass-transparency-dissolution-walls';
-		const featuredPostId = await findPostIdBySlug( page, featuredPostSlug );
-		expect( featuredPostId ).not.toBeNull();
-		const featuredPostQueryPathBeforeRemoval = `/?p=${ featuredPostId }`;
+		const demoStateBeforeRemoval = await getDemoState( page );
+		expect( Number( demoStateBeforeRemoval.featured_post_id || 0 ) ).toBeGreaterThan( 0 );
+		expect( Number( demoStateBeforeRemoval.demo_content_count || 0 ) ).toBeGreaterThan( 0 );
 
 		await Promise.all( [
 			page.waitForURL( /the_drafting_table_demo=removed/ ),
@@ -215,8 +210,9 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await page.goto( '/wp-admin/options-reading.php' );
 		await expect( page.getByRole( 'radio', { name: /Your latest posts/i } ) ).toBeChecked();
 
-		const removedPostId = await findPostIdBySlug( page, featuredPostSlug );
-		expect( removedPostId ).toBeNull();
+		const demoStateAfterRemoval = await getDemoState( page );
+		expect( Number( demoStateAfterRemoval.featured_post_id || 0 ) ).toBe( 0 );
+		expect( Number( demoStateAfterRemoval.demo_content_count || 0 ) ).toBe( 0 );
 
 		await page.goto( '/wp-admin/themes.php' );
 		await expect( installDemoLink ).toBeVisible();
@@ -230,8 +226,11 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.getByLabel( /Homepage:/i ) ).not.toHaveValue( '0' );
 		await expect( page.getByLabel( /Posts page:/i ) ).not.toHaveValue( '0' );
 
-		const featuredPostIdAfterRestore = await findPostIdBySlug( page, featuredPostSlug );
-		expect( featuredPostIdAfterRestore ).not.toBeNull();
+		const demoStateAfterRestore = await getDemoState( page );
+		const featuredPostIdAfterRestore = Number( demoStateAfterRestore.featured_post_id || 0 );
+		expect( featuredPostIdAfterRestore ).toBeGreaterThan( 0 );
+		expect( Number( demoStateAfterRestore.demo_content_count || 0 ) ).toBeGreaterThan( 0 );
+
 		const featuredPostQueryPathAfterRestore = `/?p=${ featuredPostIdAfterRestore }`;
 		const restoredPostResponse           = await page.goto( featuredPostQueryPathAfterRestore );
 		expect( restoredPostResponse?.status() ).toBe( 200 );
@@ -254,7 +253,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 			await assertNoCriticalA11yViolations( page, routePath );
 		}
 
-		const singleQueryPath = await resolvePostQueryPathBySlug( page, 'glass-transparency-dissolution-walls' );
+		const singleQueryPath = await resolveFeaturedPostQueryPath( page );
 		await assertNoCriticalA11yViolations( page, singleQueryPath );
 
 		const archiveQueryPath = await resolveCategoryQueryPathBySlug( page, 'material-studies' );
