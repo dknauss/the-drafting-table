@@ -17,6 +17,9 @@
         "test:phpunit": "phpunit --configuration=phpunit.xml.dist"
     },
     "config": {
+        "platform": {
+            "php": "8.3.0"
+        },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
