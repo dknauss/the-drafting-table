@@ -49,6 +49,9 @@ jobs:
       - name: Validate documentation commands
         run: npm run check:docs
 
+      - name: Validate QA parity
+        run: npm run check:qa-parity
+
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
