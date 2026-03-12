@@ -65,11 +65,12 @@ Go to Appearance > Editor > Templates and select the template you want to edit. 
 
 == Development ==
 
-* `composer install` then `composer lint:php` for WordPress Coding Standards checks
+* `composer install` then `composer run lint:php` for WordPress Coding Standards checks
 * `npm install`
 * `npm run preflight:env` to validate local disk and Docker health before wp-env startup
 * `npm run env:start` and `npm run env:setup` to provision a local wp-env instance with demo content
-* `npm run test:phpunit` for WordPress PHPUnit coverage against theme and companion logic
+* `npm run test:phpunit` for the WordPress PHPUnit suite against theme and companion logic
+* `npm run test:phpunit:coverage` and `npm run test:phpunit:coverage:check` for enforced coverage thresholds
 * `npm run themecheck` to run the Theme Check plugin against the active theme
 * `npm run wporg:check` for WordPress.org preflight checks (headers, screenshot, package profile, Theme Check in CI)
 * `npm run build:wporg` to build the directory-safe package profile

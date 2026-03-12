@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import net from 'node:net';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -108,8 +109,61 @@ function checkDockerHealth() {
 	console.log( 'PASS: Docker storage metadata query succeeded.' );
 }
 
+async function isPortAvailable( port ) {
+	return new Promise( ( resolve ) => {
+		const server = net.createServer();
+		server.unref();
+
+		server.on( 'error', ( error ) => {
+			if ( error && 'EADDRINUSE' === error.code ) {
+				resolve( false );
+				return;
+			}
+
+			resolve( false );
+		} );
+
+		server.listen( port, '127.0.0.1', () => {
+			server.close( () => resolve( true ) );
+		} );
+	} );
+}
+
+async function checkWpEnvPorts() {
+	const expectedPorts = [
+		{
+			name: 'WP_ENV_PORT',
+			value: Number( process.env.WP_ENV_PORT ?? '8888' ),
+		},
+		{
+			name: 'WP_ENV_TESTS_PORT',
+			value: Number( process.env.WP_ENV_TESTS_PORT ?? '8889' ),
+		},
+	];
+
+	for ( const portConfig of expectedPorts ) {
+		if ( ! Number.isInteger( portConfig.value ) || portConfig.value <= 0 || portConfig.value > 65535 ) {
+			failures.push(
+				`${ portConfig.name } must be a valid TCP port, received "${ String( process.env[ portConfig.name ] ?? portConfig.value ) }".`
+			);
+			continue;
+		}
+
+		const available = await isPortAvailable( portConfig.value );
+		if ( ! available ) {
+			failures.push(
+				`Port ${ portConfig.value } is already in use. Free the port or set ${ portConfig.name } to an available value before running wp-env.`
+			);
+			continue;
+		}
+
+		console.log( `PASS: Port ${ portConfig.value } available for ${ portConfig.name }.` );
+	}
+}
+
 checkDiskSpace();
 checkDockerHealth();
+await checkWpEnvPorts();
 
 if ( warnings.length > 0 ) {
 	console.warn( '\nPreflight warnings:' );
@@ -126,9 +180,10 @@ if ( failures.length > 0 ) {
 
 	console.error( '\nRecommended recovery actions:' );
 	console.error( '1. Free disk space to at least 4 GiB available on the Docker host filesystem.' );
-	console.error( '2. Restart Docker Desktop/daemon and re-run `npm run preflight:env`.' );
-	console.error( '3. If Docker is healthy, run `docker system prune -af --volumes` to clear stale build data.' );
-	console.error( '4. If metadata I/O errors persist, reset Docker\'s disk image/store and retry.' );
+	console.error( '2. Free occupied wp-env ports (default 8888/8889) or set WP_ENV_PORT and WP_ENV_TESTS_PORT to open ports.' );
+	console.error( '3. Restart Docker Desktop/daemon and re-run `npm run preflight:env`.' );
+	console.error( '4. If Docker is healthy, run `docker system prune -af --volumes` to clear stale build data.' );
+	console.error( '5. If metadata I/O errors persist, reset Docker\'s disk image/store and retry.' );
 	process.exit( 1 );
 }
 

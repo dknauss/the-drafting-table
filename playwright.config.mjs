@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const wpEnvPort = process.env.WP_ENV_PORT || '8888';
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || `http://localhost:${ wpEnvPort }`;
+
 export default defineConfig( {
 	testDir: './tests/smoke',
 	timeout: 30_000,
@@ -12,7 +15,7 @@ export default defineConfig( {
 		[ 'html', { open: 'never' } ],
 	],
 	use: {
-		baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:8888',
+		baseURL,
 		trace: 'on-first-retry',
 		screenshot: 'only-on-failure',
 		video: 'retain-on-failure',
