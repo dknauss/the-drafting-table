@@ -5,6 +5,8 @@ Use this checklist before publishing a release for the WordPress.org theme direc
 1. Verify local QA gates.
    - `npm run env:start`
    - `npm run env:setup`
+   - `composer run lint:php`
+   - `npm run check:qa-parity`
    - `npm run test:phpunit:coverage`
    - `npm run test:phpunit:coverage:check`
    - `CI=true npm run wporg:check`
