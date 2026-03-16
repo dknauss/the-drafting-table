@@ -64,15 +64,18 @@ export async function isPortAvailable( port ) {
 			resolve( false );
 		} );
 
-		server.listen( port, '127.0.0.1', () => {
+		// Probe the wildcard interface so we catch ports already claimed for host-wide publishing.
+		server.listen( port, '0.0.0.0', () => {
 			server.close( () => resolve( true ) );
 		} );
 	} );
 }
 
-export function recoveryActions() {
+export function recoveryActions( options = {} ) {
+	const minFreeGiB = Number( options.minFreeGiB ?? '2' );
+
 	return [
-		'Free disk space to at least 4 GiB available on the Docker host filesystem.',
+		`Free disk space to at least ${ minFreeGiB } GiB available on the Docker host filesystem.`,
 		'Free occupied wp-env ports (default 8888/8889) or set WP_ENV_PORT and WP_ENV_TESTS_PORT to open ports.',
 		'Restart Docker Desktop/daemon and re-run `npm run preflight:env`.',
 		'If Docker is healthy, run `docker system prune -af --volumes` to clear stale build data.',
@@ -168,11 +171,11 @@ export async function runPreflightChecks( options = {} ) {
 		passes.push( `Port ${ portConfig.value } available for ${ portConfig.name }.` );
 	}
 
-	return { passes, warnings, failures };
+	return { passes, warnings, failures, minFreeGiB };
 }
 
 async function main() {
-	const { passes, warnings, failures } = await runPreflightChecks();
+	const { passes, warnings, failures, minFreeGiB } = await runPreflightChecks();
 
 	for ( const pass of passes ) {
 		console.log( `PASS: ${ pass }` );
@@ -192,7 +195,7 @@ async function main() {
 		}
 
 		console.error( '\nRecommended recovery actions:' );
-		for ( const [ index, action ] of recoveryActions().entries() ) {
+		for ( const [ index, action ] of recoveryActions( { minFreeGiB } ).entries() ) {
 			console.error( `${ index + 1 }. ${ action }` );
 		}
 		process.exit( 1 );

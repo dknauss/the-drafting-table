@@ -47,6 +47,9 @@ jobs:
       - name: Run Node syntax lint
         run: npm run lint:node
 
+      - name: Run Node tests
+        run: npm run test:node
+
       - name: Validate documentation commands
         run: npm run check:docs
 

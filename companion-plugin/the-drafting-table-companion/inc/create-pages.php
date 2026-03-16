@@ -1038,7 +1038,8 @@ if ( ! function_exists( 'the_drafting_table_create_pages' ) ) {
 	/**
 	 * Creates the About, Projects, Journal, and Principles starter pages.
 	 *
-	 * Skips any page whose slug already exists to prevent duplicates.
+	 * Reuses only installer-managed pages. Other slug collisions get a fresh
+	 * page so demo installs do not hijack existing site content.
 	 *
 	 * @return array<string, int>
 	 */
@@ -1083,7 +1084,7 @@ if ( ! function_exists( 'the_drafting_table_create_pages' ) ) {
 		foreach ( $pages as $page_data ) {
 			$existing = get_page_by_path( $page_data['slug'] );
 
-			if ( $existing ) {
+			if ( $existing && '1' === (string) get_post_meta( $existing->ID, '_the_drafting_table_demo_content', true ) ) {
 				$page_ids[ $page_data['slug'] ] = (int) $existing->ID;
 				continue;
 			}
@@ -1120,7 +1121,8 @@ if ( ! function_exists( 'the_drafting_table_create_sample_posts' ) ) {
 	/**
 	 * Creates sample journal posts with categories and tags.
 	 *
-	 * Skips any post whose slug already exists to prevent duplicates.
+	 * Reuses only installer-managed posts. Other slug collisions get a fresh
+	 * post so demo installs do not hijack existing content.
 	 *
 	 * @return array<string, int>
 	 */
@@ -1185,7 +1187,7 @@ if ( ! function_exists( 'the_drafting_table_create_sample_posts' ) ) {
 
 		foreach ( $posts as $post_data ) {
 			$existing = get_page_by_path( $post_data['slug'], OBJECT, 'post' );
-			if ( $existing ) {
+			if ( $existing && '1' === (string) get_post_meta( $existing->ID, '_the_drafting_table_demo_content', true ) ) {
 				$post_ids[ $post_data['slug'] ] = (int) $existing->ID;
 				continue;
 			}

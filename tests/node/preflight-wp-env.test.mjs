@@ -1,7 +1,8 @@
+import net from 'node:net';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { runPreflightChecks } from '../../scripts/preflight-wp-env.mjs';
+import { isPortAvailable, recoveryActions, runPreflightChecks } from '../../scripts/preflight-wp-env.mjs';
 
 function healthyRunCommand() {
 	return { ok: true, output: '29.2.1', errorOutput: '' };
@@ -56,4 +57,23 @@ test( 'fails when ports are invalid or occupied', async () => {
 
 	assert.ok( result.failures.some( ( failure ) => failure.includes( 'WP_ENV_PORT must be a valid TCP port' ) ) );
 	assert.ok( result.failures.some( ( failure ) => failure.includes( 'Port 8889 is already in use' ) ) );
+} );
+
+test( 'recovery actions describe the configured minimum disk requirement', () => {
+	const actions = recoveryActions( { minFreeGiB: 2 } );
+
+	assert.ok( actions.some( ( action ) => action.includes( 'at least 2 GiB' ) ) );
+} );
+
+test( 'detects a real occupied TCP port', async () => {
+	const server = net.createServer();
+	await new Promise( ( resolve ) => server.listen( 0, '0.0.0.0', resolve ) );
+
+	try {
+		const address = server.address();
+		assert.ok( address && 'object' === typeof address && 'port' in address );
+		assert.equal( await isPortAvailable( address.port ), false );
+	} finally {
+		await new Promise( ( resolve ) => server.close( resolve ) );
+	}
 } );

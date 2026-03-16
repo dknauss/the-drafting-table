@@ -12,7 +12,9 @@ const workflowPaths = [
 const requiredQaFragments = [
 	'composer run lint:php',
 	'npm run lint:node',
+	'npm run test:node',
 	'npm run check:docs',
+	'npm run check:qa-parity',
 	'npm run test:phpunit:coverage',
 	'npm run test:phpunit:coverage:check',
 	'npm run wporg:check',
@@ -21,8 +23,19 @@ const requiredQaFragments = [
 
 const requiredWorkflowCommands = [
 	'composer lint:php',
+	'npm run lint:node',
+	'npm run test:node',
 	'npm run check:docs',
+	'npm run check:qa-parity',
+	'npm run test:phpunit:coverage',
+	'npm run test:phpunit:coverage:check',
+	'npm run wporg:check',
 ];
+
+const workflowSpecificCommands = {
+	'Theme Quality': [ 'npm run test:smoke' ],
+	'WP.org Release Preflight': [ 'npm run wporg:dry-run' ],
+};
 
 function resolveWorkflowName( workflowPath, content ) {
 	const nameMatch = content.match( /^name:\s*(.+)$/mu );
@@ -44,6 +57,12 @@ export function validateQaParity( { qaScript, workflows } ) {
 
 	for ( const workflow of workflows ) {
 		for ( const command of requiredWorkflowCommands ) {
+			if ( ! workflow.content.includes( command ) ) {
+				errors.push( `${ workflow.name} must include "${ command }".` );
+			}
+		}
+
+		for ( const command of workflowSpecificCommands[ workflow.name ] ?? [] ) {
 			if ( ! workflow.content.includes( command ) ) {
 				errors.push( `${ workflow.name} must include "${ command }".` );
 			}

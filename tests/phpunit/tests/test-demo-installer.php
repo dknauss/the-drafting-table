@@ -107,6 +107,26 @@ class TheDraftingTable_DemoInstaller_Test extends WP_UnitTestCase {
 		$this->assertArrayNotHasKey( 'principles', $page_ids );
 	}
 
+	public function test_create_pages_does_not_reuse_unmanaged_existing_slug_collisions() {
+		$existing_about_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'About The Tests',
+				'post_name'   => 'about',
+			)
+		);
+
+		$page_ids = the_drafting_table_create_pages();
+
+		$this->assertArrayHasKey( 'about', $page_ids );
+		$this->assertNotSame( $existing_about_id, $page_ids['about'] );
+		$this->assertSame( '', (string) get_post_meta( $existing_about_id, '_the_drafting_table_demo_content', true ) );
+		$this->assertSame( 'About The Tests', get_the_title( $existing_about_id ) );
+		$this->assertSame( '1', get_post_meta( $page_ids['about'], '_the_drafting_table_demo_content', true ) );
+		$this->assertSame( 'page-about', get_post_meta( $page_ids['about'], '_wp_page_template', true ) );
+	}
+
 	public function test_create_sample_posts_skips_failed_inserts_that_return_zero() {
 		$force_insert_failure = static function () {
 			return true;
@@ -118,6 +138,28 @@ class TheDraftingTable_DemoInstaller_Test extends WP_UnitTestCase {
 		remove_filter( 'wp_insert_post_empty_content', $force_insert_failure, 10 );
 
 		$this->assertSame( array(), $post_ids );
+	}
+
+	public function test_create_sample_posts_does_not_reuse_unmanaged_existing_slug_collisions() {
+		$existing_post_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+				'post_title'  => 'Existing User Post',
+				'post_name'   => 'glass-transparency-dissolution-walls',
+			)
+		);
+
+		$post_ids = the_drafting_table_create_sample_posts();
+
+		$this->assertArrayHasKey( 'glass-transparency-dissolution-walls', $post_ids );
+		$this->assertNotSame( $existing_post_id, $post_ids['glass-transparency-dissolution-walls'] );
+		$this->assertSame( '', (string) get_post_meta( $existing_post_id, '_the_drafting_table_demo_content', true ) );
+		$this->assertSame( 'Existing User Post', get_the_title( $existing_post_id ) );
+		$this->assertSame(
+			'1',
+			get_post_meta( $post_ids['glass-transparency-dissolution-walls'], '_the_drafting_table_demo_content', true )
+		);
 	}
 
 	public function test_remove_demo_content_returns_error_and_still_restores_state_on_delete_failure() {

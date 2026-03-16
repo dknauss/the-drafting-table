@@ -53,30 +53,17 @@ test.describe( 'The Drafting Table smoke suite', () => {
 			.join( '\n' );
 	}
 
-	async function getJson( page, urlPath ) {
-		const response = await page.request.get( urlPath );
-		expect( response.ok(), `Expected JSON request to succeed: ${ urlPath }` ).toBeTruthy();
-		return response.json();
+	async function openFeaturedSinglePost( page ) {
+		await page.goto( '/' );
+
+		await Promise.all( [
+			page.waitForLoadState( 'domcontentloaded' ),
+			page.getByRole( 'link', { name: 'Glass, Transparency, and the Dissolution of Walls' } ).first().click(),
+		] );
 	}
 
-	async function getDemoState( page ) {
-		const demoState = await getJson( page, '/?rest_route=/the-drafting-table-smoke/v1/demo-state' );
-		expect( demoState && 'object' === typeof demoState ).toBeTruthy();
-		return demoState;
-	}
-
-	async function resolveFeaturedPostQueryPath( page ) {
-		const demoState = await getDemoState( page );
-		const featuredPostId = Number( demoState.demo_featured_post_id || 0 );
-		expect( featuredPostId ).toBeGreaterThan( 0 );
-		return `/?p=${ featuredPostId }`;
-	}
-
-	async function resolveCategoryQueryPathBySlug( page, slug ) {
-		const terms = await getJson( page, `/?rest_route=/wp/v2/categories&slug=${ encodeURIComponent( slug ) }&_fields=id` );
-		expect( Array.isArray( terms ) ).toBeTruthy();
-		expect( terms.length ).toBeGreaterThan( 0 );
-		return `/?cat=${ terms[ 0 ].id }`;
+	async function openMaterialStudiesArchive( page ) {
+		await page.goto( '/?category_name=material-studies' );
 	}
 
 	async function assertNoCriticalA11yViolations( page, routePath ) {
@@ -121,16 +108,14 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	} );
 
 	test( 'single post renders title and featured image', async ( { page } ) => {
-		const postQueryPath = await resolveFeaturedPostQueryPath( page );
-		await page.goto( postQueryPath );
+		await openFeaturedSinglePost( page );
 
 		await expect( page.getByRole( 'heading', { level: 1, name: /Glass, Transparency, and the Dissolution of Walls/i } ) ).toBeVisible();
 		await expect( page.getByRole( 'img', { name: /transparent glass wall facing landscape/i } ) ).toBeVisible();
 	} );
 
 	test( 'archive template renders archive heading and post cards', async ( { page } ) => {
-		const categoryQueryPath = await resolveCategoryQueryPathBySlug( page, 'material-studies' );
-		await page.goto( categoryQueryPath );
+		await openMaterialStudiesArchive( page );
 
 		await expect( page.getByRole( 'heading', { level: 1, name: /Category:/i } ) ).toBeVisible();
 		await expect( page.locator( '.journal-card' ).first() ).toBeVisible();
@@ -224,24 +209,38 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		expect( journalCardCount ).toBeGreaterThanOrEqual( 3 );
 	} );
 
-	test( 'critical accessibility checks pass across templates and imported fixtures', async ( { page } ) => {
-		const staticRoutes = [
-			'/',
-			'/?the_drafting_table_preview_template=home',
-			'/?s=glass',
-			'/?pagename=__drafting-table-route-that-does-not-exist__',
-			'/?pagename=lorem-ipsum',
-			'/?pagename=keyboard-navigation',
-		];
-
-		for ( const routePath of staticRoutes ) {
+	for ( const { label, routePath } of [
+		{ label: 'front page', routePath: '/' },
+		{ label: 'home preview template', routePath: '/?the_drafting_table_preview_template=home' },
+		{ label: 'search results', routePath: '/?s=glass' },
+		{ label: '404 fallback', routePath: '/?pagename=__drafting-table-route-that-does-not-exist__' },
+		{ label: 'lorem ipsum fixture', routePath: '/?pagename=lorem-ipsum' },
+		{ label: 'keyboard navigation fixture', routePath: '/?pagename=keyboard-navigation' },
+	] ) {
+		test( `critical accessibility checks pass on ${ label }`, async ( { page } ) => {
 			await assertNoCriticalA11yViolations( page, routePath );
-		}
+		} );
+	}
 
-		const singleQueryPath = await resolveFeaturedPostQueryPath( page );
-		await assertNoCriticalA11yViolations( page, singleQueryPath );
+	test( 'critical accessibility checks pass on the featured single post', async ( { page } ) => {
+		await openFeaturedSinglePost( page );
+		const results = await new AxeBuilder( { page } ).analyze();
+		const criticalViolations = results.violations.filter( ( violation ) => 'critical' === violation.impact );
 
-		const archiveQueryPath = await resolveCategoryQueryPathBySlug( page, 'material-studies' );
-		await assertNoCriticalA11yViolations( page, archiveQueryPath );
+		expect(
+			criticalViolations,
+			`Critical accessibility violations on featured single post:\n${ formatAxeViolations( criticalViolations ) }`
+		).toEqual( [] );
+	} );
+
+	test( 'critical accessibility checks pass on the material studies archive', async ( { page } ) => {
+		await openMaterialStudiesArchive( page );
+		const results = await new AxeBuilder( { page } ).analyze();
+		const criticalViolations = results.violations.filter( ( violation ) => 'critical' === violation.impact );
+
+		expect(
+			criticalViolations,
+			`Critical accessibility violations on material studies archive:\n${ formatAxeViolations( criticalViolations ) }`
+		).toEqual( [] );
 	} );
 } );

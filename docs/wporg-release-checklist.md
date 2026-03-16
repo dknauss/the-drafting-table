@@ -3,14 +3,7 @@
 Use this checklist before publishing a release for the WordPress.org theme directory.
 
 1. Verify local QA gates.
-   - `npm run env:start`
-   - `npm run env:setup`
-   - `composer run lint:php`
-   - `npm run check:qa-parity`
-   - `npm run test:phpunit:coverage`
-   - `npm run test:phpunit:coverage:check`
-   - `CI=true npm run wporg:check`
-   - `npm run test:smoke`
+   - `npm run qa`
 2. Run a package installation dry run in an isolated wp-env instance.
    - `npm run wporg:dry-run`
 3. Build and inspect the release artifact.
