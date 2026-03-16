@@ -3,10 +3,19 @@ import os from 'node:os';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import {
+	assertContainerRunning,
+	createDockerExecProxyServer,
+	defaultWpEnvWordpressContainer,
+	isBaseUrlReachable,
+	parseWpEnvProjectId,
+	shouldAutoProxy,
+} from './playwright-wp-env-proxy.mjs';
 
 const rootDir = path.resolve( path.dirname( fileURLToPath( import.meta.url ) ), '..' );
 const wpEnvBin = path.join( rootDir, 'node_modules', '.bin', 'wp-env' );
 const zipSource = path.join( rootDir, 'dist', 'wporg', 'the-drafting-table-wporg.zip' );
+const FRONTEND_FETCH_TIMEOUT_MS = 5_000;
 const errors = [];
 
 function pass( message ) {
@@ -49,6 +58,54 @@ function captureCommand( command, options = {} ) {
 		const detail = error instanceof Error ? error.message : String( error );
 		fail( `Command failed: ${ command }\n${ detail }` );
 		return '';
+	}
+}
+
+export async function fetchFrontPageWithAutoProxy(
+	baseUrl,
+	{
+		wpEnvBinPath = wpEnvBin,
+		wpEnvCwd,
+		fetchFn = fetch,
+		isBaseUrlReachableFn = isBaseUrlReachable,
+		captureCommandFn = captureCommand,
+		assertContainerRunningFn = assertContainerRunning,
+		createProxyServerFn = createDockerExecProxyServer,
+	} = {}
+) {
+	let proxy;
+
+	try {
+		if ( shouldAutoProxy( baseUrl ) ) {
+			const baseUrlReachable = await isBaseUrlReachableFn( baseUrl, {
+				fetchFn,
+				timeoutMs: 1_500,
+			} );
+
+			if ( ! baseUrlReachable ) {
+				const installPathOutput = captureCommandFn( `${ wpEnvBinPath } install-path`, { cwd: wpEnvCwd } );
+				const projectId = parseWpEnvProjectId( installPathOutput );
+				const containerName = defaultWpEnvWordpressContainer( projectId );
+				const url = new URL( baseUrl );
+
+				await assertContainerRunningFn( containerName );
+
+				proxy = createProxyServerFn( {
+					containerName,
+					host: url.hostname,
+					port: Number.parseInt( url.port, 10 ),
+				} );
+				await proxy.listen();
+			}
+		}
+
+		return await fetchFn( baseUrl, {
+			signal: AbortSignal.timeout( FRONTEND_FETCH_TIMEOUT_MS ),
+		} );
+	} finally {
+		if ( proxy ) {
+			await proxy.close().catch( () => {} );
+		}
 	}
 }
 
@@ -106,7 +163,9 @@ async function main() {
 			fail( 'Packaged theme did not report as active after install.' );
 		}
 
-		const response = await fetch( baseUrl );
+		const response = await fetchFrontPageWithAutoProxy( baseUrl, {
+			wpEnvCwd: tempDir,
+		} );
 		const responseBody = await response.text();
 		if ( 200 !== response.status ) {
 			fail( `Front-end request failed after activation (status ${ response.status }).` );
@@ -139,4 +198,6 @@ async function main() {
 	console.log( '\nwporg:dry-run passed.' );
 }
 
-await main();
+if ( import.meta.url === `file://${ process.argv[ 1 ] }` ) {
+	await main();
+}
