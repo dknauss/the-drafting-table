@@ -111,7 +111,10 @@ if ( ! function_exists( 'the_drafting_table_smoke_disable_canonical_redirects' )
 
 		$query_routes = array(
 			'p',
+			'name',
+			'post_type',
 			'cat',
+			'category_name',
 			'the_drafting_table_preview_template',
 		);
 
