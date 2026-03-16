@@ -79,11 +79,12 @@ Go to Appearance > Editor > Templates and select the template you want to edit. 
 * `npm run test:smoke` to run the Playwright smoke suite against the local wp-env site
 * `npm run test:smoke:local` to auto-proxy a local wp-env site when Docker publishes the custom port but the host cannot reach it
 * `npm run playwright:proxy` to keep that proxy open for headed/manual Playwright sessions on the same wp-env port
-* `npm run qa` to run the full local release gate sequence
+* `npm run qa` to run the CI-parity local release gate sequence
+* `npm run qa:local` to run the full local release gate sequence on machines that need the Playwright auto-proxy fallback
 
 == Local Playwright troubleshooting ==
 
-If `npm run test:smoke` stalls or times out against a custom `WP_ENV_PORT` even though `wp-env` reports the stack as running, Docker may have published the port without making it reachable from the host. In that case, run `WP_ENV_PORT=8894 npm run test:smoke:local` instead. For headed or manual Playwright sessions, start `WP_ENV_PORT=8894 npm run playwright:proxy` in one terminal and point Playwright at the same `http://localhost:8894` base URL.
+If `npm run test:smoke` stalls or times out against a custom `WP_ENV_PORT` even though `wp-env` reports the stack as running, Docker may have published the port without making it reachable from the host. In that case, run `WP_ENV_PORT=8894 npm run test:smoke:local` or `WP_ENV_PORT=8894 npm run qa:local` instead. For headed or manual Playwright sessions, start `WP_ENV_PORT=8894 npm run playwright:proxy` in one terminal and point Playwright at the same `http://localhost:8894` base URL.
 
 == Changelog ==
 

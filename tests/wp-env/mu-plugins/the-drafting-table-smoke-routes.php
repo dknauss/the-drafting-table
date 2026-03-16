@@ -17,11 +17,45 @@ if ( ! function_exists( 'the_drafting_table_smoke_register_preview_var' ) ) {
 	 */
 	function the_drafting_table_smoke_register_preview_var( $query_vars ) {
 		$query_vars[] = 'the_drafting_table_preview_template';
+		$query_vars[] = 'the_drafting_table_smoke_post';
 
 		return $query_vars;
 	}
 }
 add_filter( 'query_vars', 'the_drafting_table_smoke_register_preview_var' );
+
+if ( ! function_exists( 'the_drafting_table_smoke_map_featured_post_query' ) ) {
+	/**
+	 * Maps smoke query vars to deterministic demo post queries.
+	 *
+	 * @param array<string, mixed> $query_vars Main query vars.
+	 * @return array<string, mixed>
+	 */
+	function the_drafting_table_smoke_map_featured_post_query( $query_vars ) {
+		if ( empty( $query_vars['the_drafting_table_smoke_post'] ) ) {
+			return $query_vars;
+		}
+
+		$smoke_post = sanitize_key( (string) $query_vars['the_drafting_table_smoke_post'] );
+		if ( 'featured' !== $smoke_post ) {
+			return $query_vars;
+		}
+
+		$featured_post_id = function_exists( 'the_drafting_table_get_demo_featured_post_id' )
+			? (int) the_drafting_table_get_demo_featured_post_id()
+			: 0;
+
+		if ( $featured_post_id <= 0 ) {
+			return $query_vars;
+		}
+
+		unset( $query_vars['name'], $query_vars['post_type'] );
+		$query_vars['p'] = $featured_post_id;
+
+		return $query_vars;
+	}
+}
+add_filter( 'request', 'the_drafting_table_smoke_map_featured_post_query' );
 
 if ( ! function_exists( 'the_drafting_table_smoke_add_rewrite_rules' ) ) {
 	/**
@@ -111,6 +145,7 @@ if ( ! function_exists( 'the_drafting_table_smoke_disable_canonical_redirects' )
 
 		$query_routes = array(
 			'p',
+			'the_drafting_table_smoke_post',
 			'name',
 			'post_type',
 			'cat',

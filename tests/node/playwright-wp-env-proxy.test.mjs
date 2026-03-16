@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+	assertContainerRunning,
 	defaultWpEnvWordpressContainer,
 	normalizePort,
 	parseWpEnvProjectId,
@@ -36,4 +37,21 @@ test( 'shouldAutoProxy only enables the helper for localhost targets', () => {
 	assert.equal( shouldAutoProxy( 'http://localhost:8894' ), true );
 	assert.equal( shouldAutoProxy( 'http://127.0.0.1:8894' ), true );
 	assert.equal( shouldAutoProxy( 'https://example.com' ), false );
+} );
+
+test( 'assertContainerRunning accepts a running container state', async () => {
+	const containerName = await assertContainerRunning( 'demo-wordpress-1', {
+		runCommandFn: async () => 'true\n',
+	} );
+
+	assert.equal( containerName, 'demo-wordpress-1' );
+} );
+
+test( 'assertContainerRunning rejects stopped containers', async () => {
+	await assert.rejects(
+		assertContainerRunning( 'demo-wordpress-1', {
+			runCommandFn: async () => 'false\n',
+		} ),
+		/container "demo-wordpress-1" is not running\./i
+	);
 } );

@@ -4,6 +4,7 @@ Use this checklist before publishing a release for the WordPress.org theme direc
 
 1. Verify local QA gates.
    - `npm run qa`
+   - If Docker publishes the custom wp-env port but the host cannot reach it on your machine, run `WP_ENV_PORT=8894 npm run qa:local` instead.
 2. Run a package installation dry run in an isolated wp-env instance.
    - `npm run wporg:dry-run`
 3. Build and inspect the release artifact.

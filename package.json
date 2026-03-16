@@ -23,7 +23,8 @@
         "build:wporg": "bash ./scripts/build-wporg.sh",
         "wporg:check": "node ./scripts/wporg-check.mjs",
         "wporg:dry-run": "node ./scripts/wporg-dry-run.mjs",
-        "qa": "npm run env:start && npm run env:setup && composer run lint:php && npm run lint:node && npm run test:node && npm run check:docs && npm run check:qa-parity && npm run test:phpunit:coverage && npm run test:phpunit:coverage:check && npm run wporg:check && npm run test:smoke"
+        "qa": "npm run env:start && npm run env:setup && composer run lint:php && npm run lint:node && npm run test:node && npm run check:docs && npm run check:qa-parity && npm run test:phpunit:coverage && npm run test:phpunit:coverage:check && npm run wporg:check && npm run test:smoke",
+        "qa:local": "npm run env:start && npm run env:setup && composer run lint:php && npm run lint:node && npm run test:node && npm run check:docs && npm run check:qa-parity && npm run test:phpunit:coverage && npm run test:phpunit:coverage:check && npm run wporg:check && npm run test:smoke:local"
     },
     "devDependencies": {
         "@axe-core/playwright": "^4.11.1",

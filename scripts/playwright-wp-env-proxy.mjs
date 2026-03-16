@@ -99,7 +99,11 @@ export async function runCommand( command, args, { cwd = process.cwd(), env = pr
 }
 
 export async function assertContainerRunning( containerName, { runCommandFn = runCommand } = {} ) {
-	await runCommandFn( 'docker', [ 'inspect', '--format', '{{.State.Running}}', containerName ] );
+	const output = await runCommandFn( 'docker', [ 'inspect', '--format', '{{.State.Running}}', containerName ] );
+	if ( 'true' !== `${ output }`.trim() ) {
+		throw new Error( `Container "${ containerName }" is not running.` );
+	}
+
 	return containerName;
 }
 

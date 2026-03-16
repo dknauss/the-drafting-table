@@ -54,7 +54,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	}
 
 	async function openFeaturedSinglePost( page ) {
-		await page.goto( '/?name=glass-transparency-dissolution-walls&post_type=post' );
+		await page.goto( '/?the_drafting_table_smoke_post=featured' );
 	}
 
 	async function openMaterialStudiesArchive( page ) {
