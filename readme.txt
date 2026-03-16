@@ -4,7 +4,7 @@ Tags: block-patterns, blog, custom-colors, custom-logo, custom-menu, editor-styl
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.6.1
+Stable tag: 0.6.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,19 +88,24 @@ If `npm run test:smoke` stalls or times out against a custom `WP_ENV_PORT` even 
 
 == Changelog ==
 
+= 0.6.2 =
+* Protected existing site content during demo onboarding by creating collision-safe starter pages and journal entries instead of reusing unrelated posts with matching slugs
+* Added a more dependable local QA path for Docker environments where custom wp-env ports are published but not reachable from the host
+* Tightened release verification so local QA, GitHub Actions, and WordPress.org preflight checks stay aligned before tagging
+* Refined smoke coverage around front-page, journal, and installer flows to better reflect real visitor and site-owner outcomes
+
 = 0.6.1 =
-* Stabilized Playwright smoke tests in CI by disabling canonical redirects for query-based smoke routes in the test-only MU plugin
-* Added smoke-only REST state endpoint for deterministic assertions around demo installer lifecycle checks
-* Reworked installer rollback smoke assertions to validate stable user-visible outcomes across remove/reinstall flows
-* Hardened single/archive smoke route targeting and removed rewrite-environment assumptions that caused GitHub Actions flakes
+* Improved release verification for front-page, journal, search, 404, and demo-installation flows so regressions are caught earlier
+* Hardened preview routes used by the smoke suite for single posts and archives, reducing flaky release checks in CI
+* Clarified demo uninstall and reinstall checks so static front page and posts page settings are verified from the user-facing result
+* Added deterministic smoke-only state hooks for release QA without affecting packaged theme behavior
 
 = 0.6.0 =
-* Added hardened GitHub Actions QA workflow defaults (CI mode, npm cache, npm ci, concurrency guard, timeout)
-* Expanded PHPUnit coverage for demo installer edge cases and query marker behavior
-* Expanded Playwright coverage with installer lifecycle behavior (remove and reinstall demo content + reading settings rollback/restore)
-* Updated Theme Check package runner to validate against an isolated slug-matched theme root (removes directory-name warning)
-* Added `npm run wporg:dry-run` script for isolated packaged-theme install/activate verification with fatal-log checks
-* Added manual `WP.org Release Preflight` workflow and a release checklist document
+* Added a release preflight workflow and checklist for safer WordPress.org submissions
+* Expanded automated checks for demo installer behavior, reading settings, and packaged theme structure
+* Improved local QA defaults so contributors can validate the packaged theme more consistently before release
+* Updated the Theme Check package runner to validate against an isolated slug-matched theme root
+* Added `npm run wporg:dry-run` for isolated install-and-activate verification of the release artifact
 
 = 0.5.0 =
 * Replaced broken database-bound navigation references with portable Page List navigation in the header and footer
