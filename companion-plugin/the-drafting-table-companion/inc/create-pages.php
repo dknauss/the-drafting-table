@@ -401,6 +401,27 @@ if ( ! function_exists( 'the_drafting_table_capture_demo_site_state' ) ) {
 	}
 }
 
+if ( ! function_exists( 'the_drafting_table_default_demo_site_state' ) ) {
+	/**
+	 * Returns the safest fallback state for demo removal recovery.
+	 *
+	 * This is used when demo content exists but the install manifest is absent
+	 * or incomplete, such as older/manual Local bootstraps that bypassed the
+	 * normal install handler.
+	 *
+	 * @return array<string, mixed>
+	 */
+	function the_drafting_table_default_demo_site_state() {
+		return array(
+			'show_on_front'      => 'posts',
+			'page_on_front'      => 0,
+			'page_for_posts'     => 0,
+			'custom_logo'        => 0,
+			'featured_entry_ids' => array(),
+		);
+	}
+}
+
 if ( ! function_exists( 'the_drafting_table_collect_demo_manifest' ) ) {
 	/**
 	 * Collect installer-managed IDs so demo content can be removed safely.
@@ -540,6 +561,23 @@ if ( ! function_exists( 'the_drafting_table_remove_demo_content' ) ) {
 		$manifest = get_option( 'the_drafting_table_demo_manifest' );
 		$manifest = is_array( $manifest ) ? $manifest : array();
 		$issues   = array();
+
+		/*
+		 * Recover as much as possible when the site was bootstrapped outside the
+		 * nonce-verified install handler and therefore lacks a persisted manifest.
+		 */
+		if (
+			empty( $manifest['post_ids'] ) &&
+			empty( $manifest['asset_ids'] ) &&
+			empty( $manifest['term_ids'] ) &&
+			empty( $manifest['featured_ids'] )
+		) {
+			$manifest = the_drafting_table_collect_demo_manifest( 0, the_drafting_table_default_demo_site_state() );
+		}
+
+		if ( empty( $manifest['previous_state'] ) || ! is_array( $manifest['previous_state'] ) ) {
+			$manifest['previous_state'] = the_drafting_table_default_demo_site_state();
+		}
 
 		$post_ids = array_map( 'absint', (array) ( $manifest['post_ids'] ?? array() ) );
 		foreach ( $post_ids as $post_id ) {

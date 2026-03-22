@@ -520,6 +520,117 @@ body.single .wp-block-post-title {
 	z-index: 100;
 }
 
+/* === Header nested navigation submenu positioning ===
+ *
+ * WordPress core's desktop navigation CSS forces nested flyouts to open back
+ * toward the left for right-justified menus. In this theme header that causes
+ * second-level menus to overlap their parent column. Default the header's
+ * nested flyouts to the right, then let the runtime script flip them only
+ * when viewport constraints require it.
+ */
+@media (min-width: 782px) {
+
+	header .wp-block-navigation .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container,
+	header .wp-block-navigation.items-justified-right .wp-block-page-list > .has-child .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container,
+	header .wp-block-navigation.items-justified-right .wp-block-navigation__container .has-child .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container,
+	html[dir="rtl"] .wp-block-navigation .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container,
+	body.rtl .wp-block-navigation .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container {
+		left: calc(100% - 1px) !important;
+		right: auto !important;
+		inset-inline-start: calc(100% - 1px) !important;
+		inset-inline-end: auto !important;
+	}
+
+	header .wp-block-navigation .wp-block-navigation__submenu-container .wp-block-navigation__submenu-icon {
+		width: 0.75em;
+		margin-right: 0.5em;
+	}
+
+	header .wp-block-navigation .wp-block-navigation__submenu-container .wp-block-navigation__submenu-icon svg {
+		margin-top: 0;
+		transform: rotate(-90deg) translateX(0.01em);
+		transform-origin: center;
+	}
+}
+
+/* Keep the responsive overlay layout stable even if the viewport changes
+   while the menu is already open. */
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) {
+	--navigation-layout-justification-setting: center;
+	--navigation-layout-justify: center;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__container,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-page-list,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container {
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container {
+	padding-top: 0.75rem;
+	padding-right: 0;
+	padding-left: 0;
+	min-width: 0;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content > .wp-block-navigation__container,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content > .wp-block-page-list {
+	padding-left: 0;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation-item,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-pages-list__item {
+	width: 100%;
+	padding-left: 0;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content > .wp-block-navigation__container > .wp-block-navigation-item > .wp-block-navigation-item__content,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content > .wp-block-page-list > .wp-block-pages-list__item > .wp-block-navigation-item__content,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content > .wp-block-page-list > .wp-block-pages-list__item > .wp-block-pages-list__item__link {
+	display: inline-block;
+	padding-left: 0;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container > .wp-block-navigation-item > .wp-block-navigation-item__content,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container > .wp-block-pages-list__item > .wp-block-pages-list__item__link {
+	display: inline-block;
+	padding-left: 0;
+	font-size: 0.92em;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container {
+	padding-top: 0.5rem;
+	padding-right: 0;
+	padding-left: 0;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container > .wp-block-navigation-item,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container > .wp-block-pages-list__item {
+	width: 100%;
+	flex: 0 0 100%;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container > .wp-block-navigation-item > .wp-block-navigation-item__content,
+.wp-block-navigation__responsive-container.is-menu-open:where(:not(.disable-default-overlay)) .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container > .wp-block-pages-list__item > .wp-block-pages-list__item__link {
+	padding-left: 0;
+	display: inline-block;
+	font-size: 0.84em;
+	text-align: center;
+}
+
 /* === Admin Toolbar Offset ===
  * WordPress adds .admin-bar to <body> when the toolbar is visible.
  * Shift the sticky top so the header sits below the toolbar, not behind it.

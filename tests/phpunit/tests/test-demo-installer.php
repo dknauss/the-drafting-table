@@ -213,6 +213,65 @@ class TheDraftingTable_DemoInstaller_Test extends WP_UnitTestCase {
 		}
 	}
 
+	public function test_remove_demo_content_recovers_when_manifest_is_missing() {
+		$demo_post_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
+		update_post_meta( $demo_post_id, '_the_drafting_table_demo_content', '1' );
+
+		$demo_asset_id = self::factory()->post->create(
+			array(
+				'post_type'      => 'attachment',
+				'post_status'    => 'inherit',
+				'post_mime_type' => 'image/svg+xml',
+			)
+		);
+		update_post_meta( $demo_asset_id, '_the_drafting_table_demo_asset', '1' );
+
+		$demo_term = wp_insert_term(
+			'Recovered Demo Term',
+			'post_tag',
+			array(
+				'slug' => 'recovered-demo-term',
+			)
+		);
+		$this->assertNotWPError( $demo_term );
+		update_term_meta( (int) $demo_term['term_id'], '_the_drafting_table_demo_content', '1' );
+
+		$featured_demo_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
+		update_post_meta( $featured_demo_id, '_the_drafting_table_featured_entry', '1' );
+		update_post_meta( $featured_demo_id, '_the_drafting_table_demo_content', '1' );
+
+		delete_option( 'the_drafting_table_demo_manifest' );
+		update_option( 'the_drafting_table_demo_installed', '1' );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', 123 );
+		update_option( 'page_for_posts', 456 );
+		set_theme_mod( 'custom_logo', $demo_asset_id );
+
+		$result = the_drafting_table_remove_demo_content();
+
+		$this->assertTrue( $result );
+		$this->assertNull( get_post( $demo_post_id ) );
+		$this->assertNull( get_post( $demo_asset_id ) );
+		$this->assertNull( get_post( $featured_demo_id ) );
+		$this->assertEmpty( term_exists( (int) $demo_term['term_id'], 'post_tag' ) );
+		$this->assertSame( 'posts', get_option( 'show_on_front' ) );
+		$this->assertSame( 0, (int) get_option( 'page_on_front' ) );
+		$this->assertSame( 0, (int) get_option( 'page_for_posts' ) );
+		$this->assertSame( 0, (int) get_theme_mod( 'custom_logo', 0 ) );
+		$this->assertSame( '1', get_option( 'the_drafting_table_demo_pending' ) );
+		$this->assertFalse( get_option( 'the_drafting_table_demo_installed', false ) );
+	}
+
 	public function test_install_demo_content_is_idempotent_across_repeated_runs() {
 		$theme_path_filter = static function ( $path, $file ) {
 			return dirname( __DIR__, 3 ) . '/' . ltrim( (string) $file, '/' );
