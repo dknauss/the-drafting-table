@@ -66,6 +66,7 @@ export async function fetchFrontPageWithAutoProxy(
 	{
 		wpEnvBinPath = wpEnvBin,
 		wpEnvCwd,
+		wordpressContainerName = process.env.WP_ENV_WORDPRESS_CONTAINER,
 		fetchFn = fetch,
 		isBaseUrlReachableFn = isBaseUrlReachable,
 		captureCommandFn = captureCommand,
@@ -74,6 +75,15 @@ export async function fetchFrontPageWithAutoProxy(
 	} = {}
 ) {
 	let proxy;
+	const closeProxy = async () => {
+		if ( ! proxy ) {
+			return;
+		}
+
+		const activeProxy = proxy;
+		proxy = undefined;
+		await activeProxy.close().catch( () => {} );
+	};
 
 	try {
 		if ( shouldAutoProxy( baseUrl ) ) {
@@ -83,29 +93,42 @@ export async function fetchFrontPageWithAutoProxy(
 			} );
 
 			if ( ! baseUrlReachable ) {
-				const installPathOutput = captureCommandFn( `${ wpEnvBinPath } install-path`, { cwd: wpEnvCwd } );
-				const projectId = parseWpEnvProjectId( installPathOutput );
-				const containerName = defaultWpEnvWordpressContainer( projectId );
 				const url = new URL( baseUrl );
+				const containerName =
+					wordpressContainerName ||
+					defaultWpEnvWordpressContainer(
+						parseWpEnvProjectId(
+							captureCommandFn( `${ wpEnvBinPath } install-path`, { cwd: wpEnvCwd } )
+						)
+					);
+				const port = url.port
+					? Number.parseInt( url.port, 10 )
+					: 'https:' === url.protocol
+						? 443
+						: 80;
 
 				await assertContainerRunningFn( containerName );
 
 				proxy = createProxyServerFn( {
 					containerName,
 					host: url.hostname,
-					port: Number.parseInt( url.port, 10 ),
+					port,
 				} );
 				await proxy.listen();
 			}
 		}
 
-		return await fetchFn( baseUrl, {
+		const response = await fetchFn( baseUrl, {
 			signal: AbortSignal.timeout( FRONTEND_FETCH_TIMEOUT_MS ),
 		} );
-	} finally {
-		if ( proxy ) {
-			await proxy.close().catch( () => {} );
-		}
+
+		return {
+			response,
+			close: closeProxy,
+		};
+	} catch ( error ) {
+		await closeProxy();
+		throw error;
 	}
 }
 
@@ -163,20 +186,24 @@ async function main() {
 			fail( 'Packaged theme did not report as active after install.' );
 		}
 
-		const response = await fetchFrontPageWithAutoProxy( baseUrl, {
+		const { response, close } = await fetchFrontPageWithAutoProxy( baseUrl, {
 			wpEnvCwd: tempDir,
 		} );
-		const responseBody = await response.text();
-		if ( 200 !== response.status ) {
-			fail( `Front-end request failed after activation (status ${ response.status }).` );
-		} else {
-			pass( 'Front-end request returned HTTP 200 after activation.' );
-		}
+		try {
+			const responseBody = await response.text();
+			if ( 200 !== response.status ) {
+				fail( `Front-end request failed after activation (status ${ response.status }).` );
+			} else {
+				pass( 'Front-end request returned HTTP 200 after activation.' );
+			}
 
-		if ( /Fatal error/iu.test( responseBody ) ) {
-			fail( 'Front-end response contains a fatal error string.' );
-		} else {
-			pass( 'Front-end response does not contain fatal error text.' );
+			if ( /Fatal error/iu.test( responseBody ) ) {
+				fail( 'Front-end response contains a fatal error string.' );
+			} else {
+				pass( 'Front-end response does not contain fatal error text.' );
+			}
+		} finally {
+			await close();
 		}
 
 		const logs = captureCommand( `${ wpEnvBin } logs development --no-watch`, { cwd: tempDir } );
