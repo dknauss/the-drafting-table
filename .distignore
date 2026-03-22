@@ -1,5 +1,6 @@
 # Files excluded from the production distribution zip
 .distignore
+.phpunit.result.cache
 .github/
 .git
 .gitignore
@@ -13,6 +14,7 @@ phpcs.xml.dist
 playwright.config.mjs
 run-themecheck.php
 tests/
+docs/
 *.log
 node_modules/
 vendor/
