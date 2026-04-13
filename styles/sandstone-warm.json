@@ -63,7 +63,8 @@
             "dotGrid": "rgba(150, 135, 115, 0.22)",
             "gridLine": "rgba(170, 155, 135, 0.15)",
             "vellumEdge": "rgba(242, 235, 224, 0.6)",
-            "terraTint": "rgba(155, 74, 44, 0.25)"
+            "terraTint": "rgba(155, 74, 44, 0.25)",
+            "logoFilter": "brightness(0) contrast(1.05) drop-shadow(0 0 0.4px rgba(59, 47, 36, 0.9))"
         }
     },
     "styles": {
