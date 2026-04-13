@@ -63,10 +63,10 @@ test.describe( 'The Drafting Table smoke suite', () => {
 
 	async function openDesktopNestedSubmenus( page ) {
 		await page.setViewportSize( { width: 1440, height: 1000 } );
-		await page.goto( '/level-1/level-2/level-3/' );
+		await page.goto( '/journal/sub/sub-two/' );
 
 		const headerNav = page.locator( 'header nav[aria-label*="Main navigation"]' ).first();
-		const topLevelLink = headerNav.locator( 'a[href$="/level-1/"]' ).first();
+		const topLevelLink = headerNav.locator( 'a[href$="/journal/"]' ).first();
 		const topLevelItem = topLevelLink.locator( 'xpath=ancestor::li[contains(@class,"has-child")]' ).last();
 		const topLevelSubmenu = topLevelItem.locator( ':scope > .wp-block-navigation__submenu-container' );
 
@@ -74,7 +74,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await topLevelLink.hover();
 		await expect( topLevelSubmenu ).toBeVisible();
 
-		const subLink = topLevelSubmenu.locator( 'a[href$="/level-1/level-2/"]' ).first();
+		const subLink = topLevelSubmenu.locator( 'a[href$="/journal/sub/"]' ).first();
 		const subItem = subLink.locator( 'xpath=ancestor::li[contains(@class,"has-child")]' ).last();
 		const subSubmenu = subItem.locator( ':scope > .wp-block-navigation__submenu-container' );
 
@@ -87,6 +87,10 @@ test.describe( 'The Drafting Table smoke suite', () => {
 
 	function horizontalCenterOffset( box, viewportWidth ) {
 		return Math.abs( box.x + box.width / 2 - viewportWidth / 2 );
+	}
+
+	async function getOutlineWidth( locator ) {
+		return locator.evaluate( ( element ) => Number.parseFloat( getComputedStyle( element ).outlineWidth ) || 0 );
 	}
 
 	async function assertNoCriticalA11yViolations( page, routePath ) {
@@ -118,6 +122,25 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.getByRole( 'heading', { level: 1, name: /Where Structure Meets/i } ) ).toBeVisible();
 		await expect( page.getByRole( 'link', { name: 'Glass, Transparency, and the Dissolution of Walls' } ).first() ).toBeVisible();
 		await expect( page.getByRole( 'img', { name: /transparent glass wall facing landscape/i } ) ).toBeVisible();
+	} );
+
+	test( 'skip link becomes visible on focus and jumps to the main content target', async ( { page } ) => {
+		await page.goto( '/' );
+
+		const skipLink = page.locator( '.skip-link' ).first();
+		await skipLink.focus();
+
+		await expect( skipLink ).toBeFocused();
+		expect( await getOutlineWidth( skipLink ) ).toBeGreaterThan( 0 );
+
+		const skipLinkBox = await skipLink.boundingBox();
+		expect( skipLinkBox ).not.toBeNull();
+		expect( skipLinkBox.y ).toBeLessThan( 12 );
+
+		await page.keyboard.press( 'Enter' );
+		await expect.poll( () => page.evaluate( () => window.location.hash ) ).toBe( '#wp--skip-link--target' );
+		await expect.poll( () => page.evaluate( () => window.scrollY ) ).toBeGreaterThan( 0 );
+		await expect( page.locator( '#wp--skip-link--target' ) ).toHaveCount( 1 );
 	} );
 
 	test( 'home template renders featured and archive entries with demo media', async ( { page } ) => {
@@ -225,6 +248,36 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		expect( horizontalCenterOffset( journalBox, viewportWidth ) ).toBeLessThan( 80 );
 		expect( horizontalCenterOffset( subTwoBox, viewportWidth ) ).toBeLessThan( 80 );
 		expect( await page.evaluate( () => window.scrollX ) ).toBe( 0 );
+	} );
+
+	test( 'responsive menu is keyboard operable and returns focus to the opener when closed', async ( { page } ) => {
+		await page.setViewportSize( { width: 400, height: 900 } );
+		await page.goto( '/' );
+
+		const openButton = page.locator( 'header .wp-block-navigation__responsive-container-open' ).first();
+		await openButton.focus();
+
+		await expect( openButton ).toBeFocused();
+
+		await page.keyboard.press( 'Enter' );
+
+		const responsiveContainer = page.locator(
+			'header .wp-block-navigation__responsive-container.is-menu-open'
+		);
+		const closeButton = responsiveContainer.locator( '.wp-block-navigation__responsive-container-close' ).first();
+
+		await expect( responsiveContainer ).toBeVisible();
+		await expect( closeButton ).toBeVisible();
+
+		await closeButton.focus();
+		await expect( closeButton ).toBeFocused();
+
+		await page.keyboard.press( 'Enter' );
+		await expect( responsiveContainer ).toBeHidden();
+		await expect.poll( async () =>
+			page.evaluate( () => document.activeElement?.getAttribute( 'aria-label' ) ?? '' )
+		).toBe( 'Open menu' );
+		await expect( openButton ).toBeFocused();
 	} );
 
 	test( 'installer UI exposes companion demo management action', async ( { page } ) => {
