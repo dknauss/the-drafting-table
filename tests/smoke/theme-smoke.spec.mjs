@@ -89,10 +89,6 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		return Math.abs( box.x + box.width / 2 - viewportWidth / 2 );
 	}
 
-	function boxCenterX( box ) {
-		return box.x + box.width / 2;
-	}
-
 	async function assertNoCriticalA11yViolations( page, routePath ) {
 		await page.goto( routePath );
 
@@ -175,23 +171,23 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.locator( 'main footer' ) ).toHaveCount( 0 );
 	} );
 
-	test( 'desktop nested header submenu opens away from its parent and footer navigation stays flat', async ( { page } ) => {
-		const { subSubmenu } = await openDesktopNestedSubmenus( page );
+	test( 'desktop nested header submenu stays clear of its parent and footer navigation stays flat', async ( { page } ) => {
+		const { topLevelSubmenu, subSubmenu } = await openDesktopNestedSubmenus( page );
 		const footerNav = page.locator( 'footer nav[aria-label*="Footer navigation"]' ).first();
 		const viewportWidth = page.viewportSize().width;
+		const parentBox = await topLevelSubmenu.boundingBox();
 		const subBox = await subSubmenu.boundingBox();
-		const subPlacement = await subSubmenu.evaluate( ( element ) => ( {
-			left: element.style.left,
-			right: element.style.right,
-			inlineStart: element.style.getPropertyValue( 'inset-inline-start' ),
-			inlineEnd: element.style.getPropertyValue( 'inset-inline-end' ),
-		} ) );
 
+		expect( parentBox ).not.toBeNull();
 		expect( subBox ).not.toBeNull();
-		expect( subPlacement.left ).toContain( 'calc(100% - 1px)' );
-		expect( subPlacement.right ).toBe( 'auto' );
-		expect( subPlacement.inlineStart ).toContain( 'calc(100% - 1px)' );
-		expect( subPlacement.inlineEnd ).toBe( 'auto' );
+
+		const overlapTolerance = 2;
+		const opensAwayFromParent =
+			subBox.x + subBox.width <= parentBox.x + overlapTolerance ||
+			subBox.x >= parentBox.x + parentBox.width - overlapTolerance;
+
+		expect( opensAwayFromParent ).toBe( true );
+		expect( subBox.x ).toBeGreaterThanOrEqual( -1 );
 		expect( subBox.x + subBox.width ).toBeLessThanOrEqual( viewportWidth + 1 );
 		await expect( footerNav.locator( '.has-child' ) ).toHaveCount( 0 );
 	} );
