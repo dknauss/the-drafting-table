@@ -25,7 +25,7 @@
 				"resource": "git:directory",
 				"url": "https://github.com/dknauss/the-drafting-table.git",
 				"ref": "main",
-				"path": "."
+				"refType": "branch"
 			},
 			"options": {
 				"activate": true,
@@ -38,7 +38,8 @@
 				"resource": "git:directory",
 				"url": "https://github.com/dknauss/the-drafting-table.git",
 				"ref": "main",
-				"path": "companion-plugin/the-drafting-table-companion"
+				"path": "companion-plugin/the-drafting-table-companion",
+				"refType": "branch"
 			},
 			"options": {
 				"activate": true,

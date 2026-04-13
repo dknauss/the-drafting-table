@@ -31,5 +31,5 @@ Host the blueprint JSON somewhere public and pass it as a `blueprint-url`, or us
 
 ## Notes
 
-- The blueprint currently installs from the repository's `main` branch.
+- The blueprint installs from the repository's `main` branch and explicitly sets `refType: "branch"` for Playground's `git:directory` resources, because non-`HEAD` refs are only reliably resolved when the ref type is specified.
 - It is intentionally lightweight and does not try to mirror the full `wp-env` fixture/import pipeline.
