@@ -4,6 +4,9 @@
  * Slug: the-drafting-table/hero-cover
  * Categories: featured
  * Description: A full-width hero section with blueprint-framed architectural imagery and drafting annotations.
+ * Keywords: hero, cover, landing, studio, architecture
+ * Viewport Width: 1280
+ * Inserter: true
  *
  * @package The_Drafting_Table
  */

@@ -5,6 +5,7 @@
  * Description: A full-width featured quote section with parchment background and terra-rule accent, suitable for use between page sections or within long-form content.
  * Categories: the-drafting-table
  * Keywords: quote, pullquote, highlight, featured
+ * Viewport Width: 1280
  * Inserter: true
  *
  * @package The_Drafting_Table

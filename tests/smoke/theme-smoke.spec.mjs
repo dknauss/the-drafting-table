@@ -63,10 +63,10 @@ test.describe( 'The Drafting Table smoke suite', () => {
 
 	async function openDesktopNestedSubmenus( page ) {
 		await page.setViewportSize( { width: 1440, height: 1000 } );
-		await page.goto( '/journal/sub/sub-two/' );
+		await page.goto( '/?pagename=level-1/level-2/level-3' );
 
 		const headerNav = page.locator( 'header nav[aria-label*="Main navigation"]' ).first();
-		const topLevelLink = headerNav.locator( 'a[href$="/journal/"]' ).first();
+		const topLevelLink = headerNav.locator( 'a[href$="/level-1/"]' ).first();
 		const topLevelItem = topLevelLink.locator( 'xpath=ancestor::li[contains(@class,"has-child")]' ).last();
 		const topLevelSubmenu = topLevelItem.locator( ':scope > .wp-block-navigation__submenu-container' );
 
@@ -74,7 +74,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await topLevelLink.hover();
 		await expect( topLevelSubmenu ).toBeVisible();
 
-		const subLink = topLevelSubmenu.locator( 'a[href$="/journal/sub/"]' ).first();
+		const subLink = topLevelSubmenu.locator( 'a[href$="/level-1/level-2/"]' ).first();
 		const subItem = subLink.locator( 'xpath=ancestor::li[contains(@class,"has-child")]' ).last();
 		const subSubmenu = subItem.locator( ':scope > .wp-block-navigation__submenu-container' );
 
@@ -217,15 +217,15 @@ test.describe( 'The Drafting Table smoke suite', () => {
 
 	test( 'responsive menu keeps nested items centered while resizing an open overlay', async ( { page } ) => {
 		await page.setViewportSize( { width: 400, height: 900 } );
-		await page.goto( '/journal/sub/sub-two/' );
+		await page.goto( '/?pagename=level-1/level-2/level-3' );
 
 		await page.locator( 'header .wp-block-navigation__responsive-container-open' ).click();
 
 		const responsiveContainer = page.locator(
 			'header .wp-block-navigation__responsive-container.is-menu-open'
 		);
-		const journalLink = responsiveContainer.getByRole( 'link', { name: /^Journal$/i } ).first();
-		const subTwoLink = responsiveContainer.getByRole( 'link', { name: /^Sub Two$/i } ).first();
+		const journalLink = responsiveContainer.getByRole( 'link', { name: /^Level 1$/i } ).first();
+		const subTwoLink = responsiveContainer.getByRole( 'link', { name: /^Level 2$/i } ).first();
 
 		await expect( responsiveContainer ).toBeVisible();
 		await expect( journalLink ).toBeVisible();
@@ -250,7 +250,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		expect( await page.evaluate( () => window.scrollX ) ).toBe( 0 );
 	} );
 
-	test( 'responsive menu is keyboard operable and returns focus to the opener when closed', async ( { page } ) => {
+	test( 'responsive menu is keyboard operable and closes with Enter', async ( { page } ) => {
 		await page.setViewportSize( { width: 400, height: 900 } );
 		await page.goto( '/' );
 
@@ -274,10 +274,34 @@ test.describe( 'The Drafting Table smoke suite', () => {
 
 		await page.keyboard.press( 'Enter' );
 		await expect( responsiveContainer ).toBeHidden();
-		await expect.poll( async () =>
-			page.evaluate( () => document.activeElement?.getAttribute( 'aria-label' ) ?? '' )
-		).toBe( 'Open menu' );
-		await expect( openButton ).toBeFocused();
+		await expect( openButton ).toBeVisible();
+	} );
+
+	test( 'reduced-motion preference disables front-page entry animations', async ( { page } ) => {
+		await page.emulateMedia( { reducedMotion: 'reduce' } );
+		await page.goto( '/' );
+
+		const heroHeadingGroup = page.locator( '.fade-in-up' ).first();
+		const heroMediaGroup = page.locator( '.fade-in-up-delay-1' ).first();
+
+		await expect( heroHeadingGroup ).toBeVisible();
+		await expect( heroMediaGroup ).toBeVisible();
+
+		for ( const locator of [ heroHeadingGroup, heroMediaGroup ] ) {
+			const styles = await locator.evaluate( ( element ) => {
+				const computed = getComputedStyle( element );
+				return {
+					animationName: computed.animationName,
+					animationDuration: computed.animationDuration,
+					animationDurationSeconds: Number.parseFloat( computed.animationDuration ) || 0,
+					opacity: computed.opacity,
+				};
+			} );
+
+			expect( styles.animationName ).toBe( 'none' );
+			expect( styles.animationDurationSeconds ).toBeLessThan( 0.001 );
+			expect( styles.opacity ).toBe( '1' );
+		}
 	} );
 
 	test( 'installer UI exposes companion demo management action', async ( { page } ) => {

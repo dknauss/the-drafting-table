@@ -4,6 +4,9 @@
  * Slug: the-drafting-table/portfolio-grid
  * Categories: featured
  * Description: A grid of project cards with blueprint-framed images and annotations.
+ * Keywords: portfolio, projects, grid, case study, gallery
+ * Viewport Width: 1280
+ * Inserter: true
  *
  * @package The_Drafting_Table
  */

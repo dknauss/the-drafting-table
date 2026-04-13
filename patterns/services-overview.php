@@ -4,6 +4,9 @@
  * Slug: the-drafting-table/services-overview
  * Categories: featured
  * Description: A grid of architectural services with numbered entries and descriptions.
+ * Keywords: services, offerings, process, studio, grid
+ * Viewport Width: 1280
+ * Inserter: true
  *
  * @package The_Drafting_Table
  */

@@ -145,6 +145,8 @@ if ( ! function_exists( 'the_drafting_table_smoke_disable_canonical_redirects' )
 
 		$query_routes = array(
 			'p',
+			'pagename',
+			'page_id',
 			'the_drafting_table_smoke_post',
 			'name',
 			'post_type',

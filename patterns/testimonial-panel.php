@@ -4,6 +4,9 @@
  * Slug: the-drafting-table/testimonial-panel
  * Categories: featured
  * Description: A refined testimonial quote panel with attribution styled as drafting annotations.
+ * Keywords: testimonial, quote, review, client, proof
+ * Viewport Width: 1280
+ * Inserter: true
  *
  * @package The_Drafting_Table
  */

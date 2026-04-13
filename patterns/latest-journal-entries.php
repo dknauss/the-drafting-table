@@ -4,6 +4,9 @@
  * Slug: the-drafting-table/latest-journal-entries
  * Categories: featured
  * Description: A dynamic query loop displaying the latest blog posts as journal entry cards.
+ * Keywords: posts, journal, latest, query, blog
+ * Viewport Width: 1280
+ * Inserter: true
  *
  * @package The_Drafting_Table
  */

@@ -4,6 +4,9 @@
  * Slug: the-drafting-table/process-workflow
  * Categories: featured
  * Description: A step-by-step design process section styled as a drafting methodology diagram.
+ * Keywords: process, workflow, steps, methodology, services
+ * Viewport Width: 1280
+ * Inserter: true
  *
  * @package The_Drafting_Table
  */

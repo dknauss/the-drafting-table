@@ -4,6 +4,9 @@
  * Slug: the-drafting-table/contact-inquiry
  * Categories: featured
  * Description: A contact section styled as a project consultation request form with studio details.
+ * Keywords: contact, inquiry, form, consultation, studio
+ * Viewport Width: 1280
+ * Inserter: true
  *
  * @package The_Drafting_Table
  */

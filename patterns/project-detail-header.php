@@ -5,6 +5,7 @@
  * Description: Full-width cover image with blueprint frame treatment and project metadata row for project detail pages.
  * Categories: the-drafting-table
  * Keywords: project, header, cover, blueprint
+ * Viewport Width: 1280
  * Inserter: true
  *
  * @package The_Drafting_Table
