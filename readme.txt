@@ -4,7 +4,7 @@ Tags: block-patterns, blog, custom-colors, custom-logo, custom-menu, editor-styl
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.6.2
+Stable tag: 0.6.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,12 @@ Go to Appearance > Editor > Templates and select the template you want to edit. 
 If `npm run test:smoke` stalls or times out against a custom `WP_ENV_PORT` even though `wp-env` reports the stack as running, Docker may have published the port without making it reachable from the host. In that case, run `WP_ENV_PORT=8894 npm run test:smoke:local` or `WP_ENV_PORT=8894 npm run qa:local` instead. For headed or manual Playwright sessions, start `WP_ENV_PORT=8894 npm run playwright:proxy` in one terminal and point Playwright at the same `http://localhost:8894` base URL.
 
 == Changelog ==
+
+= 0.6.3 =
+* Fixed desktop and responsive navigation behavior so nested submenus place more reliably, footer navigation stays flat, and the mobile overlay remains stable while resizing
+* Hardened demo-content removal when previous install manifests are missing or incomplete, reducing leftover starter content on local or reused sites
+* Added a lightweight WordPress Playground blueprint and documentation for quick browser-based theme previews alongside the existing wp-env QA workflow
+* Improved Sandstone Warm logo contrast so the bundled mark remains legible against the warmer parchment palette
 
 = 0.6.2 =
 * Protected existing site content during demo onboarding by creating collision-safe starter pages and journal entries instead of reusing unrelated posts with matching slugs
