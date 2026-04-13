@@ -4,8 +4,30 @@ import AxeBuilder from '@axe-core/playwright';
 test.describe( 'The Drafting Table smoke suite', () => {
 	test.describe.configure( { mode: 'serial' } );
 
+	let demoInstalled = false;
+
+	async function gotoWithRetries( page, url, options = {}, attempts = 5 ) {
+		let lastError;
+
+		for ( let attempt = 0; attempt < attempts; attempt += 1 ) {
+			try {
+				const response = await page.goto( url, { waitUntil: 'domcontentloaded', ...options } );
+
+				if ( response ) {
+					return response;
+				}
+			} catch ( error ) {
+				lastError = error;
+			}
+
+			await page.waitForTimeout( 500 * ( attempt + 1 ) );
+		}
+
+		throw lastError ?? new Error( `Could not navigate to ${ url }` );
+	}
+
 	async function loginToUser( page, username, password ) {
-		await page.goto( '/wp-login.php?action=logout' );
+		await gotoWithRetries( page, '/wp-login.php?action=logout' );
 		if ( await page.getByRole( 'link', { name: /log out/i } ).count() ) {
 			await Promise.all( [
 				page.waitForURL( /wp-login\.php\?loggedout=true/ ),
@@ -13,7 +35,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 			] );
 		}
 
-		await page.goto( '/wp-login.php' );
+		await gotoWithRetries( page, '/wp-login.php' );
 		await page.locator( '#user_login' ).fill( username );
 		await page.locator( '#user_pass' ).fill( password );
 		await Promise.all( [
@@ -28,7 +50,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 
 	async function ensureDemoInstalled( page ) {
 		await loginToAdmin( page );
-		await page.goto( '/wp-admin/themes.php' );
+		await gotoWithRetries( page, '/wp-admin/themes.php' );
 
 		const removeDemoLink = page.getByRole( 'link', { name: /Remove Demo Content/i } ).first();
 		if ( ( await removeDemoLink.count() ) > 0 ) {
@@ -106,7 +128,12 @@ test.describe( 'The Drafting Table smoke suite', () => {
 	}
 
 	test.beforeEach( async ( { page } ) => {
+		if ( demoInstalled ) {
+			return;
+		}
+
 		await ensureDemoInstalled( page );
+		demoInstalled = true;
 	} );
 
 	test( 'front page renders hero media and portable navigation', async ( { page } ) => {
@@ -276,6 +303,7 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( responsiveContainer ).toBeHidden();
 		await expect( openButton ).toBeVisible();
 	} );
+
 
 	test( 'reduced-motion preference disables front-page entry animations', async ( { page } ) => {
 		await page.emulateMedia( { reducedMotion: 'reduce' } );
