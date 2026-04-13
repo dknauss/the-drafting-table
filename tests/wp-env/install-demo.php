@@ -121,6 +121,39 @@ if ( ! function_exists( 'the_drafting_table_import_wxr_fixture' ) ) {
 	}
 }
 
+if ( ! function_exists( 'the_drafting_table_ensure_smoke_page' ) ) {
+	/**
+	 * Creates or updates a published page used by smoke-only navigation fixtures.
+	 *
+	 * @param string $path       Hierarchical page path, e.g. "journal/sub".
+	 * @param string $title      Page title.
+	 * @param int    $parent_id  Parent page ID.
+	 * @param string $content    Optional page body.
+	 * @return int|WP_Error
+	 */
+	function the_drafting_table_ensure_smoke_page( $path, $title, $parent_id = 0, $content = '' ) {
+		$existing = get_page_by_path( $path );
+
+		$page_args = array(
+			'post_title'   => $title,
+			'post_status'  => 'publish',
+			'post_type'    => 'page',
+			'post_parent'  => $parent_id,
+			'post_content' => $content,
+		);
+
+		if ( $existing instanceof WP_Post ) {
+			$page_args['ID'] = $existing->ID;
+			return wp_update_post( $page_args, true );
+		}
+
+		$slug_parts              = explode( '/', $path );
+		$page_args['post_name']  = end( $slug_parts );
+
+		return wp_insert_post( $page_args, true );
+	}
+}
+
 $starter_post = get_page_by_path( 'hello-world', OBJECT, 'post' );
 if ( $starter_post ) {
 	wp_delete_post( $starter_post->ID, true );
@@ -196,6 +229,33 @@ if ( is_wp_error( $install_result ) ) {
 		fwrite( STDERR, wp_strip_all_tags( (string) $issue ) . "\n" );
 	}
 	exit( 1 );
+}
+
+$journal_page_id = (int) get_option( 'page_for_posts' );
+if ( $journal_page_id > 0 ) {
+	$sub_page_id = the_drafting_table_ensure_smoke_page(
+		'journal/sub',
+		'Sub',
+		$journal_page_id,
+		'Nested smoke fixture page for header navigation regressions.'
+	);
+
+	if ( is_wp_error( $sub_page_id ) ) {
+		fwrite( STDERR, wp_strip_all_tags( $sub_page_id->get_error_message() ) . "\n" );
+		exit( 1 );
+	}
+
+	$sub_two_page_id = the_drafting_table_ensure_smoke_page(
+		'journal/sub/sub-two',
+		'Sub Two',
+		(int) $sub_page_id,
+		'Deep smoke fixture page for desktop and responsive submenu regressions.'
+	);
+
+	if ( is_wp_error( $sub_two_page_id ) ) {
+		fwrite( STDERR, wp_strip_all_tags( $sub_two_page_id->get_error_message() ) . "\n" );
+		exit( 1 );
+	}
 }
 
 update_option( 'the_drafting_table_demo_installed', '1' );

@@ -61,6 +61,38 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await page.goto( '/?category_name=material-studies' );
 	}
 
+	async function openDesktopNestedSubmenus( page ) {
+		await page.setViewportSize( { width: 1440, height: 1000 } );
+		await page.goto( '/level-1/level-2/level-3/' );
+
+		const headerNav = page.locator( 'header nav[aria-label*="Main navigation"]' ).first();
+		const topLevelLink = headerNav.locator( 'a[href$="/level-1/"]' ).first();
+		const topLevelItem = topLevelLink.locator( 'xpath=ancestor::li[contains(@class,"has-child")]' ).last();
+		const topLevelSubmenu = topLevelItem.locator( ':scope > .wp-block-navigation__submenu-container' );
+
+		await expect( topLevelLink ).toBeVisible();
+		await topLevelLink.hover();
+		await expect( topLevelSubmenu ).toBeVisible();
+
+		const subLink = topLevelSubmenu.locator( 'a[href$="/level-1/level-2/"]' ).first();
+		const subItem = subLink.locator( 'xpath=ancestor::li[contains(@class,"has-child")]' ).last();
+		const subSubmenu = subItem.locator( ':scope > .wp-block-navigation__submenu-container' );
+
+		await expect( subLink ).toBeVisible();
+		await subLink.hover();
+		await expect( subSubmenu ).toBeVisible();
+
+		return { headerNav, topLevelSubmenu, subSubmenu };
+	}
+
+	function horizontalCenterOffset( box, viewportWidth ) {
+		return Math.abs( box.x + box.width / 2 - viewportWidth / 2 );
+	}
+
+	function boxCenterX( box ) {
+		return box.x + box.width / 2;
+	}
+
 	async function assertNoCriticalA11yViolations( page, routePath ) {
 		await page.goto( routePath );
 
@@ -141,6 +173,62 @@ test.describe( 'The Drafting Table smoke suite', () => {
 		await expect( page.locator( 'header nav[aria-label*="Main navigation"]' ).first() ).toBeVisible();
 		await expect( page.locator( 'footer nav[aria-label*="Footer navigation"]' ).first() ).toBeVisible();
 		await expect( page.locator( 'main footer' ) ).toHaveCount( 0 );
+	} );
+
+	test( 'desktop nested header submenu opens away from its parent and footer navigation stays flat', async ( { page } ) => {
+		const { subSubmenu } = await openDesktopNestedSubmenus( page );
+		const footerNav = page.locator( 'footer nav[aria-label*="Footer navigation"]' ).first();
+		const viewportWidth = page.viewportSize().width;
+		const subBox = await subSubmenu.boundingBox();
+		const subPlacement = await subSubmenu.evaluate( ( element ) => ( {
+			left: element.style.left,
+			right: element.style.right,
+			inlineStart: element.style.getPropertyValue( 'inset-inline-start' ),
+			inlineEnd: element.style.getPropertyValue( 'inset-inline-end' ),
+		} ) );
+
+		expect( subBox ).not.toBeNull();
+		expect( subPlacement.left ).toContain( 'calc(100% - 1px)' );
+		expect( subPlacement.right ).toBe( 'auto' );
+		expect( subPlacement.inlineStart ).toContain( 'calc(100% - 1px)' );
+		expect( subPlacement.inlineEnd ).toBe( 'auto' );
+		expect( subBox.x + subBox.width ).toBeLessThanOrEqual( viewportWidth + 1 );
+		await expect( footerNav.locator( '.has-child' ) ).toHaveCount( 0 );
+	} );
+
+	test( 'responsive menu keeps nested items centered while resizing an open overlay', async ( { page } ) => {
+		await page.setViewportSize( { width: 400, height: 900 } );
+		await page.goto( '/journal/sub/sub-two/' );
+
+		await page.locator( 'header .wp-block-navigation__responsive-container-open' ).click();
+
+		const responsiveContainer = page.locator(
+			'header .wp-block-navigation__responsive-container.is-menu-open'
+		);
+		const journalLink = responsiveContainer.getByRole( 'link', { name: /^Journal$/i } ).first();
+		const subTwoLink = responsiveContainer.getByRole( 'link', { name: /^Sub Two$/i } ).first();
+
+		await expect( responsiveContainer ).toBeVisible();
+		await expect( journalLink ).toBeVisible();
+		await expect( subTwoLink ).toBeVisible();
+
+		let viewportWidth = page.viewportSize().width;
+		let journalBox = await journalLink.boundingBox();
+		let subTwoBox = await subTwoLink.boundingBox();
+
+		expect( horizontalCenterOffset( journalBox, viewportWidth ) ).toBeLessThan( 80 );
+		expect( horizontalCenterOffset( subTwoBox, viewportWidth ) ).toBeLessThan( 80 );
+
+		await page.setViewportSize( { width: 1144, height: 900 } );
+		await page.waitForTimeout( 150 );
+
+		viewportWidth = page.viewportSize().width;
+		journalBox = await journalLink.boundingBox();
+		subTwoBox = await subTwoLink.boundingBox();
+
+		expect( horizontalCenterOffset( journalBox, viewportWidth ) ).toBeLessThan( 80 );
+		expect( horizontalCenterOffset( subTwoBox, viewportWidth ) ).toBeLessThan( 80 );
+		expect( await page.evaluate( () => window.scrollX ) ).toBe( 0 );
 	} );
 
 	test( 'installer UI exposes companion demo management action', async ( { page } ) => {
