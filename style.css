@@ -27,6 +27,37 @@ Tags: block-patterns, blog, custom-colors, custom-logo, custom-menu, editor-styl
 	filter: var(--wp--custom--logo-filter, none);
 }
 
+header {
+	--the-drafting-table-header-logo-width: clamp(88px, 7vw, 104px);
+}
+
+header .site-header-logo {
+	flex: 0 0 var(--the-drafting-table-header-logo-width);
+	min-width: var(--the-drafting-table-header-logo-width);
+}
+
+header .site-header-logo .custom-logo-link,
+header .site-header-logo img {
+	display: block;
+}
+
+header .site-header-logo img {
+	width: var(--the-drafting-table-header-logo-width);
+	min-width: var(--the-drafting-table-header-logo-width);
+	max-width: none;
+	height: auto;
+}
+
+header .site-header-brand {
+	flex: 0 0 auto;
+	min-width: max-content;
+}
+
+header .site-header-navigation {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
 /* === Drafting Paper Background Overlays === */
 /*
  * WordPress global styles applies background-color only to body (not to
