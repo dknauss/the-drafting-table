@@ -292,11 +292,13 @@ test.describe( 'The Drafting Table smoke suite', () => {
 			'header .wp-block-navigation__responsive-container.is-menu-open'
 		);
 		const closeButton = responsiveContainer.locator( '.wp-block-navigation__responsive-container-close' ).first();
+		const firstMenuLink = responsiveContainer.getByRole( 'link' ).first();
 
 		await expect( responsiveContainer ).toBeVisible();
 		await expect( closeButton ).toBeVisible();
+		await expect( firstMenuLink ).toBeFocused();
 
-		await closeButton.focus();
+		await page.keyboard.press( 'Shift+Tab' );
 		await expect( closeButton ).toBeFocused();
 
 		await page.keyboard.press( 'Enter' );
