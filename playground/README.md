@@ -31,5 +31,5 @@ Host the blueprint JSON somewhere public and pass it as a `blueprint-url`, or us
 
 ## Notes
 
-- The blueprint installs from the repository's `main` branch and explicitly sets `refType: "branch"` for Playground's `git:directory` resources, because non-`HEAD` refs are only reliably resolved when the ref type is specified.
+- The blueprint installs the current `main` branch **without** Playground's `git:directory` resource: the theme installs from a `main` archive `.zip` (`resource: "url"` → `…/archive/refs/heads/main.zip`), and the companion plugin's files are written from `raw.githubusercontent` (also `main`). This avoids Playground's `git:directory` install path, which currently fails with `createHash is not a function`; plain `.zip`/raw-file fetches are unaffected. (If the companion plugin gains files, add matching `writeFile` steps.)
 - It is intentionally lightweight and does not try to mirror the full `wp-env` fixture/import pipeline.
