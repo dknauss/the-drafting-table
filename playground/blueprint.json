@@ -23,7 +23,7 @@
       "step": "installTheme",
       "themeData": {
         "resource": "url",
-        "url": "https://github.com/dknauss/the-drafting-table/archive/refs/heads/main.zip"
+        "url": "https://wordpress-playground-cors-proxy.net/?https://github.com/dknauss/the-drafting-table/archive/refs/heads/main.zip"
       },
       "options": {
         "activate": true,
