@@ -33,8 +33,9 @@
     },
     "overrides": {
         "ajv": "8.18.0",
-        "brace-expansion": "2.0.3",
-        "fast-xml-parser": "5.5.8",
+        "brace-expansion": "2.1.4",
+        "fast-xml-parser": "5.8.0",
+        "js-yaml": "3.15.2",
         "path-to-regexp": "0.1.13",
         "yauzl": "3.2.1"
     }
