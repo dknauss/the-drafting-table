@@ -276,7 +276,7 @@
             "fontSize": "1.0625rem",
             "lineHeight": "1.65"
         },
-        "css": "body {-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;}",
+        "css": "body {-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;} /* Captions: left-aligned by default; an alignment chosen in the editor still wins. */ .wp-element-caption:not([class*=\"has-text-align-\"]), .wp-block-table figcaption:not([class*=\"has-text-align-\"]), .wp-block-image figcaption:not([class*=\"has-text-align-\"]) { text-align: left; }",
         "elements": {
             "heading": {
                 "typography": {
