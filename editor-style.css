@@ -7,7 +7,7 @@
 /* === Drafting Paper Background in Editor === */
 .editor-styles-wrapper {
 	position: relative;
-	background-color: var(--wp--preset--color--parchment, #f5f0e8);
+	background-color: var(--wp--preset--color--base, #f5f0e8);
 }
 
 .editor-styles-wrapper::before {

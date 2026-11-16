@@ -157,4 +157,53 @@ class TheDraftingTable_ThemeRuntime_Test extends WP_UnitTestCase {
 
 		$this->assertTrue( wp_style_is( 'the-drafting-table-style', 'enqueued' ) );
 	}
+
+	public function test_ollie_child_kit_support_requests_expected_modules() {
+		remove_theme_support( 'ollie-child-kit' );
+		the_drafting_table_ollie_child_kit_support();
+
+		$support = get_theme_support( 'ollie-child-kit' );
+		$this->assertIsArray( $support );
+		$modules = $support[0];
+		foreach ( array( 'limit-variations', 'hide-parent-patterns', 'hide-shop-templates', 'template-titles', 'table-cell-align', 'footnotes-indent' ) as $module ) {
+			$this->assertArrayHasKey( $module, $modules );
+		}
+		$this->assertArrayNotHasKey( 'featured-image-caption', $modules );
+	}
+
+	public function test_ollie_styles_are_dropped_unless_filtered() {
+		$this->assertTrue( the_drafting_table_drop_ollie_styles() );
+
+		add_filter( 'the_drafting_table_keep_ollie_styles', '__return_true' );
+		$this->assertFalse( the_drafting_table_drop_ollie_styles() );
+		remove_filter( 'the_drafting_table_keep_ollie_styles', '__return_true' );
+	}
+
+	public function test_drop_ollie_block_styles_removes_ollie_init_hooks() {
+		add_action( 'init', 'Ollie\enqueue_custom_block_styles' );
+		add_action( 'init', 'Ollie\register_block_styles' );
+		the_drafting_table_drop_ollie_block_styles();
+		$this->assertFalse( has_action( 'init', 'Ollie\enqueue_custom_block_styles' ) );
+		$this->assertFalse( has_action( 'init', 'Ollie\register_block_styles' ) );
+
+		add_filter( 'the_drafting_table_keep_ollie_styles', '__return_true' );
+		add_action( 'init', 'Ollie\enqueue_custom_block_styles' );
+		the_drafting_table_drop_ollie_block_styles();
+		$this->assertNotFalse( has_action( 'init', 'Ollie\enqueue_custom_block_styles' ) );
+		remove_action( 'init', 'Ollie\enqueue_custom_block_styles' );
+		remove_filter( 'the_drafting_table_keep_ollie_styles', '__return_true' );
+	}
+
+	public function test_dequeue_ollie_stylesheet_respects_filter() {
+		wp_enqueue_style( 'ollie', 'https://example.org/ollie.css', array(), '1' );
+		the_drafting_table_dequeue_ollie_stylesheet();
+		$this->assertFalse( wp_style_is( 'ollie', 'enqueued' ) );
+
+		add_filter( 'the_drafting_table_keep_ollie_styles', '__return_true' );
+		wp_enqueue_style( 'ollie' );
+		the_drafting_table_dequeue_ollie_stylesheet();
+		$this->assertTrue( wp_style_is( 'ollie', 'enqueued' ) );
+		remove_filter( 'the_drafting_table_keep_ollie_styles', '__return_true' );
+		wp_dequeue_style( 'ollie' );
+	}
 }

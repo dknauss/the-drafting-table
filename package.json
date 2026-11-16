@@ -12,6 +12,7 @@
         "test:node": "node --test tests/node/*.test.mjs",
         "check:docs": "node ./scripts/check-doc-commands.mjs",
         "check:qa-parity": "node ./scripts/check-qa-parity.mjs",
+        "ollie:overrides": "node ./scripts/ollie-overrides.mjs",
         "themecheck": "wp-env run cli wp plugin install theme-check --activate && wp-env run cli wp eval-file wp-content/themes/the-drafting-table/run-themecheck.php",
         "test:phpunit": "wp-env run tests-cli php wp-content/themes/the-drafting-table/vendor/bin/phpunit -c wp-content/themes/the-drafting-table/phpunit.xml.dist",
         "test:phpunit:coverage": "wp-env run tests-cli bash -lc 'mkdir -p wp-content/themes/the-drafting-table/test-results/phpunit && phpdbg -qrr wp-content/themes/the-drafting-table/vendor/bin/phpunit -c wp-content/themes/the-drafting-table/phpunit.xml.dist --coverage-clover wp-content/themes/the-drafting-table/test-results/phpunit/clover.xml --coverage-text'",

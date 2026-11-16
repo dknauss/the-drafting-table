@@ -1,18 +1,18 @@
 === The Drafting Table ===
 Contributors: dpknauss
 Tags: block-patterns, blog, custom-colors, custom-logo, custom-menu, editor-style, featured-images, full-site-editing, one-column, portfolio, threaded-comments, translation-ready, wide-blocks
-Requires at least: 6.4
+Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.3
-Stable tag: 0.6.4
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A Frank Lloyd Wright-era architect's notebook theme with aged parchment, dot-grid overlays, blueprint borders, and refined architectural typography.
+A Frank Lloyd Wright-era architect's notebook theme with aged parchment, dot-grid overlays, blueprint borders, and refined architectural typography. A child theme of Ollie.
 
 == Description ==
 
-The Drafting Table is a full-site-editing block theme inspired by the architect's studio — the drafting table, the parchment sheet, the precise annotation. It is built for designers, architects, illustrators, and anyone who approaches their work with craft and intention.
+The Drafting Table is a full-site-editing child theme of [Ollie](https://wordpress.org/themes/ollie/) inspired by the architect's studio — the drafting table, the parchment sheet, the precise annotation. It is built for designers, architects, illustrators, and anyone who approaches their work with craft and intention.
 
 The theme features:
 
@@ -32,7 +32,7 @@ The theme features:
 == Installation ==
 
 1. In your WordPress dashboard, go to Appearance > Themes > Add New.
-2. Search for "The Drafting Table" and click Install, then Activate.
+2. Search for "The Drafting Table" and click Install, then Activate. WordPress installs the Ollie parent theme for you if it is missing; it does not need to be active.
 3. Go to Appearance > Editor to customize your site using the Site Editor.
 4. (Optional) Install and activate the companion plugin if you want demo-content onboarding and built-in SEO/meta helpers.
 5. Use the included block patterns (under Patterns in the inserter) to build pages quickly.
@@ -42,6 +42,14 @@ The theme features:
 = Does this theme require any plugins? =
 
 No plugins are required. The theme is fully functional without any additional plugins.
+
+= Does it need Ollie? =
+
+Yes. The Drafting Table is a child theme, so the Ollie parent theme must be installed. The Drafting Table keeps its own templates, patterns, fonts and colors, and leaves out Ollie's own CSS so the two don't fight. If the Ollie Child Kit plugin is active, it also hides Ollie's style variations and patterns from the editor.
+
+= I used a version before 1.0.0. Will my saved colors still work? =
+
+Templates and patterns are updated for you. Colors, fonts and spacing chosen in your own posts and pages use names that changed in 1.0.0 (for example Parchment is now `base` and Ink Faint is `border-dark`), so those choices fall back to defaults until they are picked again. The full list is in docs/ollie-port.md.
 
 = Where can I customize colors and fonts? =
 
@@ -87,6 +95,14 @@ Go to Appearance > Editor > Templates and select the template you want to edit. 
 If `npm run test:smoke` stalls or times out against a custom `WP_ENV_PORT` even though `wp-env` reports the stack as running, Docker may have published the port without making it reachable from the host. In that case, run `WP_ENV_PORT=8894 npm run test:smoke:local` or `WP_ENV_PORT=8894 npm run qa:local` instead. For headed or manual Playwright sessions, start `WP_ENV_PORT=8894 npm run playwright:proxy` in one terminal and point Playwright at the same `http://localhost:8894` base URL.
 
 == Changelog ==
+
+= 1.0.0 =
+* The Drafting Table is now a child theme of Ollie. Templates, patterns, fonts, colors and the four style variations are unchanged in appearance.
+* Color, font and spacing presets use Ollie's names (Parchment is `base`, Ink is `main`, Terra Cotta is `primary`, and so on); the names shown in the editor are unchanged. Content saved with the old names needs those choices made again.
+* Spacing presets now declare the sizes that actually rendered before (WordPress's defaults had been overriding the theme's values).
+* Ollie's own stylesheets are left out; the `the_drafting_table_keep_ollie_styles` filter brings them back.
+* Optional Ollie Child Kit support: only this theme's style variations and patterns show when the plugin is active.
+* Requires WordPress 7.0.
 
 = 0.6.4 =
 * Bumped Tested up to 7.1
@@ -169,6 +185,9 @@ If `npm run test:smoke` stalls or times out against a custom `WP_ENV_PORT` even 
 * Initial release
 
 == Credits ==
+
+* Ollie parent theme by Mike McAlister — https://wordpress.org/themes/ollie/
+  License: GPLv2 or later
 
 * Bodoni Moda (v28) — https://github.com/googlefonts/bodonimoda
   Copyright: 2019 The Bodoni Moda Project Authors
