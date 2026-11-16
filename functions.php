@@ -369,12 +369,13 @@ add_action( 'after_setup_theme', 'the_drafting_table_ollie_child_kit_support' );
 /**
  * Switch on Ollie Child Kit modules (dknauss/ollie-child-kit), when the plugin is active.
  *
- * limit-variations: only this theme's four variations (Vellum, Sandstone Warm,
- * Drafting Blue, Charcoal Blueprint) show in Styles, not Ollie's.
- * hide-parent-patterns: Ollie's patterns stay registered, so the Ollie
- * templates this theme inherits (archive, search, 404, index) still render,
- * but they leave the inserter, so the Drafting Table category is the library.
- * hide-shop-templates and template-titles: a tidier Site Editor list.
+ * Only this theme's four style variations show in Styles (limit-variations).
+ * Ollie's patterns leave the inserter but stay registered, so the Drafting
+ * Table category is the pattern library (hide-parent-patterns). The Site
+ * Editor's template list leaves out Ollie's shop templates and uses plain
+ * names (hide-shop-templates, template-titles). Table cells align to the top
+ * and footnote numbers line up with the text column (table-cell-align,
+ * footnotes-indent).
  *
  * Without the plugin, Ollie's variations and patterns show alongside ours.
  *
