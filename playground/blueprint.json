@@ -12,13 +12,23 @@
   },
   "preferredVersions": {
     "php": "8.3",
-    "wp": "6.9"
+    "wp": "latest"
   },
   "features": {
     "networking": true
   },
   "landingPage": "/",
   "steps": [
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "wordpress.org/themes",
+        "slug": "ollie"
+      },
+      "options": {
+        "activate": false
+      }
+    },
     {
       "step": "installTheme",
       "themeData": {
