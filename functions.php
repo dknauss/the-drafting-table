@@ -363,3 +363,80 @@ function the_drafting_table_post_incipit( $content ) {
 	return $content;
 }
 add_filter( 'the_content', 'the_drafting_table_post_incipit', 20 );
+
+add_action( 'after_setup_theme', 'the_drafting_table_ollie_child_kit_support' );
+
+/**
+ * Switch on Ollie Child Kit modules (dknauss/ollie-child-kit), when the plugin is active.
+ *
+ * limit-variations: only this theme's four variations (Vellum, Sandstone Warm,
+ * Drafting Blue, Charcoal Blueprint) show in Styles, not Ollie's.
+ * hide-parent-patterns: Ollie's patterns stay registered, so the Ollie
+ * templates this theme inherits (archive, search, 404, index) still render,
+ * but they leave the inserter, so the Drafting Table category is the library.
+ * hide-shop-templates and template-titles: a tidier Site Editor list.
+ *
+ * Without the plugin, Ollie's variations and patterns show alongside ours.
+ *
+ * @return void
+ */
+function the_drafting_table_ollie_child_kit_support(): void {
+	add_theme_support(
+		'ollie-child-kit',
+		array(
+			'limit-variations'     => array(),
+			'hide-parent-patterns' => array(),
+			'hide-shop-templates'  => array(),
+			'template-titles'      => array(),
+			'table-cell-align'     => array(),
+			'footnotes-indent'     => array(),
+		)
+	);
+}
+
+add_action( 'after_setup_theme', 'the_drafting_table_drop_ollie_block_styles' );
+add_action( 'wp_enqueue_scripts', 'the_drafting_table_dequeue_ollie_stylesheet', 20 );
+
+/**
+ * Whether to leave out Ollie's own CSS.
+ *
+ * Ollie ships a stylesheet of its own (a reset, rounded white form fields,
+ * sticky-header and helper rules) and one small stylesheet per core block it
+ * restyles (an underlined current menu item, rounded drop-down menus, post
+ * excerpt and pullquote tweaks). This theme already styles all of those in its
+ * own style.css, so Ollie's versions only fight it. Ollie's theme.json still
+ * applies; it is overridden in this theme's theme.json where it matters.
+ *
+ * Return true from the `the_drafting_table_keep_ollie_styles` filter to load
+ * Ollie's CSS again.
+ *
+ * @return bool
+ */
+function the_drafting_table_drop_ollie_styles(): bool {
+	return ! apply_filters( 'the_drafting_table_keep_ollie_styles', false );
+}
+
+/**
+ * Leave out Ollie's per-block stylesheets (assets/styles/core-*.css in Ollie).
+ *
+ * Runs on after_setup_theme, when both themes' functions.php files have loaded,
+ * so Ollie's init hook exists to remove.
+ *
+ * @return void
+ */
+function the_drafting_table_drop_ollie_block_styles(): void {
+	if ( the_drafting_table_drop_ollie_styles() ) {
+		remove_action( 'init', 'Ollie\enqueue_custom_block_styles' );
+	}
+}
+
+/**
+ * Leave out Ollie's style.css on the front end.
+ *
+ * @return void
+ */
+function the_drafting_table_dequeue_ollie_stylesheet(): void {
+	if ( the_drafting_table_drop_ollie_styles() ) {
+		wp_dequeue_style( 'ollie' );
+	}
+}

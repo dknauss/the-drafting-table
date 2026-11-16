@@ -1,7 +1,8 @@
 {
-    "core": "WordPress/WordPress#6.9",
+    "core": "WordPress/WordPress#7.1.4",
     "themes": [
-        "."
+        ".",
+        "https://downloads.wordpress.org/theme/ollie.1.6.6.zip"
     ],
     "plugins": [
         "./companion-plugin/the-drafting-table-companion"
