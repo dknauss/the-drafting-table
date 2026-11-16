@@ -6,54 +6,59 @@
         "color": {
             "palette": [
                 {
-                    "slug": "parchment",
-                    "color": "#eef2f6",
-                    "name": "Parchment"
+                    "slug": "primary",
+                    "name": "Terra Cotta",
+                    "color": "#2d5f8a"
                 },
                 {
-                    "slug": "parchment-dark",
-                    "color": "#dfe6ed",
-                    "name": "Parchment Dark"
+                    "slug": "primary-accent",
+                    "name": "Terra Wash",
+                    "color": "#d3dde7"
                 },
                 {
-                    "slug": "ink",
-                    "color": "#1a2a3a",
-                    "name": "Ink"
+                    "slug": "primary-alt",
+                    "name": "Terra Muted",
+                    "color": "#5a8ab5"
                 },
                 {
-                    "slug": "ink-light",
-                    "color": "#4a6178",
-                    "name": "Ink Light"
+                    "slug": "primary-alt-accent",
+                    "name": "Charcoal",
+                    "color": "#2a3d52"
                 },
                 {
-                    "slug": "ink-faint",
-                    "color": "#7a9bb5",
-                    "name": "Ink Faint"
+                    "slug": "main",
+                    "name": "Ink",
+                    "color": "#1a2a3a"
                 },
                 {
-                    "slug": "ink-ghost",
-                    "color": "#c4d0dc",
-                    "name": "Ink Ghost"
+                    "slug": "main-accent",
+                    "name": "Ink Wash",
+                    "color": "#d5dadf"
                 },
                 {
-                    "slug": "terra",
-                    "color": "#2d5f8a",
-                    "name": "Terra Cotta"
+                    "slug": "base",
+                    "name": "Parchment",
+                    "color": "#eef2f6"
                 },
                 {
-                    "slug": "terra-muted",
-                    "color": "#5a8ab5",
-                    "name": "Terra Muted"
+                    "slug": "secondary",
+                    "name": "Ink Light",
+                    "color": "#4a6178"
                 },
                 {
-                    "slug": "charcoal",
-                    "color": "#2a3d52",
-                    "name": "Charcoal"
+                    "slug": "tertiary",
+                    "name": "Parchment Dark",
+                    "color": "#dfe6ed"
                 },
                 {
-                    "slug": "white",
-                    "color": "#f8fafc",
-                    "name": "White"
+                    "slug": "border-light",
+                    "name": "Ink Ghost",
+                    "color": "#c4d0dc"
+                },
+                {
+                    "slug": "border-dark",
+                    "name": "Ink Faint",
+                    "color": "#7a9bb5"
                 }
             ]
         },
@@ -68,40 +73,40 @@
     },
     "styles": {
         "color": {
-            "background": "var(--wp--preset--color--parchment)",
-            "text": "var(--wp--preset--color--ink)"
+            "background": "var(--wp--preset--color--base)",
+            "text": "var(--wp--preset--color--main)"
         },
         "elements": {
             "heading": {
                 "color": {
-                    "text": "var(--wp--preset--color--ink)"
+                    "text": "var(--wp--preset--color--main)"
                 }
             },
             "link": {
                 "color": {
-                    "text": "var(--wp--preset--color--terra)"
+                    "text": "var(--wp--preset--color--primary)"
                 },
                 ":hover": {
                     "color": {
-                        "text": "var(--wp--preset--color--ink-light)"
+                        "text": "var(--wp--preset--color--secondary)"
                     }
                 }
             },
             "button": {
                 "color": {
                     "background": "transparent",
-                    "text": "var(--wp--preset--color--ink)"
+                    "text": "var(--wp--preset--color--main)"
                 },
                 "border": {
-                    "color": "var(--wp--preset--color--ink-ghost)"
+                    "color": "var(--wp--preset--color--border-light)"
                 },
                 ":hover": {
                     "color": {
-                        "background": "var(--wp--preset--color--ink)",
-                        "text": "var(--wp--preset--color--parchment)"
+                        "background": "var(--wp--preset--color--main)",
+                        "text": "var(--wp--preset--color--base)"
                     },
                     "border": {
-                        "color": "var(--wp--preset--color--ink)"
+                        "color": "var(--wp--preset--color--main)"
                     }
                 }
             }
@@ -109,19 +114,19 @@
         "blocks": {
             "core/separator": {
                 "color": {
-                    "text": "var(--wp--preset--color--ink-ghost)"
+                    "text": "var(--wp--preset--color--border-light)"
                 },
                 "border": {
-                    "color": "var(--wp--preset--color--ink-ghost)"
+                    "color": "var(--wp--preset--color--border-light)"
                 }
             },
             "core/quote": {
                 "color": {
-                    "text": "var(--wp--preset--color--ink-light)"
+                    "text": "var(--wp--preset--color--secondary)"
                 },
                 "border": {
                     "left": {
-                        "color": "var(--wp--preset--color--terra)"
+                        "color": "var(--wp--preset--color--primary)"
                     }
                 }
             }
