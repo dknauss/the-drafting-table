@@ -418,16 +418,23 @@ function the_drafting_table_drop_ollie_styles(): bool {
 }
 
 /**
- * Leave out Ollie's per-block stylesheets (assets/styles/core-*.css in Ollie).
+ * Leave out Ollie's per-block stylesheets (assets/styles/core-*.css in Ollie)
+ * and the block style variations whose CSS lives in them.
+ *
+ * Without their stylesheets, Ollie's block styles (Check and Boxed lists,
+ * Dotted and Thin separators, Truncate excerpts, Rounded covers and so on)
+ * would still show in the editor's Styles panel but do nothing, so they are
+ * not registered either.
  *
  * Runs on after_setup_theme, when both themes' functions.php files have loaded,
- * so Ollie's init hook exists to remove.
+ * so Ollie's init hooks exist to remove.
  *
  * @return void
  */
 function the_drafting_table_drop_ollie_block_styles(): void {
 	if ( the_drafting_table_drop_ollie_styles() ) {
 		remove_action( 'init', 'Ollie\enqueue_custom_block_styles' );
+		remove_action( 'init', 'Ollie\register_block_styles' );
 	}
 }
 
