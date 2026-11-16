@@ -151,7 +151,8 @@ async function main() {
 	const zipTarget = path.join( tempDir, 'the-drafting-table-wporg.zip' );
 
 	const wpEnvConfig = {
-		core: 'WordPress/WordPress#6.9',
+		core: 'WordPress/WordPress#7.1.4',
+		themes: [ 'https://downloads.wordpress.org/theme/ollie.1.6.6.zip' ],
 		port: 8898,
 		testsPort: 8899,
 		config: {
