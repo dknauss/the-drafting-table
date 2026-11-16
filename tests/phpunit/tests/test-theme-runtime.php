@@ -179,10 +179,12 @@ class TheDraftingTable_ThemeRuntime_Test extends WP_UnitTestCase {
 		remove_filter( 'the_drafting_table_keep_ollie_styles', '__return_true' );
 	}
 
-	public function test_drop_ollie_block_styles_removes_ollie_init_hook() {
+	public function test_drop_ollie_block_styles_removes_ollie_init_hooks() {
 		add_action( 'init', 'Ollie\enqueue_custom_block_styles' );
+		add_action( 'init', 'Ollie\register_block_styles' );
 		the_drafting_table_drop_ollie_block_styles();
 		$this->assertFalse( has_action( 'init', 'Ollie\enqueue_custom_block_styles' ) );
+		$this->assertFalse( has_action( 'init', 'Ollie\register_block_styles' ) );
 
 		add_filter( 'the_drafting_table_keep_ollie_styles', '__return_true' );
 		add_action( 'init', 'Ollie\enqueue_custom_block_styles' );
