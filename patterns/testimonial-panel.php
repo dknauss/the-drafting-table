@@ -12,16 +12,16 @@
  */
 
 ?>
-<!-- wp:group {"style":{"spacing":{"margin":{"top":"0"},"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60","left":"2rem","right":"2rem"}},"border":{"top":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"constrained","contentSize":"800px"}} -->
-<div class="wp-block-group" style="border-top-color:var(--wp--preset--color--ink-ghost);border-top-width:1px;margin-top:0;padding-top:var(--wp--preset--spacing--60);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--60);padding-left:2rem">
-	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"var(--wp--preset--color--ink-ghost)","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--ink-ghost);border-bottom-width:1px;padding-bottom:1rem">
-		<!-- wp:paragraph {"textColor":"ink-light","fontFamily":"josefin","style":{"typography":{"fontStyle":"normal","fontWeight":"600","fontSize":"0.5625rem","letterSpacing":"0.35em","textTransform":"uppercase"}}} -->
-		<p class="has-ink-light-color has-text-color has-josefin-font-family" style="font-size:0.5625rem;font-style:normal;font-weight:600;letter-spacing:0.35em;text-transform:uppercase">Client Correspondence</p>
+<!-- wp:group {"style":{"spacing":{"margin":{"top":"0"},"padding":{"top":"var:preset|spacing|xx-large","bottom":"var:preset|spacing|xx-large","left":"2rem","right":"2rem"}},"border":{"top":{"color":"var(--wp--preset--color--border-light)","width":"1px"}}},"layout":{"type":"constrained","contentSize":"800px"}} -->
+<div class="wp-block-group" style="border-top-color:var(--wp--preset--color--border-light);border-top-width:1px;margin-top:0;padding-top:var(--wp--preset--spacing--xx-large);padding-right:2rem;padding-bottom:var(--wp--preset--spacing--xx-large);padding-left:2rem">
+	<!-- wp:group {"style":{"spacing":{"padding":{"bottom":"1rem"}},"border":{"bottom":{"color":"var(--wp--preset--color--border-light)","width":"1px"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--border-light);border-bottom-width:1px;padding-bottom:1rem">
+		<!-- wp:paragraph {"textColor":"secondary","fontFamily":"condensed","style":{"typography":{"fontStyle":"normal","fontWeight":"600","fontSize":"0.5625rem","letterSpacing":"0.35em","textTransform":"uppercase"}}} -->
+		<p class="has-secondary-color has-text-color has-condensed-font-family" style="font-size:0.5625rem;font-style:normal;font-weight:600;letter-spacing:0.35em;text-transform:uppercase">Client Correspondence</p>
 		<!-- /wp:paragraph -->
 
-		<!-- wp:paragraph {"textColor":"ink-faint","fontFamily":"courier-prime","style":{"typography":{"fontSize":"0.6875rem","letterSpacing":"0.1em"}}} -->
-		<p class="has-ink-faint-color has-text-color has-courier-prime-font-family" style="font-size:0.6875rem;letter-spacing:0.1em">Selected Reflections</p>
+		<!-- wp:paragraph {"textColor":"border-dark","fontFamily":"primary","style":{"typography":{"fontSize":"0.6875rem","letterSpacing":"0.1em"}}} -->
+		<p class="has-border-dark-color has-text-color has-primary-font-family" style="font-size:0.6875rem;letter-spacing:0.1em">Selected Reflections</p>
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->
@@ -47,8 +47,8 @@
 	<div style="height:3rem" aria-hidden="true" class="wp-block-spacer"></div>
 	<!-- /wp:spacer -->
 
-	<!-- wp:separator {"backgroundColor":"ink-ghost"} -->
-	<hr class="wp-block-separator has-text-color has-ink-ghost-color has-alpha-channel-opacity has-ink-ghost-background-color has-background"/>
+	<!-- wp:separator {"backgroundColor":"border-light"} -->
+	<hr class="wp-block-separator has-text-color has-border-light-color has-alpha-channel-opacity has-border-light-background-color has-background"/>
 	<!-- /wp:separator -->
 
 	<!-- wp:spacer {"height":"3rem"} -->
